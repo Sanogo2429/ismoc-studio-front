@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>IsMoc Studio</title>
+  <rect width="512" height="512" rx="112" fill="#0B132B"/>
+  <rect x="100" y="150" width="50" height="212" rx="10" fill="#FFFFFF"/>
+  <polygon points="168,362 220,362 296,150 244,150" fill="#F59E0B"/>
+  <path d="M300 362V150h50l23 70 23-70h50v212h-46V250l-27 76-27-76v112z" fill="#FFFFFF"/>
+</svg>

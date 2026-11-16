@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Zones de sécurité des téléphones (encoche, Dynamic Island, barre tactile) — actives grâce à viewport-fit=cover. */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+html {
+  /* Pas de grossissement automatique du texte quand le téléphone passe en paysage. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+  padding-bottom: var(--safe-bottom);
+  /* Aucun défilement horizontal parasite (clip, contrairement à hidden, ne casse pas position: sticky). */
+  overflow-x: clip;
+  /* Pas de flash gris au toucher des boutons et liens sur mobile. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hauteur « plein écran » stable sur mobile : 100vh inclut la barre d'adresse rétractable
+   d'iOS / Android (contenu coupé, sauts au défilement) ; 100dvh suit la zone réellement visible. */
+@supports (height: 100dvh) {
+  .min-h-screen { min-height: 100dvh; }
+  .h-screen { height: 100dvh; }
+}
+
+/* Application installée (écran d'accueil) : pas d'effet élastique ni de « tirer pour actualiser » parasite. */
+@media (display-mode: standalone) {
+  html, body { overscroll-behavior-y: none; }
+}
+
+/* iOS zoome automatiquement sur un champ dont le texte fait moins de 16 px (décalage du viewport) :
+   les champs passent à 16 px sur les téléphones tactiles uniquement. */
+@media (max-width: 767px) and (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+@layer utilities {
+  .pt-safe { padding-top: var(--safe-top); }
+  .pb-safe { padding-bottom: var(--safe-bottom); }
+  .top-safe-6 { top: calc(1.5rem + var(--safe-top)); }
+  .bottom-safe-6 { bottom: calc(1.5rem + var(--safe-bottom)); }
+}
