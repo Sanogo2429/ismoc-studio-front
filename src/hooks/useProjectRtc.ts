@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr'
+import { HubConnection, HubConnectionState } from '@microsoft/signalr'
 import { api } from '../services/api'
 import { apiErrorMessage } from '../services/apiError'
 import { unlockCallAudio } from '../services/callAudio'
 import type { ClientMessage, ProjectMilestone, ProjectStatus } from '../services/projectTypes'
+import { connectResilientHub, type HubStatus } from '../services/realtimeHub'
+
+export type { HubStatus }
 
 /** Diffusé par POST /api/Projects/{id}/progress. */
 export interface ProjectLiveUpdate {
@@ -14,12 +17,20 @@ export interface ProjectLiveUpdate {
 
 export type CallType = 'audio' | 'video'
 export type CallStatus = 'idle' | 'outgoing' | 'incoming' | 'connecting' | 'active'
-export type HubStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected'
 export type ProjectRtc = ReturnType<typeof useProjectRtc>
 
-const HUB_PATH = '/hubs/project-communication'
 const RING_TIMEOUT_MS = 45_000
 const ICE_SERVERS: RTCIceServer[] = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }]
+
+/**
+ * Fusionne l'historique du serveur avec les messages déjà affichés (sans doublon, ordre chronologique) :
+ * récupère ce qui est arrivé pendant une coupure du temps réel.
+ */
+function mergeMessages(server: ClientMessage[], current: ClientMessage[]): ClientMessage[] {
+  const byId = new Map(server.map((message) => [message.id, message]))
+  for (const message of current) if (!byId.has(message.id)) byId.set(message.id, message)
+  return [...byId.values()].sort((a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime())
+}
 
 function mediaErrorMessage(error: unknown): string {
   if (error instanceof DOMException) {
@@ -165,115 +176,112 @@ export function useProjectRtc(projectId: string) {
       updateCallStatus: (status: CallStatus) => actionsRef.current.updateCallStatus(status),
     }
 
-    api.get<ClientMessage[]>(`/api/Projects/${encodeURIComponent(projectId)}/client-messages`)
-      .then((response) => { if (isActive) setMessages(response.data) })
+    const loadMessages = () => api.get<ClientMessage[]>(`/api/Projects/${encodeURIComponent(projectId)}/client-messages`)
+      .then((response) => { if (isActive) setMessages((current) => mergeMessages(response.data, current)) })
       .catch(() => undefined)
+    void loadMessages()
 
-    const connection = new HubConnectionBuilder()
-      .withUrl(`${api.defaults.baseURL ?? ''}${HUB_PATH}`, { accessTokenFactory: () => localStorage.getItem('token') ?? '' })
-      .withAutomaticReconnect([0, 2000, 5000, 10000, 20000, 30000])
-      .configureLogging(LogLevel.Warning)
-      .build()
+    const hub = connectResilientHub({
+      configure: registerHandlers,
+      onStatus: (status) => {
+        if (!isActive) return
+        setHubStatus(status)
+        if (status !== 'connected') {
+          setIsTeamOnline(false)
+          setIsClientOnline(false)
+        }
+      },
+      // Chaque (re)connexion : rejoindre la salle du projet, puis rattraper les messages manqués
+      // (aussi au premier démarrage : couvre ceux arrivés entre le chargement initial et l'entrée dans la salle).
+      onConnected: async () => {
+        await joinRoom()
+        await loadMessages()
+      },
+    })
+    const connection = hub.connection
     connectionRef.current = connection
 
-    const joinRoom = () => connection.invoke<boolean>('JoinProjectRoom', projectId).then((online) => { if (isActive) setIsTeamOnline(online) })
+    function joinRoom() {
+      return connection.invoke<boolean>('JoinProjectRoom', projectId).then((online) => { if (isActive) setIsTeamOnline(online) })
+    }
 
-    connection.on('ReceiveProjectMessage', (message: ClientMessage) => appendMessage(message))
-    connection.on('PresenceUpdated', (online: boolean) => setIsTeamOnline(online))
-    connection.on('ClientPresenceUpdated', (online: boolean) => setIsClientOnline(online))
-    // L'équipe a fait avancer l'étape ou publié un jalon : la page projet se met à jour sans recharger.
-    connection.on('ProjectUpdated', (update: ProjectLiveUpdate) => setProjectUpdate(update))
+    function registerHandlers(connection: HubConnection) {
+      connection.on('ReceiveProjectMessage', (message: ClientMessage) => appendMessage(message))
+      connection.on('PresenceUpdated', (online: boolean) => setIsTeamOnline(online))
+      connection.on('ClientPresenceUpdated', (online: boolean) => setIsClientOnline(online))
+      // L'équipe a fait avancer l'étape ou publié un jalon : la page projet se met à jour sans recharger.
+      connection.on('ProjectUpdated', (update: ProjectLiveUpdate) => setProjectUpdate(update))
 
-    connection.on('IncomingCall', (callerName: string, type: CallType) => {
-      if (callStatusRef.current !== 'idle') {
-        void connection.invoke('RejectOrEndCall', projectId).catch(() => undefined)
-        return
-      }
-      callTypeRef.current = type
-      setCallType(type)
-      setIncomingCaller(callerName)
-      setCallNotice('')
-      updateCallStatus('incoming')
-    })
-
-    // L'appelé a décroché : l'appelant crée l'offre WebRTC.
-    connection.on('CallAccepted', async () => {
-      if (callStatusRef.current !== 'outgoing' || !localStreamRef.current) return
-      clearRingTimer()
-      updateCallStatus('connecting')
-      try {
-        const peer = createPeer(localStreamRef.current)
-        const offer = await peer.createOffer()
-        await peer.setLocalDescription(offer)
-        await connection.invoke('SendWebRtcOffer', projectId, JSON.stringify(offer))
-      } catch {
-        void connection.invoke('RejectOrEndCall', projectId).catch(() => undefined)
-        cleanupCall('Impossible d’établir l’appel.')
-      }
-    })
-
-    connection.on('ReceiveWebRtcOffer', async (sdp: string) => {
-      const peer = peerRef.current
-      if (!peer) return
-      try {
-        await peer.setRemoteDescription(JSON.parse(sdp) as RTCSessionDescriptionInit)
-        await flushPendingCandidates()
-        const answer = await peer.createAnswer()
-        await peer.setLocalDescription(answer)
-        await connection.invoke('SendWebRtcAnswer', projectId, JSON.stringify(answer))
-      } catch {
-        void connection.invoke('RejectOrEndCall', projectId).catch(() => undefined)
-        cleanupCall('Impossible d’établir l’appel.')
-      }
-    })
-
-    connection.on('ReceiveWebRtcAnswer', async (sdp: string) => {
-      const peer = peerRef.current
-      if (!peer || peer.signalingState !== 'have-local-offer') return
-      await peer.setRemoteDescription(JSON.parse(sdp) as RTCSessionDescriptionInit).catch(() => undefined)
-      await flushPendingCandidates()
-    })
-
-    connection.on('ReceiveIceCandidate', async (candidateJson: string) => {
-      const candidate = JSON.parse(candidateJson) as RTCIceCandidateInit
-      const peer = peerRef.current
-      if (peer?.remoteDescription) await peer.addIceCandidate(candidate).catch(() => undefined)
-      else pendingCandidatesRef.current.push(candidate)
-    })
-
-    connection.on('CallEnded', () => {
-      if (callStatusRef.current === 'idle') return
-      const wasRinging = callStatusRef.current === 'outgoing'
-      cleanupCall(wasRinging ? 'L’appel a été refusé.' : 'L’appel est terminé.')
-    })
-
-    connection.onreconnecting(() => { if (isActive) setHubStatus('reconnecting') })
-    connection.onreconnected(() => {
-      if (!isActive) return
-      setHubStatus('connected')
-      void joinRoom().catch(() => undefined)
-    })
-    connection.onclose(() => {
-      if (!isActive) return
-      setHubStatus('disconnected')
-      setIsTeamOnline(false)
-      setIsClientOnline(false)
-    })
-
-    connection.start()
-      .then(() => {
-        if (!isActive) return
-        setHubStatus('connected')
-        return joinRoom()
+      connection.on('IncomingCall', (callerName: string, type: CallType) => {
+        if (callStatusRef.current !== 'idle') {
+          void connection.invoke('RejectOrEndCall', projectId).catch(() => undefined)
+          return
+        }
+        callTypeRef.current = type
+        setCallType(type)
+        setIncomingCaller(callerName)
+        setCallNotice('')
+        updateCallStatus('incoming')
       })
-      .catch(() => { if (isActive) setHubStatus('disconnected') })
+
+      // L'appelé a décroché : l'appelant crée l'offre WebRTC.
+      connection.on('CallAccepted', async () => {
+        if (callStatusRef.current !== 'outgoing' || !localStreamRef.current) return
+        clearRingTimer()
+        updateCallStatus('connecting')
+        try {
+          const peer = createPeer(localStreamRef.current)
+          const offer = await peer.createOffer()
+          await peer.setLocalDescription(offer)
+          await connection.invoke('SendWebRtcOffer', projectId, JSON.stringify(offer))
+        } catch {
+          void connection.invoke('RejectOrEndCall', projectId).catch(() => undefined)
+          cleanupCall('Impossible d’établir l’appel.')
+        }
+      })
+
+      connection.on('ReceiveWebRtcOffer', async (sdp: string) => {
+        const peer = peerRef.current
+        if (!peer) return
+        try {
+          await peer.setRemoteDescription(JSON.parse(sdp) as RTCSessionDescriptionInit)
+          await flushPendingCandidates()
+          const answer = await peer.createAnswer()
+          await peer.setLocalDescription(answer)
+          await connection.invoke('SendWebRtcAnswer', projectId, JSON.stringify(answer))
+        } catch {
+          void connection.invoke('RejectOrEndCall', projectId).catch(() => undefined)
+          cleanupCall('Impossible d’établir l’appel.')
+        }
+      })
+
+      connection.on('ReceiveWebRtcAnswer', async (sdp: string) => {
+        const peer = peerRef.current
+        if (!peer || peer.signalingState !== 'have-local-offer') return
+        await peer.setRemoteDescription(JSON.parse(sdp) as RTCSessionDescriptionInit).catch(() => undefined)
+        await flushPendingCandidates()
+      })
+
+      connection.on('ReceiveIceCandidate', async (candidateJson: string) => {
+        const candidate = JSON.parse(candidateJson) as RTCIceCandidateInit
+        const peer = peerRef.current
+        if (peer?.remoteDescription) await peer.addIceCandidate(candidate).catch(() => undefined)
+        else pendingCandidatesRef.current.push(candidate)
+      })
+
+      connection.on('CallEnded', () => {
+        if (callStatusRef.current === 'idle') return
+        const wasRinging = callStatusRef.current === 'outgoing'
+        cleanupCall(wasRinging ? 'L’appel a été refusé.' : 'L’appel est terminé.')
+      })
+    }
 
     return () => {
       isActive = false
       if (callStatusRef.current !== 'idle') void connection.invoke('RejectOrEndCall', projectId).catch(() => undefined)
       cleanupCall()
       connectionRef.current = null
-      void connection.stop()
+      void hub.dispose()
     }
   }, [projectId])
 

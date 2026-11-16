@@ -68,6 +68,8 @@ function AdminPage() {
         setUnreadIds((current) => new Set(current).add(projectId))
       }
     },
+    // Après une coupure : rechargement discret du cockpit (aperçus et compteurs manqués), sans indicateur.
+    onReconnected: () => setRefreshKey((key) => key + 1),
   })
 
   function refresh() {

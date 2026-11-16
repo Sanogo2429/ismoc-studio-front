@@ -17,6 +17,8 @@ dev-dist
 .env
 .env.*
 !.env.example
+# Adresse publique de l'API de production (aucun secret) : versionnée pour le build Vercel.
+!.env.production
 
 # Projets natifs Capacitor générés (recréés par « npx cap add »)
 android/app/build
