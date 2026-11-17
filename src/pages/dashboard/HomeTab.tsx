@@ -35,8 +35,9 @@ function HomeTab({ error, onNavigate, projects: allThreads, userName }: HomeTabP
       )}
 
       {/* Raccourcis */}
-      <div className="mt-8 grid gap-3 sm:grid-cols-3">
-        <Link className="flex min-h-[64px] items-center gap-3 rounded-2xl bg-[#F59E0B] px-5 py-4 text-[14px] font-bold text-[#0B132B] shadow-lg shadow-amber-500/20 transition hover:brightness-95" to="/configurator">
+      {/* Téléphone : « Nouveau projet » sur toute la largeur, les deux autres raccourcis côte à côte. */}
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <Link className="col-span-2 flex min-h-[64px] items-center gap-3 sm:col-span-1 rounded-2xl bg-[#F59E0B] px-5 py-4 text-[14px] font-bold text-[#0B132B] shadow-lg shadow-amber-500/20 transition hover:brightness-95" to="/configurator">
           <Plus size={20} /> Nouveau projet <ArrowRight className="ml-auto" size={18} />
         </Link>
         <ShortcutButton icon={<FolderKanban size={19} />} label="Mes projets" onClick={() => onNavigate('projects')} />
@@ -83,8 +84,8 @@ function HomeTab({ error, onNavigate, projects: allThreads, userName }: HomeTabP
 
 function ShortcutButton({ icon, label, onClick }: { icon: ReactNode; label: string; onClick: () => void }) {
   return (
-    <button className="flex min-h-[64px] items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-5 py-4 text-left text-[14px] font-semibold transition hover:border-slate-300" onClick={onClick} type="button">
-      <span className="text-[#B8530B]">{icon}</span>{label}<ChevronRight className="ml-auto text-slate-500" size={18} />
+    <button className="flex min-h-[64px] items-center gap-2.5 rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-left text-[13px] font-semibold leading-tight transition hover:border-slate-300 sm:gap-3 sm:px-5 sm:py-4 sm:text-[14px]" onClick={onClick} type="button">
+      <span className="shrink-0 text-[#B8530B]">{icon}</span>{label}<ChevronRight className="ml-auto hidden shrink-0 text-slate-500 sm:block" size={18} />
     </button>
   )
 }
