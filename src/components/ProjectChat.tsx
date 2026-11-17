@@ -90,10 +90,17 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
     return () => observer.disconnect()
   }, [scrollToEnd])
 
+  // Dernier geste de défilement de l'utilisateur (doigt, molette, clavier) : seul un vrai geste peut
+  // décrocher la liste du dernier message — jamais un défilement déclenché par le code ou une mise en page.
+  const lastUserGestureRef = useRef(0)
+  const markUserGesture = useCallback(() => { lastUserGestureRef.current = Date.now() }, [])
+
   function handleListScroll() {
     const container = scrollRef.current
     if (!container) return
-    stickToBottomRef.current = container.scrollHeight - container.scrollTop - container.clientHeight < 80
+    const nearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 80
+    if (nearBottom) stickToBottomRef.current = true
+    else if (Date.now() - lastUserGestureRef.current < 1000) stickToBottomRef.current = false
   }
 
   const closePicker = useCallback(() => setIsPickerOpen(false), [])
@@ -206,7 +213,7 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
       </div>
 
       {/* Seule cette liste défile (overscroll-contain : le geste ne fait jamais glisser la page derrière). */}
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-[#F7F8FA] px-4 pb-4 pt-4 md:px-6 md:pb-6 md:pt-6" onScroll={handleListScroll} ref={scrollRef} aria-live="polite">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-[#F7F8FA] px-4 pb-4 pt-4 md:px-6 md:pb-6 md:pt-6" onKeyDown={markUserGesture} onScroll={handleListScroll} onTouchMove={markUserGesture} onWheel={markUserGesture} ref={scrollRef} aria-live="polite">
         <div ref={listRef}>
           {groups.length === 0 && (rtc.isLoadingMessages
             ? <MessageBubblesSkeleton />
