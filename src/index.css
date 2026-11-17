@@ -14,14 +14,17 @@ html {
   /* Pas de grossissement automatique du texte quand le téléphone passe en paysage. */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Dernier rempart contre le défilement horizontal (clip ne casse pas position: sticky, contrairement à hidden). */
+  overflow-x: clip;
 }
 
 body {
   padding-left: var(--safe-left);
   padding-right: var(--safe-right);
   padding-bottom: var(--safe-bottom);
-  /* Aucun défilement horizontal parasite (clip, contrairement à hidden, ne casse pas position: sticky). */
   overflow-x: clip;
+  /* Mots très longs (URL, e-mails, noms de projet sans espace) : coupés au lieu d'élargir la page. */
+  overflow-wrap: break-word;
   /* Pas de flash gris au toucher des boutons et liens sur mobile. */
   -webkit-tap-highlight-color: transparent;
 }

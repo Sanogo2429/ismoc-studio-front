@@ -55,7 +55,7 @@ function CallOverlay({ peerName = 'Équipe IsMoc', rtc }: { peerName?: string; r
 
   if (status === 'incoming') {
     return (
-      <div className="fixed right-6 top-safe-6 z-50 w-[340px] rounded-2xl p-5 text-white shadow-2xl ring-1 ring-white/10" role="alertdialog" aria-label="Appel entrant" style={{ background: NAVY }}>
+      <div className="fixed left-4 right-4 top-safe-6 z-50 rounded-2xl sm:left-auto sm:right-6 sm:w-[340px] p-5 text-white shadow-2xl ring-1 ring-white/10" role="alertdialog" aria-label="Appel entrant" style={{ background: NAVY }}>
         <div className="flex items-center gap-4">
           <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-sm font-bold">
             <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/30" />

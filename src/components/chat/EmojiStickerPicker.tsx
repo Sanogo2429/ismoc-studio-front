@@ -28,7 +28,7 @@ function EmojiStickerPicker({ onClose, onEmoji, onSticker }: EmojiStickerPickerP
   }, [onClose])
 
   return (
-    <div className="absolute bottom-full left-0 z-20 mb-3 w-[320px] overflow-hidden rounded-2xl border border-slate-200 bg-white text-[#0B132B] shadow-2xl shadow-slate-900/15" ref={panelRef} role="dialog" aria-label="Emojis et stickers">
+    <div className="absolute bottom-full left-0 z-20 mb-3 w-[min(320px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white text-[#0B132B] shadow-2xl shadow-slate-900/15" ref={panelRef} role="dialog" aria-label="Emojis et stickers">
       <div className="grid grid-cols-2 gap-1 border-b border-slate-100 p-1.5">
         {(['emojis', 'stickers'] as const).map((item) => (
           <button className={`rounded-lg py-2 text-[12px] font-semibold transition ${tab === item ? 'bg-[#0B132B] text-white' : 'text-slate-500 hover:bg-slate-100'}`} key={item} onClick={() => setTab(item)} type="button">

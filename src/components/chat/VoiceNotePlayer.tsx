@@ -65,7 +65,7 @@ function VoiceNotePlayer({ durationSeconds, mine, url }: { durationSeconds: numb
   const progress = Math.min(100, (current / total) * 100)
 
   return (
-    <div className="flex w-[240px] items-center gap-3">
+    <div className="flex w-[240px] max-w-full items-center gap-3">
       <button aria-label={isPlaying ? 'Pause' : 'Écouter le message vocal'} className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition ${mine ? 'bg-[#F59E0B] text-[#0B132B] hover:brightness-95' : 'bg-[#0B132B] text-white hover:opacity-90'}`} disabled={isLoading || failed} onClick={() => void toggle()} type="button">
         {isLoading ? <LoaderCircle className="animate-spin" size={15} /> : isPlaying ? <Pause size={15} /> : <Play className="translate-x-px" size={15} />}
       </button>

@@ -133,7 +133,7 @@ function AdminPage() {
 
       {/* Appel entrant d'un client alors que sa conversation n'est pas ouverte. */}
       {alert && (
-        <div className="fixed right-6 top-safe-6 z-50 w-[360px] rounded-2xl border border-[#F59E0B]/30 bg-[#0E1424] p-5 text-slate-100 shadow-2xl shadow-black/50" role="alertdialog" aria-label="Appel client entrant">
+        <div className="fixed left-4 right-4 top-safe-6 z-50 rounded-2xl sm:left-auto sm:right-6 sm:w-[360px] border border-[#F59E0B]/30 bg-[#0E1424] p-5 text-slate-100 shadow-2xl shadow-black/50" role="alertdialog" aria-label="Appel client entrant">
           <div className="flex items-start gap-4">
             <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F59E0B] text-[#0B132B]">
               <span className="absolute inset-0 animate-ping rounded-full bg-[#F59E0B]/40" />
