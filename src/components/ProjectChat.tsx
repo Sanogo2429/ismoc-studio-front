@@ -299,7 +299,7 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
 
 function ToolbarButton({ active = false, children, disabled, label, onClick }: { active?: boolean; children: ReactNode; disabled?: boolean; label: string; onClick: () => void }) {
   return (
-    <button aria-label={label} aria-pressed={active} className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition disabled:opacity-40 ${active ? 'bg-slate-100 text-slate-700' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-700'}`} disabled={disabled} onClick={onClick} title={label} type="button">
+    <button aria-label={label} aria-pressed={active} className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg transition disabled:opacity-40 md:h-9 md:w-9 ${active ? 'bg-slate-100 text-slate-700' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-700'}`} disabled={disabled} onClick={onClick} title={label} type="button">
       {children}
     </button>
   )

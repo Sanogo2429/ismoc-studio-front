@@ -103,7 +103,7 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
         <header className="pt-safe sticky top-0 z-20 border-b border-slate-200/80 bg-white">
           <div className="flex h-16 items-center justify-between px-4 sm:px-12 md:h-[90px]">
             {/* Téléphone : logo seul, comme une application native */}
-            <Link aria-label="IsMoc Studio, retour à l’accueil" className="flex items-center gap-2.5 md:hidden" to="/">
+            <Link aria-label="IsMoc Studio, retour à l’accueil" className="flex min-h-[44px] items-center gap-2.5 md:hidden" to="/">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg text-[13px] font-extrabold tracking-tight text-white" style={{ background: NAVY }}>I<span style={{ color: AMBER }}>/</span>M</span>
               <strong className="text-[17px] font-bold tracking-tight">IsMoc</strong>
             </Link>
@@ -121,7 +121,7 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
               <span className="hidden h-11 w-11 items-center justify-center rounded-full bg-[#FDF0D5] text-[13px] font-bold text-[#B45309] md:flex">{initialsOf(userName)}</span>
               {/* Téléphone : l'avatar ouvre un petit menu (profil, cockpit, déconnexion) */}
               <div className="relative md:hidden">
-                <button aria-expanded={isProfileMenuOpen} aria-haspopup="menu" aria-label="Menu du profil" className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FDF0D5] text-[13px] font-bold text-[#B45309]" onClick={() => setIsProfileMenuOpen((open) => !open)} type="button">{initialsOf(userName)}</button>
+                <button aria-expanded={isProfileMenuOpen} aria-haspopup="menu" aria-label="Menu du profil" className="flex h-11 w-11 items-center justify-center rounded-full bg-[#FDF0D5] text-[13px] font-bold text-[#B45309]" onClick={() => setIsProfileMenuOpen((open) => !open)} type="button">{initialsOf(userName)}</button>
                 {isProfileMenuOpen && (
                   <>
                     <button aria-label="Fermer le menu" className="fixed inset-0 z-40 cursor-default" onClick={() => setIsProfileMenuOpen(false)} tabIndex={-1} type="button" />
@@ -130,9 +130,9 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
                         <p className="truncate text-[13px] font-bold">{userName}</p>
                         <p className="text-[10px] font-medium" style={{ color: AMBER }}>{roleLabel}</p>
                       </div>
-                      <button className="flex w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => { setIsProfileMenuOpen(false); onNavigate('settings') }} role="menuitem" type="button"><Settings size={16} /> Mon profil</button>
-                      {showCockpit && <Link className="flex w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => setIsProfileMenuOpen(false)} role="menuitem" to="/admin"><Gauge size={16} style={{ color: AMBER }} /> Cockpit Agence</Link>}
-                      <button className="flex w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-500" onClick={logout} role="menuitem" type="button"><LogOut size={16} /> Déconnexion</button>
+                      <button className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => { setIsProfileMenuOpen(false); onNavigate('settings') }} role="menuitem" type="button"><Settings size={16} /> Mon profil</button>
+                      {showCockpit && <Link className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => setIsProfileMenuOpen(false)} role="menuitem" to="/admin"><Gauge size={16} style={{ color: AMBER }} /> Cockpit Agence</Link>}
+                      <button className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-600" onClick={logout} role="menuitem" type="button"><LogOut size={16} /> Déconnexion</button>
                     </div>
                   </>
                 )}

@@ -199,6 +199,11 @@
   .project-details > p { font-size: 8px; }
   .dashboard-security { align-items: flex-start; }
   .dashboard-security button { display: none; }
+  /* Zones tactiles d'au moins 44 × 44 px (même rendu visuel, surface de toucher agrandie). */
+  .portal-brand, .auth-back { min-height: 44px; align-items: center; }
+  .auth-back { top: calc(22px - 13px); }
+  .password-toggle { right: 3px; width: 44px; height: 44px; }
+  .auth-form .forgot-link { min-height: 44px; margin-block: -19px 7px; }
 }
 
 @media (max-width: 420px) {

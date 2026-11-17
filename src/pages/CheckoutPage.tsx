@@ -150,11 +150,11 @@ function CheckoutPage() {
     <div className="min-h-screen bg-white text-slate-900">
       <header className="pt-safe border-b border-slate-100">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-          <Link className="inline-flex items-center gap-3" to="/dashboard" aria-label="IsMoc Studio, tableau de bord">
+          <Link className="inline-flex min-h-[44px] items-center gap-3" to="/dashboard" aria-label="IsMoc Studio, retour à mes projets">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold text-white" style={{ background: NAVY }}>I<span className="text-[#F59E0B]">/</span>M</span>
             <span className="text-sm font-semibold">IsMoc <span className="text-[10px] font-semibold tracking-[0.3em] text-slate-400">STUDIO</span></span>
           </Link>
-          {projectId && <Link className="inline-flex items-center gap-2 text-xs font-medium text-slate-500 hover:text-slate-900" to={`/configurator/preview?id=${encodeURIComponent(projectId)}`}><ArrowLeft size={15} /> Retour à la maquette</Link>}
+          {projectId && <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 hover:text-slate-900" to={`/configurator/preview?id=${encodeURIComponent(projectId)}`}><ArrowLeft size={15} /> Retour à la maquette</Link>}
         </div>
       </header>
 

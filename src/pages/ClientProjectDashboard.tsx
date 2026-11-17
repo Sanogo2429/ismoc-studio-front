@@ -76,7 +76,7 @@ function ClientProjectDashboard() {
   }
 
   return (
-    <ClientShell active="messages" onHelp={focusChat} onNavigate={handleNavigation} statusSlot={<ConnectionIndicator status={rtc.hubStatus} />} userName={userName}>
+    <ClientShell active="projects" onHelp={focusChat} onNavigate={handleNavigation} statusSlot={<ConnectionIndicator status={rtc.hubStatus} />} userName={userName}>
       {loadError ? (
         <div className="mx-auto max-w-md py-24 text-center">
           <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{loadError}</p>

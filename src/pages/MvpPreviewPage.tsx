@@ -184,13 +184,13 @@ function MvpPreviewPage() {
     <div className="min-h-screen bg-[#f6f7f9] text-darkSlate">
       <header className="pt-safe border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-[1700px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
-          <Link className="inline-flex items-center gap-2 text-xs font-medium text-slate-500 transition hover:text-darkSlate" to="/configurator"><ArrowLeft size={16} /> Nouveau projet</Link>
+          <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 transition hover:text-darkSlate" to="/dashboard"><ArrowLeft size={16} /> Mes projets</Link>
           <div className="hidden items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:flex"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> IsMoc AI Studio</div>
           <div className="flex flex-wrap items-center gap-2">
             {/* Sélecteur d'aperçu responsive */}
             <div aria-label="Taille de l’aperçu" className="flex rounded-lg border border-slate-200 bg-slate-50 p-0.5" role="group">
-              <button aria-pressed={device === 'desktop'} className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[11px] font-semibold transition ${device === 'desktop' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('desktop')} title="Aperçu ordinateur (100 %)" type="button"><Monitor size={14} /> Desktop</button>
-              <button aria-pressed={device === 'mobile'} className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[11px] font-semibold transition ${device === 'mobile' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('mobile')} title="Aperçu smartphone (390 px)" type="button"><Smartphone size={14} /> Mobile</button>
+              <button aria-pressed={device === 'desktop'} className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[11px] font-semibold transition ${device === 'desktop' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('desktop')} title="Aperçu ordinateur (100 %)" type="button"><Monitor size={14} /> Desktop</button>
+              <button aria-pressed={device === 'mobile'} className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[11px] font-semibold transition ${device === 'mobile' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('mobile')} title="Aperçu smartphone (390 px)" type="button"><Smartphone size={14} /> Mobile</button>
             </div>
             <button
               className="inline-flex items-center gap-1.5 rounded-lg bg-vibrantOrange px-3 py-2 text-xs font-semibold text-darkSlate transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
@@ -203,7 +203,6 @@ function MvpPreviewPage() {
             {memory && (isPaid(memory.status)
               ? <Link className="inline-flex items-center gap-1.5 rounded-lg bg-darkSlate px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-700" to={`/client/project/${encodeURIComponent(projectId)}`}>Suivre mon projet <ArrowRight size={14} /></Link>
               : <Link aria-disabled={isWorking} className={`inline-flex items-center gap-1.5 rounded-lg bg-darkSlate px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-700 ${isWorking ? 'pointer-events-none opacity-50' : ''}`} to={`/configurator/checkout?id=${encodeURIComponent(projectId)}`}><ShoppingBag size={14} /> Commander ce projet</Link>)}
-            <Link className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 hover:border-slate-400" to="/dashboard">Quitter</Link>
           </div>
         </div>
       </header>

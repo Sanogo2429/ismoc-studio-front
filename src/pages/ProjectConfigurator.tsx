@@ -200,11 +200,11 @@ function ProjectConfigurator() {
     <main className="min-h-screen bg-[#f6f7f9] text-darkSlate">
       <header className="pt-safe border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-          <Link className="inline-flex items-center gap-3" to="/dashboard" aria-label="IsMoc Studio, retour au tableau de bord">
+          <Link className="inline-flex min-h-[44px] items-center gap-3" to="/dashboard" aria-label="IsMoc Studio, retour à mes projets">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-darkSlate text-sm font-bold text-white">I<span className="text-vibrantOrange">/</span>M</span>
             <span className="leading-tight"><strong className="block text-lg font-semibold">IsMoc</strong><small className="block text-[9px] font-semibold tracking-[0.3em] text-slate-500">AI STUDIO</small></span>
           </Link>
-          <Link className="inline-flex items-center gap-2 text-xs font-medium text-slate-500 hover:text-darkSlate" to="/dashboard"><ArrowLeft size={15} /> Quitter</Link>
+          <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 hover:text-darkSlate" to="/dashboard"><ArrowLeft size={15} /> Mes projets</Link>
         </div>
       </header>
 
@@ -277,7 +277,7 @@ function ProjectConfigurator() {
             <div className="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex items-center gap-3">
                 <input accept={IMAGE_ACCEPT} className="hidden" onChange={(event) => void handleImage(event)} ref={imageInputRef} type="file" />
-                <button className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-[11px] font-medium text-slate-600 transition hover:border-slate-400 disabled:opacity-50" disabled={isLoading} onClick={() => imageInputRef.current?.click()} type="button"><ImagePlus size={14} /> Joindre une image d’inspiration (optionnel)</button>
+                <button className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-[11px] font-medium text-slate-600 transition hover:border-slate-400 disabled:opacity-50" disabled={isLoading} onClick={() => imageInputRef.current?.click()} type="button"><ImagePlus size={14} /> Joindre une image d’inspiration (optionnel)</button>
                 <span className="hidden text-[10px] text-slate-400 sm:inline">{idea.length} / {MAX_DESCRIPTION_LENGTH}</span>
               </div>
               <SubmitButton disabled={(!idea.trim() && !referenceImage) || isLoading || aiExhausted} isLoading={isLoading} label="Créer le prototype" />
@@ -512,7 +512,7 @@ function Summary({ label, value }: { label: string; value: string }) {
 
 function SubmitButton({ disabled, isLoading, label }: { disabled: boolean; isLoading: boolean; label: string }) {
   return (
-    <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-vibrantOrange px-5 py-3 text-xs font-semibold text-darkSlate transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50" disabled={disabled} type="submit">
+    <button className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg bg-vibrantOrange px-5 py-3 text-xs font-semibold text-darkSlate transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50" disabled={disabled} type="submit">
       {isLoading ? <><LoaderCircle className="animate-spin" size={15} /> Génération en cours…</> : <>{label} <ArrowRight size={16} /></>}
     </button>
   )
