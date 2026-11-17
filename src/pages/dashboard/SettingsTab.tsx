@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
-import { CircleCheck, LoaderCircle, Lock, UserRound } from 'lucide-react'
+import { CircleCheck, Globe, LoaderCircle, Lock, UserRound } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { SettingsSkeleton } from '../../components/Skeleton'
 import { api } from '../../services/api'
 import { apiErrorMessage } from '../../services/apiError'
@@ -59,6 +60,8 @@ function SettingsTab({ onProfileUpdated }: { onProfileUpdated: (fullName: string
           <PasswordForm />
         </div>
       )}
+      {/* Lien discret vers le site public (retiré de la barre de navigation de l'espace client). */}
+      <Link className="mt-8 inline-flex min-h-[44px] items-center gap-2 text-[13px] font-medium text-slate-500 transition hover:text-[#0B132B]" to="/"><Globe size={15} /> Voir le site IsMoc Studio</Link>
     </>
   )
 }

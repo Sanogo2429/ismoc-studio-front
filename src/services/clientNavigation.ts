@@ -1,9 +1,9 @@
 import { isGeneralThread, isPaid, type ProjectSummary } from './projectTypes'
 
-/** Rubriques de l'espace client, portées par /dashboard?tab=… */
-export type ClientNavId = 'projects' | 'messages' | 'billing' | 'settings'
+/** Rubriques de l'espace client, portées par /dashboard?tab=… (Accueil par défaut). */
+export type ClientNavId = 'home' | 'projects' | 'messages' | 'billing' | 'settings'
 
-export const CLIENT_NAV_IDS: ClientNavId[] = ['projects', 'messages', 'billing', 'settings']
+export const CLIENT_NAV_IDS: ClientNavId[] = ['home', 'projects', 'messages', 'billing', 'settings']
 
 /** id du champ de saisie de la messagerie du dashboard (pour « Nous écrire »). */
 export const DASHBOARD_CHAT_INPUT_ID = 'dashboard-message'
@@ -22,4 +22,12 @@ export const MOBILE_CHAT_HEIGHT = 'h-[calc(var(--app-height)-10rem-var(--safe-to
 export function defaultConversationProject(projects: ProjectSummary[]): ProjectSummary | undefined {
   const realProjects = projects.filter((project) => !isGeneralThread(project))
   return realProjects.find((project) => isPaid(project.status)) ?? realProjects[0] ?? projects.find(isGeneralThread)
+}
+
+/** Page d'un projet selon son état : suivi (payé), paiement (commandé) ou maquette (brouillon). */
+export function projectPath(project: ProjectSummary): string {
+  const id = encodeURIComponent(project.projectId)
+  if (isPaid(project.status)) return `/client/project/${id}`
+  if (project.status === 'ordered') return `/configurator/checkout?id=${id}`
+  return `/configurator/preview?id=${id}`
 }

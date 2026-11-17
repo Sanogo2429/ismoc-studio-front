@@ -72,7 +72,7 @@ function ClientProjectDashboard() {
   // Messages reste sur cette page (le chat du projet est ici) ; les autres rubriques ouvrent /dashboard sur le bon onglet.
   function handleNavigation(id: ClientNavId) {
     if (id === 'messages') focusChat()
-    else navigate(`/dashboard?tab=${id}`)
+    else navigate(id === 'home' ? '/dashboard' : `/dashboard?tab=${id}`)
   }
 
   return (

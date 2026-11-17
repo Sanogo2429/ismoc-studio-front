@@ -184,7 +184,7 @@ function MvpPreviewPage() {
     <div className="pb-safe min-h-screen bg-[#f6f7f9] text-darkSlate">
       <header className="pt-safe border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-[1700px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
-          <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 transition hover:text-darkSlate" to="/dashboard"><ArrowLeft size={16} /> Mes projets</Link>
+          <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 transition hover:text-darkSlate" to="/dashboard?tab=projects"><ArrowLeft size={16} /> Mes projets</Link>
           <div className="hidden items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:flex"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> IsMoc AI Studio</div>
           <div className="flex flex-wrap items-center gap-2">
             {/* Sélecteur d'aperçu responsive */}

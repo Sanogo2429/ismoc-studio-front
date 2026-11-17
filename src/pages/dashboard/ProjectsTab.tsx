@@ -1,7 +1,8 @@
-import { useState } from 'react'
 import { ArrowRight, Globe, Plus, Smartphone } from 'lucide-react'
 import { ProjectCardsSkeleton } from '../../components/Skeleton'
 import { Link, useNavigate } from 'react-router-dom'
+import { TabHeading } from './MessagesTab'
+import { projectPath } from '../../services/clientNavigation'
 import {
   PROJECT_STEPS,
   formatDate,
@@ -35,41 +36,21 @@ function initials(name: string): string {
 interface ProjectsTabProps {
   error: string
   projects: ProjectSummary[] | null
-  userName: string
 }
 
-function ProjectsTab({ error, projects: allThreads, userName }: ProjectsTabProps) {
+/** Onglet Projets : la liste des projets, directement. */
+function ProjectsTab({ error, projects: allThreads }: ProjectsTabProps) {
   // La « Discussion générale · Avant-projet » n'est pas un projet : elle n'apparaît que dans Messages.
   const projects = allThreads?.filter((project) => !isGeneralThread(project)) ?? null
   const navigate = useNavigate()
-  const [today] = useState(() => new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }))
-  const paidProjects = projects?.filter((project) => isPaid(project.status)) ?? []
-  const committed = paidProjects.reduce((sum, project) => sum + (project.order?.projectTotalEur ?? 0), 0)
-
-  function openProject(project: ProjectSummary) {
-    if (isPaid(project.status)) navigate(`/client/project/${encodeURIComponent(project.projectId)}`)
-    else if (project.status === 'ordered') navigate(`/configurator/checkout?id=${encodeURIComponent(project.projectId)}`)
-    else navigate(`/configurator/preview?id=${encodeURIComponent(project.projectId)}`)
-  }
+  const openProject = (project: ProjectSummary) => navigate(projectPath(project))
 
   return (
     <>
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="flex items-center gap-2.5 text-[12px] font-bold tracking-[0.25em] text-[#B8530B]"><span className="h-1.5 w-1.5 rounded-full bg-[#F59E0B]" />{today.toLocaleUpperCase('fr-FR')}</p>
-          <h1 className="mt-4 text-[34px] font-bold leading-tight tracking-tight sm:text-[44px]">Bonjour, {userName}.</h1>
-          <p className="mt-2 text-sm text-slate-500">Voici où en sont vos projets aujourd’hui.</p>
-        </div>
+        <TabHeading subtitle="Vos maquettes, commandes et projets en développement." title="Mes projets" />
         <Link className="inline-flex h-[50px] shrink-0 items-center gap-2 rounded-xl bg-[#F59E0B] px-6 text-[13px] font-bold text-[#0B132B] shadow-lg shadow-amber-500/25 transition hover:brightness-95" to="/configurator"><Plus size={18} /> Nouveau projet</Link>
       </div>
-
-      {projects && projects.length > 0 && (
-        <dl className="mt-10 grid gap-4 sm:grid-cols-3">
-          <Stat label="Projets" value={String(projects.length)} />
-          <Stat label="En développement ou livrés" value={String(paidProjects.length)} />
-          <Stat label="Total engagé" value={formatEuros(committed)} />
-        </dl>
-      )}
 
       <div className="mt-10">
         {projects === null ? (
@@ -134,15 +115,6 @@ function ProjectsTab({ error, projects: allThreads, userName }: ProjectsTabProps
         )}
       </div>
     </>
-  )
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white px-6 py-5">
-      <dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">{label}</dt>
-      <dd className="mt-2 text-2xl font-bold tracking-tight">{value}</dd>
-    </div>
   )
 }
 

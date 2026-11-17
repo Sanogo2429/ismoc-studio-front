@@ -9,6 +9,7 @@ import { isAdmin } from '../services/session'
 import { readCache, readPreference, writeCache } from '../services/sessionCache'
 import { LAST_CONVERSATION_KEY, prefetchMessages } from '../hooks/useProjectRtc'
 import BillingTab from './dashboard/BillingTab'
+import HomeTab from './dashboard/HomeTab'
 import MessagesTab from './dashboard/MessagesTab'
 import ProjectsTab from './dashboard/ProjectsTab'
 import SettingsTab from './dashboard/SettingsTab'
@@ -24,7 +25,7 @@ function isNavId(value: string | null): value is ClientNavId {
 function DashboardPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const tabParam = searchParams.get('tab')
-  const activeTab: ClientNavId = isNavId(tabParam) ? tabParam : 'projects'
+  const activeTab: ClientNavId = isNavId(tabParam) ? tabParam : 'home'
   const selectedProjectId = searchParams.get('project')
   const [activeTabOnMount] = useState(activeTab)
 
@@ -87,7 +88,8 @@ function DashboardPage() {
       onNavigate={(tab) => openTab(tab)}
       userName={userName}
     >
-      {activeTab === 'projects' && <ProjectsTab error={projectsError} projects={projects} userName={userName} />}
+      {activeTab === 'home' && <HomeTab error={projectsError} onNavigate={(tab) => openTab(tab)} projects={projects} userName={userName} />}
+      {activeTab === 'projects' && <ProjectsTab error={projectsError} projects={projects} />}
       {activeTab === 'messages' && (
         <MessagesTab
           onSelectProject={(projectId) => openTab('messages', { project: projectId })}

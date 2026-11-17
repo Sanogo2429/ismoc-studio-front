@@ -205,7 +205,7 @@ function ProjectConfigurator() {
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-darkSlate text-sm font-bold text-white">I<span className="text-vibrantOrange">/</span>M</span>
             <span className="leading-tight"><strong className="block text-lg font-semibold">IsMoc</strong><small className="block text-[9px] font-semibold tracking-[0.3em] text-slate-500">AI STUDIO</small></span>
           </Link>
-          <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 hover:text-darkSlate" to="/dashboard"><ArrowLeft size={15} /> Mes projets</Link>
+          <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 hover:text-darkSlate" to="/dashboard?tab=projects"><ArrowLeft size={15} /> Mes projets</Link>
         </div>
       </header>
 

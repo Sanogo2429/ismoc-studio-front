@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { ArrowRight, Bell, CreditCard, Gauge, Home, LayoutDashboard, LogOut, MessageSquare, Settings } from 'lucide-react'
+import { ArrowRight, Bell, CreditCard, Gauge, Globe, Home, LayoutDashboard, LogOut, MessageSquare, Settings } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import type { ClientNavId } from '../services/clientNavigation'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
@@ -11,14 +11,19 @@ const NAVY = '#0B132B'
 const AMBER = '#F59E0B'
 
 const NAVIGATION: Array<{ id: ClientNavId; label: string; icon: typeof LayoutDashboard }> = [
+  { id: 'home', label: 'Accueil', icon: Home },
   { id: 'projects', label: 'Mes projets', icon: LayoutDashboard },
   { id: 'messages', label: 'Messages', icon: MessageSquare },
   { id: 'billing', label: 'Facturation', icon: CreditCard },
   { id: 'settings', label: 'Paramètres', icon: Settings },
 ]
 
-/** Libellés courts de la barre inférieure mobile (mêmes rubriques que la barre latérale). */
+/**
+ * Barre inférieure mobile : les 5 rubriques de l'espace client, libellés courts. Aucune ne mène au site public
+ * (« Voir le site » est dans le menu du profil et dans Paramètres).
+ */
 const BOTTOM_NAVIGATION: Array<{ id: ClientNavId; label: string; icon: typeof LayoutDashboard }> = [
+  { id: 'home', label: 'Accueil', icon: Home },
   { id: 'projects', label: 'Projets', icon: LayoutDashboard },
   { id: 'messages', label: 'Messages', icon: MessageSquare },
   { id: 'billing', label: 'Facturation', icon: CreditCard },
@@ -70,7 +75,7 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
   return (
     <div className="min-h-screen bg-[#F7F8FA] text-[#0B132B]" style={{ fontFamily: "'DM Sans', ui-sans-serif, system-ui, sans-serif" }}>
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[280px] flex-col overflow-y-auto px-5 pb-4 pt-6 text-white lg:flex" style={{ background: NAVY }}>
-        <Link className="flex items-center gap-3.5 px-1" to="/" aria-label="IsMoc Studio, retour à l’accueil">
+        <Link className="flex items-center gap-3.5 px-1" to="/dashboard" aria-label="IsMoc Studio, accueil de l’espace client">
           <span className="flex h-[46px] w-[46px] items-center justify-center rounded-xl bg-white text-lg font-extrabold tracking-tight text-[#0B132B]">I<span style={{ color: AMBER }}>/</span>M</span>
           <span className="leading-none"><strong className="block text-[22px] font-bold tracking-tight">IsMoc</strong><small className="mt-1.5 block text-[10px] font-semibold tracking-[0.35em] text-white/80">STUDIO</small></span>
         </Link>
@@ -94,7 +99,7 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
           <button className="mt-2.5 inline-flex items-center gap-2 text-[12px] font-semibold" onClick={onHelp} style={{ color: AMBER }} type="button">Nous écrire <ArrowRight size={14} /></button>
         </div>
         <div className="mt-4 shrink-0 space-y-0.5 border-t border-white/10 pt-3">
-          <Link className="flex items-center gap-2.5 px-1 py-1 text-[13px] text-white/60 transition hover:text-white" to="/">← Retour à l’accueil</Link>
+          <Link className="flex items-center gap-2.5 px-1 py-1 text-[13px] text-white/60 transition hover:text-white" to="/"><Globe size={15} /> Voir le site</Link>
           <button className="flex items-center gap-2.5 px-1 py-1 text-[13px] text-white/50 transition hover:text-white" onClick={logout} type="button"><LogOut size={16} /> Déconnexion</button>
         </div>
       </aside>
@@ -103,13 +108,13 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
         <header className="pt-safe sticky top-0 z-20 border-b border-slate-200/80 bg-white">
           <div className="flex h-16 items-center justify-between px-4 sm:px-12 md:h-[90px]">
             {/* Téléphone : logo seul, comme une application native */}
-            <Link aria-label="IsMoc Studio, retour à l’accueil" className="flex min-h-[44px] items-center gap-2.5 md:hidden" to="/">
+            <Link aria-label="IsMoc Studio, accueil de l’espace client" className="flex min-h-[44px] items-center gap-2.5 md:hidden" to="/dashboard">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg text-[13px] font-extrabold tracking-tight text-white" style={{ background: NAVY }}>I<span style={{ color: AMBER }}>/</span>M</span>
               <strong className="text-[17px] font-bold tracking-tight">IsMoc</strong>
             </Link>
             <div className="hidden min-w-0 items-center gap-4 md:flex">
               <span className="text-[11px] font-semibold tracking-[0.3em] text-slate-400">ESPACE CLIENT</span>
-              <Link className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 py-2 text-[12px] font-semibold text-slate-600 transition hover:border-slate-400 hover:text-[#0B132B]" to="/">← Retour à l’accueil</Link>
+              <Link className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 py-2 text-[12px] font-semibold text-slate-600 transition hover:border-slate-400 hover:text-[#0B132B]" to="/"><Globe size={14} /> Voir le site</Link>
             </div>
             <div className="flex items-center gap-3 md:gap-4">
               {showCockpit && <Link className="hidden items-center gap-2 rounded-xl bg-[#0B132B] px-4 py-2.5 text-[12px] font-semibold text-white transition hover:opacity-90 md:inline-flex" to="/admin"><Gauge size={15} style={{ color: AMBER }} /> Cockpit Agence</Link>}
@@ -132,6 +137,7 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
                       </div>
                       <button className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => { setIsProfileMenuOpen(false); onNavigate('settings') }} role="menuitem" type="button"><Settings size={16} /> Mon profil</button>
                       {showCockpit && <Link className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => setIsProfileMenuOpen(false)} role="menuitem" to="/admin"><Gauge size={16} style={{ color: AMBER }} /> Cockpit Agence</Link>}
+                      <Link className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => setIsProfileMenuOpen(false)} role="menuitem" to="/"><Globe size={16} /> Voir le site</Link>
                       <button className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-600" onClick={logout} role="menuitem" type="button"><LogOut size={16} /> Déconnexion</button>
                     </div>
                   </>
@@ -163,9 +169,6 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
       {/* Barre de navigation inférieure (téléphone uniquement), à portée de pouce */}
       <nav aria-label="Navigation espace client (mobile)" className="client-bottom-nav pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white md:hidden">
         <div className="flex h-16 items-stretch justify-around px-1">
-          <Link className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 text-[10px] font-medium text-slate-500" to="/">
-            <Home size={20} />Accueil
-          </Link>
           {BOTTOM_NAVIGATION.map(({ id, label, icon: Icon }) => {
             const isActive = active === id
             return (
