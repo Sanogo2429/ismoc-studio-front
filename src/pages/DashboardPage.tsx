@@ -66,7 +66,14 @@ function DashboardPage() {
   }
 
   return (
-    <ClientShell active={activeTab} onHelp={writeToTeam} onNavigate={(tab) => openTab(tab)} userName={userName}>
+    <ClientShell
+      active={activeTab}
+      // Messages sur téléphone : écran plein (seule la conversation défile, barre de saisie fixe en bas).
+      fillViewport={activeTab === 'messages' && (projects?.length ?? 0) > 0}
+      onHelp={writeToTeam}
+      onNavigate={(tab) => openTab(tab)}
+      userName={userName}
+    >
       {activeTab === 'projects' && <ProjectsTab error={projectsError} projects={projects} userName={userName} />}
       {activeTab === 'messages' && (
         <MessagesTab

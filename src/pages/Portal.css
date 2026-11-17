@@ -159,7 +159,7 @@
 
 @media (max-width: 720px) {
   .auth-layout { display: block; }
-  .auth-story { min-height: 300px; height: 36vh; }
+  .auth-story { min-height: 300px; height: 36vh; height: 36svh; }
   .auth-story-image { object-position: center 43%; }
   .portal-brand { top: 20px; left: 22px; }
   .portal-brand-mark { width: 38px; height: 38px; }

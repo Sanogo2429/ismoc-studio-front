@@ -37,10 +37,15 @@ interface ClientShellProps {
   roleLabel?: string
   /** Indicateur affiché à gauche du profil (cloche ou état du temps réel). */
   statusSlot?: ReactNode
+  /**
+   * Téléphone : le contenu occupe exactement la zone visible (Messages) — seule la zone interne défile,
+   * rien ne glisse quand le clavier s'ouvre.
+   */
+  fillViewport?: boolean
 }
 
 /** Barre latérale + barre supérieure communes à /dashboard et /client/project/:id. */
-function ClientShell({ active, children, onHelp, onNavigate, roleLabel = 'Client', statusSlot, userName }: ClientShellProps) {
+function ClientShell({ active, children, fillViewport = false, onHelp, onNavigate, roleLabel = 'Client', statusSlot, userName }: ClientShellProps) {
   const navigate = useNavigate()
   const [showCockpit] = useState(isAdmin)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
@@ -132,12 +137,20 @@ function ClientShell({ active, children, onHelp, onNavigate, roleLabel = 'Client
           </nav>
         </header>
 
-        {/* Téléphone : marge basse pour que la barre inférieure ne masque pas la fin du contenu */}
-        <main className="px-5 pb-[calc(6rem+var(--safe-bottom))] pt-10 sm:px-12 sm:pt-14 md:pb-14">{children}</main>
+        {/* Téléphone : marge basse pour que la barre inférieure ne masque pas la fin du contenu.
+            fillViewport (Messages) : hauteur = zone visible, gérée par .client-main-fill (index.css). */}
+        <main
+          className={fillViewport
+            ? 'client-main-fill px-4 sm:px-12 md:pb-14 md:pt-14'
+            : 'px-5 pb-[calc(6rem+var(--safe-bottom))] pt-10 sm:px-12 sm:pt-14 md:pb-14'}
+          data-fill-viewport={fillViewport || undefined}
+        >
+          {children}
+        </main>
       </div>
 
       {/* Barre de navigation inférieure (téléphone uniquement), à portée de pouce */}
-      <nav aria-label="Navigation espace client (mobile)" className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white md:hidden">
+      <nav aria-label="Navigation espace client (mobile)" className="client-bottom-nav pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white md:hidden">
         <div className="flex h-16 items-stretch justify-around px-1">
           <Link className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 text-[10px] font-medium text-slate-500" to="/">
             <Home size={20} />Accueil

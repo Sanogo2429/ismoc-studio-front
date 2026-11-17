@@ -37,7 +37,7 @@ function AdminMessagesTab({ onMockup, onSelect, projects, selectedProjectId, unr
   const selected = projects.find((project) => project.projectId === selectedProjectId) ?? null
 
   return (
-    <div className="grid min-h-[640px] gap-4 lg:h-[calc(100vh-190px)] lg:grid-cols-[340px_minmax(0,1fr)]">
+    <div className="grid min-h-[640px] gap-4 lg:h-[calc(100dvh-190px)] lg:grid-cols-[340px_minmax(0,1fr)]">
       {/* ---------------- Dossiers ---------------- */}
       <aside className="flex min-h-[320px] flex-col overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02]">
         <div className="border-b border-white/[0.06] p-3">

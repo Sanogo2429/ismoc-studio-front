@@ -164,7 +164,7 @@ function CheckoutPage() {
           <Link className="mt-6 inline-block text-sm font-medium text-slate-600 underline" to="/dashboard">Retour au tableau de bord</Link>
         </div>
       ) : !summary ? (
-        <div className="flex min-h-[70vh] flex-col items-center justify-center gap-3 px-5 text-center">
+        <div className="flex min-h-[70svh] flex-col items-center justify-center gap-3 px-5 text-center">
           <LoaderCircle className="animate-spin text-[#F59E0B]" size={28} />
           <p className="text-sm font-medium">Calcul de votre devis en euros…</p>
           <p className="max-w-sm text-xs text-slate-500">IsMoc AI analyse les écrans et fonctionnalités de votre maquette. Cela peut prendre quelques secondes.</p>

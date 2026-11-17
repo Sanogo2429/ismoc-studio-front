@@ -5,6 +5,10 @@ import { registerSW } from 'virtual:pwa-register'
 import './index.css'
 import App from './App'
 import { primeCallAudio } from './services/callAudio'
+import { initMobileViewport } from './services/mobileViewport'
+
+// Hauteur visible réelle (--app-height) et état du clavier virtuel (<html data-keyboard>) pour le CSS mobile.
+initMobileViewport()
 
 // Sonneries d'appel : l'audio est déverrouillé dès le premier toucher / clic sur l'application, pour qu'un
 // appel entrant (qui arrive sans geste de l'utilisateur) puisse sonner sur mobile (politiques iOS / Android).

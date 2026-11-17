@@ -217,7 +217,7 @@ function MvpPreviewPage() {
           </div>
         </div>
 
-        <div className="grid min-h-[calc(100vh-150px)] gap-4 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
+        <div className="grid min-h-[calc(100dvh-150px)] gap-4 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
           <section aria-label="Canvas de la maquette" className="relative min-w-0 rounded-xl border border-slate-200 bg-white p-2 sm:p-4">
             {/* Retouche IA en cours : bandeau de progression au-dessus de l'aperçu (la maquette actuelle reste visible). */}
             {workKind === 'refine' && memory && (
@@ -243,7 +243,7 @@ function MvpPreviewPage() {
             )}
           </section>
 
-          <aside className="flex min-h-[560px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm lg:sticky lg:top-4 lg:h-[calc(100vh-120px)]">
+          <aside className="flex min-h-[560px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm lg:sticky lg:top-4 lg:h-[calc(100dvh-120px)]">
             <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-4">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-darkSlate text-white"><MessageCircle size={17} /></span>
               <div><h2 className="text-sm font-semibold text-darkSlate">IsMoc AI</h2><p className="text-[10px] text-slate-400">{quota && !quota.unlimited ? `${quota.remainingRefinements}/${quota.refinementsLimit} retouches IA gratuites restantes` : 'Votre projet, sa mémoire et ses décisions'}</p></div>

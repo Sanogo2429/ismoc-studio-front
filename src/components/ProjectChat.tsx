@@ -60,11 +60,40 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
   const fileInputRef = useRef<HTMLInputElement>(null)
   const textInputRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  // Collé au dernier message tant que l'utilisateur ne remonte pas lire l'historique.
+  const stickToBottomRef = useRef(true)
+  const hasScrolledRef = useRef(false)
   const recorder = useVoiceRecorder()
 
+  const scrollToEnd = useCallback((behavior: ScrollBehavior) => {
+    const container = scrollRef.current
+    if (container) container.scrollTo({ top: container.scrollHeight, behavior })
+  }, [])
+
+  // Nouveau message : défilement vers le bas (instantané au premier affichage, animé ensuite).
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
-  }, [rtc.messages.length])
+    if (rtc.messages.length === 0 || !stickToBottomRef.current) return
+    scrollToEnd(hasScrolledRef.current ? 'smooth' : 'auto')
+    hasScrolledRef.current = true
+  }, [rtc.messages.length, scrollToEnd])
+
+  // La zone change de taille (clavier qui s'ouvre, image ou note vocale chargée) : on reste sur le dernier message.
+  useEffect(() => {
+    const container = scrollRef.current
+    const list = listRef.current
+    if (!container || !list || typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(() => { if (stickToBottomRef.current) scrollToEnd('auto') })
+    observer.observe(container)
+    observer.observe(list)
+    return () => observer.disconnect()
+  }, [scrollToEnd])
+
+  function handleListScroll() {
+    const container = scrollRef.current
+    if (!container) return
+    stickToBottomRef.current = container.scrollHeight - container.scrollTop - container.clientHeight < 80
+  }
 
   const closePicker = useCallback(() => setIsPickerOpen(false), [])
 
@@ -132,6 +161,8 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
     if ((!content && !pendingFile) || isSending) return
     setChatError('')
     setIsSending(true)
+    // Son propre message doit toujours être visible, même si l'on relisait l'historique.
+    stickToBottomRef.current = true
     try {
       const attachment = pendingFile ? await rtc.uploadAttachment(pendingFile) : null
       await rtc.sendMessage(content, attachment?.url)
@@ -154,8 +185,8 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
 
   return (
     <section aria-label="Messagerie avec l’équipe IsMoc" className={`flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white text-[#0B132B] ${className}`}>
-      <div className="flex items-center justify-between border-b border-slate-200/80 px-6 py-5">
-        <div className="flex items-center gap-3">
+      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200/80 px-4 py-3 md:px-6 md:py-5">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="relative flex -space-x-3">
             {peer.avatars.map((avatar, index) => (
               <span className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-[11px] font-bold text-white ring-2 ring-white ${index === 0 ? 'from-sky-500 to-indigo-600' : 'from-amber-400 to-orange-600'}`} key={avatar}>{avatar}</span>
@@ -173,29 +204,31 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
         </div>
       </div>
 
-      {/* Marge basse plus grande sur téléphone : le dernier message s'arrête au-dessus de la barre de saisie. */}
-      <div className="flex-1 overflow-y-auto overscroll-contain bg-[#F7F8FA] px-6 pb-8 pt-6 md:pb-6" ref={scrollRef} aria-live="polite">
-        {groups.length === 0 && <p className="py-16 text-center text-xs text-slate-400">Aucun message pour le moment. Écrivez à l’équipe IsMoc.</p>}
-        {groups.map((group) => (
-          <div key={group.key}>
-            <p className="my-4 text-center text-[9px] font-semibold tracking-[0.12em] text-slate-400">{group.label}</p>
-            <div className="space-y-5">
-              {group.items.map((message) => <MessageBubble key={message.id} message={message} viewer={viewer} />)}
+      {/* Seule cette liste défile (overscroll-contain : le geste ne fait jamais glisser la page derrière). */}
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-[#F7F8FA] px-4 pb-4 pt-4 md:px-6 md:pb-6 md:pt-6" onScroll={handleListScroll} ref={scrollRef} aria-live="polite">
+        <div ref={listRef}>
+          {groups.length === 0 && <p className="py-16 text-center text-xs text-slate-500">Aucun message pour le moment. Écrivez à l’équipe IsMoc.</p>}
+          {groups.map((group) => (
+            <div key={group.key}>
+              <p className="my-4 text-center text-[9px] font-semibold tracking-[0.12em] text-slate-500">{group.label}</p>
+              <div className="space-y-5">
+                {group.items.map((message) => <MessageBubble key={message.id} message={message} viewer={viewer} />)}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      {(chatError || recorder.error) && <p className="mx-6 mt-3 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700" role="alert">{chatError || recorder.error}</p>}
+      {(chatError || recorder.error) && <p className="mx-4 mt-3 shrink-0 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700" role="alert">{chatError || recorder.error}</p>}
       {pendingFile && (
-        <div className="mx-6 mt-3 flex items-center gap-2 self-start rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-600">
+        <div className="mx-4 mt-3 flex shrink-0 items-center gap-2 self-start rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-600">
           <FileText size={14} /><span className="max-w-[240px] truncate">{pendingFile.name}</span>
           <button aria-label="Retirer la pièce jointe" className="rounded p-0.5 hover:bg-slate-200" onClick={() => setPendingFile(null)} type="button"><X size={13} /></button>
         </div>
       )}
       {recorder.isRecording ? (
         /* ---------------- Enregistrement vocal ---------------- */
-        <div className="flex items-center gap-3 border-t border-slate-200/80 px-6 py-4" role="status" aria-live="polite">
+        <div className="flex shrink-0 items-center gap-3 border-t border-slate-200/80 px-3 py-3 md:px-6 md:py-4" role="status" aria-live="polite">
           <span className="relative flex h-3 w-3 shrink-0"><span className="absolute inset-0 animate-ping rounded-full bg-red-500/60" /><span className="relative h-3 w-3 rounded-full bg-red-500" /></span>
           <span className="text-[13px] font-semibold tabular-nums text-red-600">{formatClock(Math.min(recorder.elapsed, recorder.maxSeconds))}</span>
           <span className="min-w-0 flex-1 truncate text-[12px] text-slate-500">{recorder.elapsed >= recorder.maxSeconds ? 'Durée maximale atteinte (3 min)' : 'Enregistrement en cours…'}</span>
@@ -203,8 +236,8 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
           <button className="flex h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-[12px] font-bold text-[#0B132B] transition hover:brightness-95" onClick={() => void sendVoiceNote()} style={{ background: AMBER }} type="button"><Send size={16} /> Envoyer</button>
         </div>
       ) : (
-        // scroll-margin : au focus du champ, le navigateur le place au-dessus de la barre de navigation du bas.
-        <form className="relative flex scroll-mb-[calc(6rem+var(--safe-bottom))] items-center gap-1.5 border-t border-slate-200/80 px-6 py-4 md:scroll-mb-0" onSubmit={handleSend}>
+        // Barre de saisie : hors de la zone qui défile, elle reste toujours en bas de la conversation.
+        <form className="relative flex shrink-0 items-center gap-1 border-t border-slate-200/80 px-2 py-2 md:gap-1.5 md:px-6 md:py-4" onSubmit={handleSend}>
           <input accept={ACCEPTED_FILES} className="hidden" onChange={handleFile} ref={fileInputRef} type="file" />
           <ToolbarButton label="Joindre un fichier ou une image" onClick={() => fileInputRef.current?.click()}><Plus size={18} /></ToolbarButton>
           <ToolbarButton active={isPickerOpen} label="Emojis et stickers" onClick={() => setIsPickerOpen((open) => !open)}><Smile size={18} /></ToolbarButton>
