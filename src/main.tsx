@@ -6,6 +6,7 @@ import './index.css'
 import App from './App'
 import { primeCallAudio } from './services/callAudio'
 import { initMobileViewport } from './services/mobileViewport'
+import { hideSplashScreen } from './services/splash'
 
 // Hauteur visible réelle (--app-height) et état du clavier virtuel (<html data-keyboard>) pour le CSS mobile.
 initMobileViewport()
@@ -24,3 +25,6 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
+
+// Application affichée : l'écran de démarrage mobile s'efface en fondu (après ~1,5 s au total).
+requestAnimationFrame(hideSplashScreen)
