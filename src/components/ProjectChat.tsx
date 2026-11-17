@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
-import { ArrowRight, Download, FileText, LoaderCircle, Mic, Phone, Plus, Send, Smile, Video, X } from 'lucide-react'
+import { Download, FileText, LoaderCircle, Mic, Paperclip, Phone, Send, Smile, Video, X } from 'lucide-react'
 import type { HubStatus, ProjectRtc } from '../hooks/useProjectRtc'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { api } from '../services/api'
@@ -246,27 +246,37 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
           <button className="flex h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-[12px] font-bold text-[#0B132B] transition hover:brightness-95" onClick={() => void sendVoiceNote()} style={{ background: AMBER }} type="button"><Send size={16} /> Envoyer</button>
         </div>
       ) : (
-        // Barre de saisie : hors de la zone qui défile, elle reste toujours en bas de la conversation.
-        <form className="relative flex shrink-0 items-center gap-1 border-t border-slate-200/80 px-2 py-2 md:gap-1.5 md:px-6 md:py-4" onSubmit={handleSend}>
+        // Barre de saisie (style messagerie mobile) : capsule [emoji | message | pièce jointe] + bouton rond
+        // micro / envoi. Hors de la zone qui défile, elle reste toujours en bas de la conversation.
+        <form className="relative flex shrink-0 items-center gap-2 border-t border-slate-200/80 bg-white px-2 py-2 max-[359px]:gap-1.5 max-[359px]:px-1.5 md:px-4 md:py-3" onSubmit={handleSend}>
           <input accept={ACCEPTED_FILES} className="hidden" onChange={handleFile} ref={fileInputRef} type="file" />
-          <ToolbarButton label="Joindre un fichier ou une image" onClick={() => fileInputRef.current?.click()}><Plus size={18} /></ToolbarButton>
-          <ToolbarButton active={isPickerOpen} label="Emojis et stickers" onClick={() => setIsPickerOpen((open) => !open)}><Smile size={18} /></ToolbarButton>
-          <ToolbarButton disabled={isSending} label="Enregistrer un message vocal" onClick={() => void startRecording()}><Mic size={18} /></ToolbarButton>
           {isPickerOpen && <EmojiStickerPicker onClose={closePicker} onEmoji={insertEmoji} onSticker={(stickerId) => void sendSticker(stickerId)} />}
-          <label className="sr-only" htmlFor={inputId}>Votre message</label>
-          <input
-            autoComplete="off"
-            className="ml-1.5 h-11 min-w-0 flex-1 bg-transparent text-[13px] outline-none placeholder:text-slate-400"
-            id={inputId}
-            maxLength={2000}
-            onChange={(event) => setDraft(event.target.value)}
-            placeholder="Écrivez votre message..."
-            ref={textInputRef}
-            value={draft}
-          />
-          <button aria-label="Envoyer" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[#0B132B] transition hover:brightness-95 disabled:opacity-50" disabled={(!draft.trim() && !pendingFile) || isSending} style={{ background: AMBER }} type="submit">
-            {isSending ? <LoaderCircle className="animate-spin" size={18} /> : <ArrowRight size={19} />}
-          </button>
+          <div className="flex min-w-0 flex-1 items-center rounded-full border border-slate-200 bg-[#F7F8FA] px-0.5 transition focus-within:border-[#F59E0B] focus-within:bg-white focus-within:ring-4 focus-within:ring-amber-100">
+            <ComposerIconButton active={isPickerOpen} label="Emojis et stickers" onClick={() => setIsPickerOpen((open) => !open)}><Smile size={20} /></ComposerIconButton>
+            <label className="sr-only" htmlFor={inputId}>Votre message</label>
+            <input
+              autoComplete="off"
+              className="h-11 min-w-0 flex-1 bg-transparent px-1 text-[14px] text-[#0B132B] outline-none placeholder:text-slate-500 max-[359px]:px-0.5"
+              enterKeyHint="send"
+              id={inputId}
+              maxLength={2000}
+              onChange={(event) => setDraft(event.target.value)}
+              placeholder="Votre message…"
+              ref={textInputRef}
+              value={draft}
+            />
+            <ComposerIconButton label="Joindre un fichier ou une image" onClick={() => fileInputRef.current?.click()}><Paperclip size={19} /></ComposerIconButton>
+          </div>
+          {/* Champ vide : micro (note vocale). Texte ou pièce jointe : envoi. */}
+          {draft.trim() || pendingFile || isSending ? (
+            <button aria-label="Envoyer" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#0B132B] shadow-sm transition hover:brightness-95 disabled:opacity-60" disabled={isSending} style={{ background: AMBER }} type="submit">
+              {isSending ? <LoaderCircle className="animate-spin" size={18} /> : <Send className="translate-x-px" size={18} />}
+            </button>
+          ) : (
+            <button aria-label="Enregistrer un message vocal" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#0B132B] shadow-sm transition hover:brightness-95" onClick={() => void startRecording()} style={{ background: AMBER }} type="button">
+              <Mic size={19} />
+            </button>
+          )}
         </form>
       )}
     </section>
@@ -304,9 +314,10 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
   )
 }
 
-function ToolbarButton({ active = false, children, disabled, label, onClick }: { active?: boolean; children: ReactNode; disabled?: boolean; label: string; onClick: () => void }) {
+/** Bouton d'icône dans la capsule de saisie (zone tactile 44 × 44 px). */
+function ComposerIconButton({ active = false, children, label, onClick }: { active?: boolean; children: ReactNode; label: string; onClick: () => void }) {
   return (
-    <button aria-label={label} aria-pressed={active} className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg transition disabled:opacity-40 md:h-9 md:w-9 ${active ? 'bg-slate-100 text-slate-700' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`} disabled={disabled} onClick={onClick} title={label} type="button">
+    <button aria-label={label} aria-pressed={active} className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition ${active ? 'text-[#B8530B]' : 'text-slate-500 hover:text-[#0B132B]'}`} onClick={onClick} title={label} type="button">
       {children}
     </button>
   )

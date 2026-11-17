@@ -158,7 +158,7 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
             fillViewport (Messages) : hauteur = zone visible, gérée par .client-main-fill (index.css). */}
         <main
           className={fillViewport
-            ? 'client-main-fill px-4 sm:px-12 md:pb-[calc(3.5rem+var(--safe-bottom))] md:pt-14'
+            ? 'client-main-fill px-4 max-[359px]:px-3 sm:px-12 md:pb-[calc(3.5rem+var(--safe-bottom))] md:pt-14'
             : 'px-5 pb-[calc(6rem+var(--safe-bottom))] pt-10 sm:px-12 sm:pt-14 md:pb-[calc(3.5rem+var(--safe-bottom))]'}
           data-fill-viewport={fillViewport || undefined}
         >
