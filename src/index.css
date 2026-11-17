@@ -38,12 +38,15 @@ body {
   html, body { overscroll-behavior-y: none; }
 }
 
-/* iOS zoome automatiquement sur un champ dont le texte fait moins de 16 px (décalage du viewport) :
-   les champs passent à 16 px sur les téléphones tactiles uniquement. */
-@media (max-width: 767px) and (pointer: coarse) {
-  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+/* iOS (iPhone en portrait ET en paysage, iPad) zoome automatiquement sur un champ dont le texte fait moins
+   de 16 px : sur tout écran tactile, les champs de saisie sont à 16 px minimum. Le zoom manuel (pincement)
+   reste possible : aucun maximum-scale ni user-scalable=no dans la balise viewport (accessibilité).
+   (Aucun champ de l'application n'est plus grand que 16 px : la valeur fixe ne réduit rien.) */
+@media (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='color']),
   select,
-  textarea {
+  textarea,
+  [contenteditable='true'] {
     font-size: 16px;
   }
 }
