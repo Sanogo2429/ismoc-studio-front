@@ -2,13 +2,35 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, LockKeyhole, Mail, Phone, Sparkles, UserRound } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { forgotPassword, getGoogleLoginUrl, login, register } from '../services/authService'
+import { forgotPassword, login, register, startGoogleLogin } from '../services/authService'
 import { postLoginPath } from '../services/session'
 import './Portal.css'
 
 /** État de navigation transmis à la page de connexion (après une inscription réussie). */
 interface AuthLocationState {
   registeredEmail?: string
+}
+
+interface ApiErrorBody {
+  message?: string
+  title?: string
+  errors?: Record<string, string[]>
+}
+
+/** Message exact renvoyé par l'API (validation, règle métier, erreur serveur), sinon `fallback`. */
+function authErrorMessage(error: unknown, fallback: string): string {
+  if (axios.isAxiosError<ApiErrorBody>(error)) {
+    if (!error.response) {
+      return 'Impossible de joindre le serveur IsMoc. Vérifiez votre connexion puis réessayez (le premier accès peut prendre jusqu’à une minute).'
+    }
+    const data = error.response.data
+    if (data && typeof data === 'object') {
+      const validationMessage = data.errors ? Object.values(data.errors).flat().join(' ') : ''
+      return validationMessage || data.message || data.title || fallback
+    }
+    return fallback
+  }
+  return error instanceof Error && error.message ? error.message : fallback
 }
 
 function AuthPage() {
@@ -75,15 +97,10 @@ function AuthPage() {
       // Administrateur → cockpit /admin ; client → « Mon espace ».
       navigate(postLoginPath(), { replace: true })
     } catch (requestError: unknown) {
-      if (axios.isAxiosError<{ message?: string; title?: string; errors?: Record<string, string[]> }>(requestError)) {
-        const validationErrors = requestError.response?.data.errors
-        const validationMessage = validationErrors ? Object.values(validationErrors).flat().join(' ') : ''
-        setError(validationMessage || requestError.response?.data.message || requestError.response?.data.title || 'Une erreur est survenue. Vérifiez vos informations et réessayez.')
-      } else if (requestError instanceof Error) {
-        setError(requestError.message)
-      } else {
-        setError('Une erreur est survenue. Veuillez réessayer.')
-      }
+      // Échec : message exact du serveur, jamais de message de succès.
+      setError(authErrorMessage(requestError, isSignup
+        ? 'L’inscription a échoué. Vérifiez vos informations et réessayez.'
+        : 'Une erreur est survenue. Vérifiez vos informations et réessayez.'))
     } finally {
       setIsLoading(false)
     }
@@ -102,13 +119,7 @@ function AuthPage() {
       await forgotPassword(email)
       setForgotPasswordSuccess(true)
     } catch (requestError: unknown) {
-      if (axios.isAxiosError<{ message?: string; title?: string; errors?: Record<string, string[]> }>(requestError)) {
-        const validationErrors = requestError.response?.data.errors
-        const validationMessage = validationErrors ? Object.values(validationErrors).flat().join(' ') : ''
-        setError(validationMessage || requestError.response?.data.message || requestError.response?.data.title || 'Impossible de traiter la demande pour le moment. Veuillez réessayer.')
-      } else {
-        setError('Impossible de traiter la demande pour le moment. Veuillez réessayer.')
-      }
+      setError(authErrorMessage(requestError, 'Impossible de traiter la demande pour le moment. Veuillez réessayer.'))
     } finally {
       setIsLoading(false)
     }
@@ -197,7 +208,7 @@ function AuthPage() {
 
           <div className="auth-divider"><span>ou continuer avec</span></div>
           <div className="auth-provider-row">
-            <button type="button" className="auth-provider" onClick={() => window.location.assign(getGoogleLoginUrl())}><b>G</b> Google</button>
+            <button type="button" className="auth-provider" onClick={startGoogleLogin}><b>G</b> Google</button>
             <button type="button" className="auth-provider" onClick={() => window.alert('La connexion Apple sera disponible prochainement.')}><b>●</b> Apple</button>
           </div>
           <button type="button" className="auth-phone" onClick={() => window.alert('La connexion par téléphone sera disponible prochainement.')}><Phone size={16} /> Se connecter par téléphone</button>

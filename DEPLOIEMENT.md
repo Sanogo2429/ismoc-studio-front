@@ -14,7 +14,9 @@ chez l'hébergeur, créez ces variables d'environnement (le `__` remplace le `:`
 | `ASPNETCORE_ENVIRONMENT` | `Production` |
 | `ConnectionStrings__DefaultConnection` | Chaîne PostgreSQL, ex. `Host=<hote>;Port=5432;Database=<base>;Username=<utilisateur>;Password=<mot-de-passe>;SSL Mode=Require` (sur Render : base PostgreSQL → « Internal Database URL », convertie dans ce format) |
 | `JwtSettings__Secret` | Clé aléatoire d'au moins 32 caractères (différente de celle du poste local) |
-| `EmailSettings__SenderEmail` / `EmailSettings__SenderPassword` | Compte Gmail + mot de passe d'application |
+| `Smtp__Server` / `Smtp__Port` | Serveur SMTP du fournisseur, ex. `smtp-relay.brevo.com` / `2525`. **Render gratuit bloque les ports 25, 465 et 587** : utiliser le port 2525 (Brevo, SendGrid, Mailgun) |
+| `Smtp__User` / `Smtp__Pass` | Identifiant et clé SMTP fournis par le fournisseur (pas votre mot de passe de compte) |
+| `Smtp__From` | Adresse expéditrice **validée** chez le fournisseur ; `Smtp__FromName` facultatif (défaut « IsMoc Studio ») |
 | `Authentication__Google__ClientId` / `Authentication__Google__ClientSecret` | Identifiants OAuth Google |
 | `Anthropic__ApiKey` / `OpenAI__ApiKey` | Clés des moteurs IA |
 | `Cors__AllowedOrigins__0` | Adresse exacte du site, ex. `https://www.votre-domaine.fr` |
