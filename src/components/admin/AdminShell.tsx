@@ -100,7 +100,7 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
           </nav>
         </header>
 
-        <main className="px-5 py-8 sm:px-10 sm:py-10">{children}</main>
+        <main className="px-5 pb-[calc(2rem+var(--safe-bottom))] pt-8 sm:px-10 sm:pb-[calc(2.5rem+var(--safe-bottom))] sm:pt-10">{children}</main>
       </div>
     </div>
   )

@@ -197,7 +197,7 @@ function ProjectConfigurator() {
   const customModules = modules.filter((module) => !MODULES[format].includes(module))
 
   return (
-    <main className="min-h-screen bg-[#f6f7f9] text-darkSlate">
+    <main className="pb-safe min-h-screen bg-[#f6f7f9] text-darkSlate">
       <header className="pt-safe border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
           <Link className="inline-flex min-h-[44px] items-center gap-3" to="/dashboard" aria-label="IsMoc Studio, retour à mes projets">

@@ -181,7 +181,7 @@ function MvpPreviewPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f7f9] text-darkSlate">
+    <div className="pb-safe min-h-screen bg-[#f6f7f9] text-darkSlate">
       <header className="pt-safe border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-[1700px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
           <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 transition hover:text-darkSlate" to="/dashboard"><ArrowLeft size={16} /> Mes projets</Link>

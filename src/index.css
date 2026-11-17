@@ -25,7 +25,6 @@
     padding-top: 0.75rem;
     padding-bottom: calc(4rem + var(--safe-bottom) + 0.75rem);
   }
-  body:has(.client-main-fill) { padding-bottom: 0; }
 
   /* Clavier ouvert : la barre de navigation du bas disparaît, la conversation récupère la place. */
   html[data-keyboard='open'] .client-bottom-nav { display: none; }
@@ -44,7 +43,9 @@ html {
 body {
   padding-left: var(--safe-left);
   padding-right: var(--safe-right);
-  padding-bottom: var(--safe-bottom);
+  /* Pas de padding-bottom ici : ajouté à des pages en min-height: 100dvh, il faisait défiler toute page courte
+     de la hauteur de la barre d'accueil de l'iPhone (~34 px). La zone basse est réservée À L'INTÉRIEUR de chaque
+     conteneur (box-sizing: border-box : comprise dans la hauteur, jamais ajoutée). */
   overflow-x: clip;
   /* Mots très longs (URL, e-mails, noms de projet sans espace) : coupés au lieu d'élargir la page. */
   overflow-wrap: break-word;

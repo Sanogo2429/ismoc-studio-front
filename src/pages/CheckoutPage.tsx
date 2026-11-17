@@ -147,7 +147,7 @@ function CheckoutPage() {
   const visibleLoadError = projectId ? loadError : 'Identifiant de projet manquant.'
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="pb-safe min-h-screen bg-white text-slate-900">
       <header className="pt-safe border-b border-slate-100">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <Link className="inline-flex min-h-[44px] items-center gap-3" to="/dashboard" aria-label="IsMoc Studio, retour à mes projets">
