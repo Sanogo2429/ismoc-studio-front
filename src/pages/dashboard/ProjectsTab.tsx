@@ -1,7 +1,7 @@
 import { ArrowRight, Globe, Plus, Smartphone } from 'lucide-react'
 import { ProjectCardsSkeleton } from '../../components/Skeleton'
 import { Link, useNavigate } from 'react-router-dom'
-import { TabHeading } from './MessagesTab'
+import PageHeader from '../../components/PageHeader'
 import { projectPath } from '../../services/clientNavigation'
 import {
   PROJECT_STEPS,
@@ -47,10 +47,11 @@ function ProjectsTab({ error, projects: allThreads }: ProjectsTabProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <TabHeading subtitle="Vos maquettes, commandes et projets en développement." title="Mes projets" />
-        <Link className="inline-flex h-[50px] shrink-0 items-center gap-2 rounded-xl bg-[#F59E0B] px-6 text-[13px] font-bold text-[#0B132B] shadow-lg shadow-amber-500/25 transition hover:brightness-95" to="/configurator"><Plus size={18} /> Nouveau projet</Link>
-      </div>
+      <PageHeader
+        actions={<Link className="inline-flex h-[50px] shrink-0 items-center gap-2 rounded-xl bg-[#F59E0B] px-6 text-[13px] font-bold text-[#0B132B] shadow-lg shadow-amber-500/25 transition hover:brightness-95" to="/configurator"><Plus size={18} /> Nouveau projet</Link>}
+        subtitle="Vos maquettes, commandes et projets en développement."
+        title="Mes projets"
+      />
 
       <div className="mt-10">
         {projects === null ? (

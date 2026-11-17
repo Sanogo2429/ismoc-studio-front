@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { ArrowRight, ChevronRight, FolderKanban, MessageSquare, Plus } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
+import PageHeader from '../../components/PageHeader'
 import { SkeletonBlock } from '../../components/Skeleton'
 import { projectPath, type ClientNavId } from '../../services/clientNavigation'
 import { formatEuros, isGeneralThread, isPaid, projectStep, type ProjectSummary } from '../../services/projectTypes'
@@ -23,11 +24,7 @@ function HomeTab({ error, onNavigate, projects: allThreads, userName }: HomeTabP
 
   return (
     <>
-      <div>
-        <p className="flex items-center gap-2.5 text-[12px] font-bold tracking-[0.25em] text-[#B8530B]"><span className="h-1.5 w-1.5 rounded-full bg-[#F59E0B]" />{today.toLocaleUpperCase('fr-FR')}</p>
-        <h1 className="mt-4 text-[34px] font-bold leading-tight tracking-tight sm:text-[44px]">Bonjour, {userName}.</h1>
-        <p className="mt-2 text-sm text-slate-500">Voici où en sont vos projets aujourd’hui.</p>
-      </div>
+      <PageHeader subtitle={`${today.charAt(0).toLocaleUpperCase('fr-FR')}${today.slice(1)} · voici où en sont vos projets.`} title={`Bonjour, ${userName}.`} />
 
       {projects && projects.length > 0 && (
         <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">

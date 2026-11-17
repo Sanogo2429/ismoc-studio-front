@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react'
+import PageHeader from '../../components/PageHeader'
 import { ConversationSkeleton } from '../../components/Skeleton'
 import { Link } from 'react-router-dom'
 import CallOverlay from '../../components/CallOverlay'
@@ -21,7 +22,7 @@ function MessagesTab({ onSelectProject, projects, selectedProjectId }: MessagesT
   if (projects.length === 0) {
     return (
       <>
-        <TabHeading subtitle="Échangez en direct avec Ismael, Moctar et l’équipe de développement." title="Messages" />
+        <PageHeader subtitle="Échangez en direct avec Ismael, Moctar et l’équipe de développement." title="Messages" />
         <div className="mt-10 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
           <h2 className="text-lg font-bold">Pas encore de conversation</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">La messagerie et les appels audio/vidéo avec l’équipe IsMoc s’ouvrent dès votre premier projet.</p>
@@ -36,20 +37,21 @@ function MessagesTab({ onSelectProject, projects, selectedProjectId }: MessagesT
   return (
     // Téléphone : colonne pleine hauteur (ClientShell fillViewport) — l'en-tête reste fixe, seule la liste défile.
     <div className="flex min-h-0 flex-1 flex-col md:block">
-      <div className="hide-while-typing flex shrink-0 flex-col gap-3 sm:flex-row sm:items-end sm:justify-between md:gap-5">
-        {/* Le grand titre est réservé aux écrans larges : sur téléphone, la place va à la conversation. */}
-        <div className="hidden md:block"><TabHeading subtitle="Échangez en direct avec Ismael, Moctar et l’équipe de développement." title="Messages" /></div>
-        <h1 className="sr-only md:hidden">Messages</h1>
-        {projects.length > 1 && (
-          <label className="block w-full sm:w-80">
+      {/* En-tête commun à tout l'espace client ; sur téléphone, il se réduit pendant la saisie. */}
+      <PageHeader
+        actions={projects.length > 1 ? (
+          <label className="hide-while-typing block w-full sm:w-80">
             <span className="mb-1.5 hidden text-[11px] font-semibold uppercase tracking-wider text-slate-500 md:block">Projet</span>
             <span className="sr-only md:hidden">Projet</span>
             <select className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none focus:border-[#F59E0B] focus:ring-4 focus:ring-amber-100 md:h-12" onChange={(event) => onSelectProject(event.target.value)} value={selected.projectId}>
               {projects.map((project) => <option key={project.projectId} value={project.projectId}>{isGeneralThread(project) ? `💬 ${project.projectName}` : `#${projectCode(project.projectId)} · ${project.projectName}`}</option>)}
             </select>
           </label>
-        )}
-      </div>
+        ) : undefined}
+        collapsible
+        subtitle="Échangez en direct avec Ismael, Moctar et l’équipe de développement."
+        title="Messages"
+      />
       {/* key : nouvelle connexion SignalR (salle) à chaque changement de projet. */}
       <ProjectConversation key={selected.projectId} project={selected} />
     </div>
@@ -87,14 +89,5 @@ function ProjectConversation({ project }: { project: ProjectSummary }) {
   )
 }
 
-export function TabHeading({ subtitle, title }: { subtitle: string; title: string }) {
-  return (
-    <div>
-      <p className="text-[12px] font-bold tracking-[0.25em] text-[#B8530B]">ESPACE CLIENT</p>
-      <h1 className="mt-3 text-[32px] font-bold leading-tight tracking-tight sm:text-[38px]">{title}</h1>
-      <p className="mt-2 text-sm text-slate-500">{subtitle}</p>
-    </div>
-  )
-}
 
 export default MessagesTab

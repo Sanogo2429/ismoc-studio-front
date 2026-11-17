@@ -22,14 +22,25 @@
     /* 4rem + 1px : en-tête mobile (h-16) et sa bordure basse. */
     height: calc(var(--app-height) - 4rem - 1px - var(--safe-top));
     overflow: hidden;
-    padding-top: 0.75rem;
+    /* Même marge haute que les autres pages (pt-10) : l'en-tête est au même endroit partout. */
+    padding-top: 2.5rem;
     padding-bottom: calc(4rem + var(--safe-bottom) + 0.75rem);
   }
 
   /* Clavier ouvert : la barre de navigation du bas disparaît, la conversation récupère la place. */
   html[data-keyboard='open'] .client-bottom-nav { display: none; }
-  html[data-keyboard='open'] .client-main-fill { padding-bottom: 0.5rem; }
+  html[data-keyboard='open'] .client-main-fill { padding-top: 0.75rem; padding-bottom: 0.5rem; }
   html[data-keyboard='open'] .hide-while-typing { display: none; }
+
+  /* En-tête réductible (Messages) : pendant la saisie, sur-titre et sous-titre se replient, le titre rétrécit. */
+  html[data-keyboard='open'] .page-header--collapsible .page-header-extra { max-height: 0; margin-top: 0; opacity: 0; }
+  html[data-keyboard='open'] .page-header--collapsible .page-header-title { margin-top: 0; font-size: 1.25rem; }
+}
+
+.page-header--collapsible .page-header-extra { max-height: 4.5rem; overflow: hidden; transition: max-height 0.2s ease, margin 0.2s ease, opacity 0.2s ease; }
+.page-header--collapsible .page-header-title { transition: font-size 0.2s ease, margin 0.2s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .page-header--collapsible .page-header-extra, .page-header--collapsible .page-header-title { transition: none; }
 }
 
 html {

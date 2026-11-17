@@ -6,7 +6,7 @@ import { api } from '../../services/api'
 import { apiErrorMessage } from '../../services/apiError'
 import type { AuthResponse } from '../../services/authService'
 import { formatDate } from '../../services/projectTypes'
-import { TabHeading } from './MessagesTab'
+import PageHeader from '../../components/PageHeader'
 
 interface AccountProfile {
   id: number
@@ -43,7 +43,7 @@ function SettingsTab({ onProfileUpdated }: { onProfileUpdated: (fullName: string
 
   return (
     <>
-      <TabHeading subtitle="Les informations de votre compte IsMoc Studio." title="Paramètres" />
+      <PageHeader subtitle="Les informations de votre compte IsMoc Studio." title="Paramètres" />
       {loadError ? (
         <p className="mt-10 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{loadError}</p>
       ) : !profile ? (

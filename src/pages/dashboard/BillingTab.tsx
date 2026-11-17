@@ -4,7 +4,7 @@ import { BillingSkeleton } from '../../components/Skeleton'
 import { Link } from 'react-router-dom'
 import { downloadInvoice } from '../../services/invoice'
 import { formatDate, formatEuros, isPaid, maintenanceLabel, projectCode, type ProjectSummary } from '../../services/projectTypes'
-import { TabHeading } from './MessagesTab'
+import PageHeader from '../../components/PageHeader'
 
 function paymentMethodLabel(project: ProjectSummary): string {
   const order = project.order
@@ -15,7 +15,7 @@ function paymentMethodLabel(project: ProjectSummary): string {
 
 function BillingTab({ projects }: { projects: ProjectSummary[] | null }) {
   if (projects === null) {
-    return <><TabHeading subtitle="Vos commandes, échéanciers et factures en euros." title="Facturation" /><BillingSkeleton /></>
+    return <><PageHeader subtitle="Vos commandes, échéanciers et factures en euros." title="Facturation" /><BillingSkeleton /></>
   }
 
   const paid = projects.filter((project) => isPaid(project.status) && project.order)
@@ -25,7 +25,7 @@ function BillingTab({ projects }: { projects: ProjectSummary[] | null }) {
 
   return (
     <>
-      <TabHeading subtitle="Vos commandes, échéanciers et factures en euros." title="Facturation" />
+      <PageHeader subtitle="Vos commandes, échéanciers et factures en euros." title="Facturation" />
 
       {paid.length > 0 && (
         <dl className="mt-10 grid gap-4 sm:grid-cols-3">

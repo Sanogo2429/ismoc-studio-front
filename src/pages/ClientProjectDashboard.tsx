@@ -4,6 +4,7 @@ import { ProjectPageSkeleton } from '../components/Skeleton'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import CallOverlay from '../components/CallOverlay'
 import ClientShell from '../components/ClientShell'
+import PageHeader from '../components/PageHeader'
 import type { ClientNavId } from '../services/clientNavigation'
 import { ChatPanel, ConnectionIndicator } from '../components/ProjectChat'
 import { MOBILE_CHAT_HEIGHT } from '../services/clientNavigation'
@@ -85,14 +86,16 @@ function ClientProjectDashboard() {
       ) : !project ? (
         <ProjectPageSkeleton />
       ) : !isPaid(project.status) ? (
-        <div className="mx-auto max-w-md rounded-3xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
-          <h1 className="text-xl font-semibold">{project.projectName || 'Votre projet'}</h1>
-          <p className="mt-2 text-sm text-slate-500">Ce projet n’a pas encore été commandé. Finalisez la commande pour lancer le développement et accéder au suivi en direct.</p>
+        <>
+        <PageHeader subtitle={`Projet #${projectCode(project.projectId)} · en attente de commande`} title={project.projectName || 'Votre projet'} />
+        <div className="mt-10 max-w-md rounded-3xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
+          <p className="text-sm text-slate-500">Ce projet n’a pas encore été commandé. Finalisez la commande pour lancer le développement et accéder au suivi en direct.</p>
           <div className="mt-6 flex justify-center gap-3">
             <Link className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium" to={`/configurator/preview?id=${encodeURIComponent(project.projectId)}`}>Voir la maquette</Link>
             <Link className="rounded-xl px-4 py-2.5 text-sm font-semibold text-[#0B132B]" style={{ background: AMBER }} to={`/configurator/checkout?id=${encodeURIComponent(project.projectId)}`}>Commander</Link>
           </div>
         </div>
+        </>
       ) : (
         <ProjectWorkspace project={project} rtc={rtc} />
       )}
@@ -123,17 +126,14 @@ function ProjectWorkspace({ project, rtc }: { project: ClientProject; rtc: Proje
 
   return (
     <>
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <div className="min-w-0">
-          <p className="text-[12px] font-bold tracking-[0.3em] text-[#B8530B]">PROJET #{projectCode(project.projectId)}</p>
-          <h1 className="mt-4 truncate text-[34px] font-bold leading-tight tracking-tight sm:text-[40px]">{project.projectName || 'Votre projet'}</h1>
-          <p className="mt-2 text-[13px] text-slate-500">{projectTypeLabel(project.format)} • Démarré le {formatDate(startedAt, { day: '2-digit', month: 'long', year: 'numeric' })}</p>
-        </div>
-        <div className="flex shrink-0 gap-3">
+      <PageHeader
+        actions={<>
           <button className="inline-flex h-[50px] items-center gap-3 rounded-xl border border-slate-300 bg-white px-7 text-[13px] font-semibold transition hover:border-slate-500 disabled:opacity-50" disabled={!project.order} onClick={() => downloadInvoice(project)} type="button">Facture <Download size={18} /></button>
           <button className="inline-flex h-[50px] items-center gap-3 rounded-xl px-7 text-[13px] font-semibold text-white shadow-lg shadow-slate-900/20 transition hover:opacity-90 disabled:opacity-60" disabled={rtc.callStatus !== 'idle'} onClick={() => void rtc.startCall('video')} style={{ background: NAVY }} type="button">Appeler l’équipe <Video size={18} /></button>
-        </div>
-      </div>
+        </>}
+        subtitle={`Projet #${projectCode(project.projectId)} · ${projectTypeLabel(project.format)} · démarré le ${formatDate(startedAt, { day: '2-digit', month: 'long', year: 'numeric' })}`}
+        title={project.projectName || 'Votre projet'}
+      />
 
       <ol className="mt-10 grid grid-cols-5 rounded-2xl border border-slate-200/80 bg-white px-2 py-7 sm:px-10">
         {steps.map((step, index) => (
