@@ -1,4 +1,5 @@
-import { ArrowRight, LoaderCircle } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
+import { ConversationSkeleton } from '../../components/Skeleton'
 import { Link } from 'react-router-dom'
 import CallOverlay from '../../components/CallOverlay'
 import { ChatPanel, ConnectionIndicator } from '../../components/ProjectChat'
@@ -14,7 +15,7 @@ interface MessagesTabProps {
 
 function MessagesTab({ onSelectProject, projects, selectedProjectId }: MessagesTabProps) {
   if (projects === null) {
-    return <p className="flex items-center gap-2 py-10 text-sm text-slate-500"><LoaderCircle className="animate-spin" size={16} /> Chargement de vos conversations…</p>
+    return <ConversationSkeleton />
   }
 
   if (projects.length === 0) {

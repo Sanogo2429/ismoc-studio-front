@@ -48,6 +48,8 @@ function mediaErrorMessage(error: unknown): string {
 export function useProjectRtc(projectId: string) {
   const [hubStatus, setHubStatus] = useState<HubStatus>('connecting')
   const [messages, setMessages] = useState<ClientMessage[]>([])
+  // Historique pas encore reçu : la messagerie affiche des squelettes, pas « Aucun message ».
+  const [isLoadingMessages, setIsLoadingMessages] = useState(true)
   const [isTeamOnline, setIsTeamOnline] = useState(false)
   const [isClientOnline, setIsClientOnline] = useState(false)
   const [projectUpdate, setProjectUpdate] = useState<ProjectLiveUpdate | null>(null)
@@ -179,6 +181,7 @@ export function useProjectRtc(projectId: string) {
     const loadMessages = () => api.get<ClientMessage[]>(`/api/Projects/${encodeURIComponent(projectId)}/client-messages`)
       .then((response) => { if (isActive) setMessages((current) => mergeMessages(response.data, current)) })
       .catch(() => undefined)
+      .finally(() => { if (isActive) setIsLoadingMessages(false) })
     void loadMessages()
 
     const hub = connectResilientHub({
@@ -404,6 +407,7 @@ export function useProjectRtc(projectId: string) {
   return {
     hubStatus,
     messages,
+    isLoadingMessages,
     isTeamOnline,
     isClientOnline,
     projectUpdate,

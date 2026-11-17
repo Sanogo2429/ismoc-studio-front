@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { LoaderCircle, Monitor, Smartphone, X } from 'lucide-react'
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { fetchMockupHtml } from '../../services/adminApi'
 import { apiErrorMessage } from '../../services/apiError'
 
@@ -13,6 +14,7 @@ function MockupModal({ onClose, project }: MockupModalProps) {
   const [html, setHtml] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [device, setDevice] = useState<'desktop' | 'mobile'>(project.format === 'mobile' ? 'mobile' : 'desktop')
+  useBodyScrollLock(true)
 
   useEffect(() => {
     let isActive = true

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
-import { ArrowRight, CircleCheck, CreditCard, Download, LoaderCircle, Smartphone } from 'lucide-react'
+import { ArrowRight, CircleCheck, CreditCard, Download, Smartphone } from 'lucide-react'
+import { BillingSkeleton } from '../../components/Skeleton'
 import { Link } from 'react-router-dom'
 import { downloadInvoice } from '../../services/invoice'
 import { formatDate, formatEuros, isPaid, maintenanceLabel, projectCode, type ProjectSummary } from '../../services/projectTypes'
@@ -14,7 +15,7 @@ function paymentMethodLabel(project: ProjectSummary): string {
 
 function BillingTab({ projects }: { projects: ProjectSummary[] | null }) {
   if (projects === null) {
-    return <p className="flex items-center gap-2 py-10 text-sm text-slate-500"><LoaderCircle className="animate-spin" size={16} /> Chargement de vos factures…</p>
+    return <><TabHeading subtitle="Vos commandes, échéanciers et factures en euros." title="Facturation" /><BillingSkeleton /></>
   }
 
   const paid = projects.filter((project) => isPaid(project.status) && project.order)

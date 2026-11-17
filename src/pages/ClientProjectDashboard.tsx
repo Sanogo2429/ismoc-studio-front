@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Check, Download, LoaderCircle, Video } from 'lucide-react'
+import { Check, Download, Video } from 'lucide-react'
+import { ProjectPageSkeleton } from '../components/Skeleton'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import CallOverlay from '../components/CallOverlay'
 import ClientShell from '../components/ClientShell'
@@ -82,7 +83,7 @@ function ClientProjectDashboard() {
           <Link className="mt-6 inline-block text-sm font-medium underline" to="/dashboard">Retour à mes projets</Link>
         </div>
       ) : !project ? (
-        <div className="flex min-h-[60vh] items-center justify-center gap-2 text-sm text-slate-500"><LoaderCircle className="animate-spin" size={18} /> Chargement de votre projet…</div>
+        <ProjectPageSkeleton />
       ) : !isPaid(project.status) ? (
         <div className="mx-auto max-w-md rounded-3xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
           <h1 className="text-xl font-semibold">{project.projectName || 'Votre projet'}</h1>

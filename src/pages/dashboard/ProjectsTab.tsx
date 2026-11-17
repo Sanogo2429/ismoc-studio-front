@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ArrowRight, Globe, LoaderCircle, Plus, Smartphone } from 'lucide-react'
+import { ArrowRight, Globe, Plus, Smartphone } from 'lucide-react'
+import { ProjectCardsSkeleton } from '../../components/Skeleton'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   PROJECT_STEPS,
@@ -72,7 +73,7 @@ function ProjectsTab({ error, projects: allThreads, userName }: ProjectsTabProps
 
       <div className="mt-10">
         {projects === null ? (
-          <p className="flex items-center gap-2 py-10 text-sm text-slate-500"><LoaderCircle className="animate-spin" size={16} /> Chargement de vos projets…</p>
+          <ProjectCardsSkeleton />
         ) : error ? (
           <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{error}</p>
         ) : projects.length === 0 ? (

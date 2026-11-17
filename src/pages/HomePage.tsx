@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ArrowDown,
   ArrowRight,
@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import { hasValidSession } from '../services/session'
 import './HomePage.css'
 
@@ -96,6 +97,14 @@ function initialsOf(name: string): string {
 
 function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  // Menu burger ouvert : la page ne défile plus derrière ; Échap le ferme.
+  useBodyScrollLock(mobileMenuOpen)
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const close = (event: KeyboardEvent) => { if (event.key === 'Escape') setMobileMenuOpen(false) }
+    window.addEventListener('keydown', close)
+    return () => window.removeEventListener('keydown', close)
+  }, [mobileMenuOpen])
   const [session, setSession] = useState<SessionInfo>(readSession)
 
   // Déconnexion : session effacée et en-tête mis à jour immédiatement.
@@ -171,8 +180,8 @@ function HomePage() {
             </div>
             <div className="hero-proof">
               <div className="avatar-stack" aria-hidden="true">
-                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80" alt="" />
-                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=80&q=80" alt="" />
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80" alt="" width={34} height={34} decoding="async" />
+                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=80&q=80" alt="" width={34} height={34} decoding="async" />
                 <span>+24</span>
               </div>
               <p><strong>4.9/5</strong><span>par nos clients</span></p>

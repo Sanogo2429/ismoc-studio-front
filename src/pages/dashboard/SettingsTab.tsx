@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { CircleCheck, LoaderCircle, Lock, UserRound } from 'lucide-react'
+import { SettingsSkeleton } from '../../components/Skeleton'
 import { api } from '../../services/api'
 import { apiErrorMessage } from '../../services/apiError'
 import type { AuthResponse } from '../../services/authService'
@@ -45,7 +46,7 @@ function SettingsTab({ onProfileUpdated }: { onProfileUpdated: (fullName: string
       {loadError ? (
         <p className="mt-10 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{loadError}</p>
       ) : !profile ? (
-        <p className="mt-10 flex items-center gap-2 text-sm text-slate-500"><LoaderCircle className="animate-spin" size={16} /> Chargement de votre compte…</p>
+        <SettingsSkeleton />
       ) : (
         <div className="mt-10 grid gap-6 xl:grid-cols-2">
           <ProfileForm

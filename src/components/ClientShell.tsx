@@ -1,7 +1,8 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { ArrowRight, Bell, CreditCard, Gauge, Home, LayoutDashboard, LogOut, MessageSquare, Settings } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import type { ClientNavId } from '../services/clientNavigation'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import { isAdmin } from '../services/session'
 import '../pages/Portal.css' // charge la police DM Sans de l'espace client
 
@@ -49,6 +50,14 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
   const navigate = useNavigate()
   const [showCockpit] = useState(isAdmin)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+  // Menu de profil ouvert : la page ne défile plus derrière ; Échap le ferme.
+  useBodyScrollLock(isProfileMenuOpen)
+  useEffect(() => {
+    if (!isProfileMenuOpen) return
+    const close = (event: KeyboardEvent) => { if (event.key === 'Escape') setIsProfileMenuOpen(false) }
+    window.addEventListener('keydown', close)
+    return () => window.removeEventListener('keydown', close)
+  }, [isProfileMenuOpen])
 
   function logout() {
     localStorage.removeItem('token')

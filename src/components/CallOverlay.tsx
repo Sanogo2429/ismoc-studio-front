@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Mic, MicOff, Phone, PhoneOff, Video, VideoOff, X } from 'lucide-react'
 import type { CallType, ProjectRtc } from '../hooks/useProjectRtc'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import { useIncomingRingtone, useRingbackTone } from '../hooks/useCallTones'
 
 const NAVY = '#0B132B'
@@ -42,6 +43,8 @@ function CallOverlay({ peerName = 'Équipe IsMoc', rtc }: { peerName?: string; r
   useRingbackTone(status === 'outgoing')
   // Sonnerie d'appel entrant tant que la notification est affichée ; coupée dès Décrocher / Refuser / appel annulé.
   useIncomingRingtone(status === 'incoming')
+  // Appel affiché en plein écran : la page derrière ne défile plus.
+  useBodyScrollLock(status !== 'idle' && status !== 'incoming')
 
   if (status === 'idle') {
     return rtc.callNotice ? (

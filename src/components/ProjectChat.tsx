@@ -6,6 +6,7 @@ import { api } from '../services/api'
 import type { ClientMessage } from '../services/projectTypes'
 import { findSticker } from '../services/stickers'
 import EmojiStickerPicker from './chat/EmojiStickerPicker'
+import { MessageBubblesSkeleton } from './Skeleton'
 import VoiceNotePlayer from './chat/VoiceNotePlayer'
 
 const NAVY = '#0B132B'
@@ -207,7 +208,9 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
       {/* Seule cette liste défile (overscroll-contain : le geste ne fait jamais glisser la page derrière). */}
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-[#F7F8FA] px-4 pb-4 pt-4 md:px-6 md:pb-6 md:pt-6" onScroll={handleListScroll} ref={scrollRef} aria-live="polite">
         <div ref={listRef}>
-          {groups.length === 0 && <p className="py-16 text-center text-xs text-slate-500">Aucun message pour le moment. Écrivez à l’équipe IsMoc.</p>}
+          {groups.length === 0 && (rtc.isLoadingMessages
+            ? <MessageBubblesSkeleton />
+            : <p className="py-16 text-center text-xs text-slate-500">Aucun message pour le moment. Écrivez à l’équipe IsMoc.</p>)}
           {groups.map((group) => (
             <div key={group.key}>
               <p className="my-4 text-center text-[9px] font-semibold tracking-[0.12em] text-slate-500">{group.label}</p>
