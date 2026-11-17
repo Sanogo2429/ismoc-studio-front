@@ -82,6 +82,13 @@ body {
   }
 }
 
+/* Champs de saisie ramenés dans la zone visible (focus, clavier) : jamais sous l'en-tête collant ni sous la barre
+   de statut de l'iPhone (scroll-margin respecté par scrollIntoView et par le navigateur). */
+input, textarea, select {
+  scroll-margin-top: calc(var(--safe-top) + 5.5rem);
+  scroll-margin-bottom: 1rem;
+}
+
 @layer utilities {
   .pt-safe { padding-top: var(--safe-top); }
   .pb-safe { padding-bottom: var(--safe-bottom); }
