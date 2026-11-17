@@ -69,10 +69,14 @@ body {
    reste possible : aucun maximum-scale ni user-scalable=no dans la balise viewport (accessibilité).
    (Aucun champ de l'application n'est plus grand que 16 px : la valeur fixe ne réduit rien.) */
 @media (pointer: coarse) {
-  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='color']),
-  select,
-  textarea,
-  [contenteditable='true'] {
+  /* :is() donne à tous les champs la spécificité la plus forte de la liste : un simple « textarea » ou « select »
+     perdait sinon face aux classes Tailwind (text-sm…) et restait à 14 px. */
+  :is(
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='color']),
+    select,
+    textarea,
+    [contenteditable='true']
+  ) {
     font-size: 16px;
   }
 }
