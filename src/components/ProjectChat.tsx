@@ -196,7 +196,7 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
           </div>
           <div className="min-w-0">
             <p className="truncate text-[14px] font-semibold text-slate-900">{peer.title}</p>
-            <p className="truncate text-[10px] text-slate-400">{peer.subtitle} • <span className={peer.online ? 'text-emerald-600' : 'text-slate-400'}>{peer.online ? 'En ligne' : 'Hors ligne'}</span></p>
+            <p className="truncate text-[10px] text-slate-500">{peer.subtitle} • <span className={peer.online ? 'text-emerald-600' : 'text-slate-500'}>{peer.online ? 'En ligne' : 'Hors ligne'}</span></p>
           </div>
         </div>
         <div className="flex gap-2.5">
@@ -278,7 +278,7 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
         <div className={`flex items-center gap-2.5 rounded-2xl bg-gradient-to-br px-4 py-3 text-[13px] font-bold text-white shadow-lg shadow-slate-900/10 ${sticker?.className ?? 'from-slate-400 to-slate-600'}`}>
           <span className="text-3xl leading-none">{sticker?.emoji ?? '✨'}</span>{sticker?.label ?? message.attachmentName ?? 'Sticker'}
         </div>
-        <p className="mt-1 text-[8.5px] text-slate-400">{timeOf(message.sentAt)}</p>
+        <p className="mt-1 text-[8.5px] text-slate-500">{timeOf(message.sentAt)}</p>
       </div>
     )
   }
@@ -286,12 +286,12 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
   return (
     <div className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
       <div className={`max-w-[75%] rounded-xl px-4 pb-2 pt-3 text-[12.5px] leading-5 ${mine ? 'text-white shadow-md shadow-slate-900/10' : 'border border-slate-200/70 bg-white text-[#0B132B] shadow-sm'}`} style={mine ? { background: NAVY } : undefined}>
-        {showAuthor && <p className="mb-1 text-[10px] font-semibold text-[#C2570C]">{message.authorName}</p>}
+        {showAuthor && <p className="mb-1 text-[10px] font-semibold text-[#B8530B]">{message.authorName}</p>}
         {message.messageType === 'voice' && message.attachmentUrl
           ? <VoiceNotePlayer durationSeconds={message.audioDurationSeconds ?? 0} mine={mine} url={message.attachmentUrl} />
           : message.attachmentUrl && <AttachmentPreview contentType={message.attachmentContentType} mine={mine} name={message.attachmentName} url={message.attachmentUrl} />}
         {message.content && <p className="whitespace-pre-line break-words">{message.content}</p>}
-        <p className={`mt-1 text-right text-[8.5px] ${mine ? 'text-white/50' : 'text-slate-400'}`}>{timeOf(message.sentAt)}</p>
+        <p className={`mt-1 text-right text-[8.5px] ${mine ? 'text-white/50' : 'text-slate-500'}`}>{timeOf(message.sentAt)}</p>
       </div>
     </div>
   )
@@ -299,7 +299,7 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
 
 function ToolbarButton({ active = false, children, disabled, label, onClick }: { active?: boolean; children: ReactNode; disabled?: boolean; label: string; onClick: () => void }) {
   return (
-    <button aria-label={label} aria-pressed={active} className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg transition disabled:opacity-40 md:h-9 md:w-9 ${active ? 'bg-slate-100 text-slate-700' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-700'}`} disabled={disabled} onClick={onClick} title={label} type="button">
+    <button aria-label={label} aria-pressed={active} className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg transition disabled:opacity-40 md:h-9 md:w-9 ${active ? 'bg-slate-100 text-slate-700' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`} disabled={disabled} onClick={onClick} title={label} type="button">
       {children}
     </button>
   )
@@ -344,7 +344,7 @@ function AttachmentPreview({ contentType, mine, name, url }: { contentType?: str
   if (isImage) {
     return (
       <button className="mb-2 block overflow-hidden rounded-lg" onClick={() => void download()} title={name ?? undefined} type="button">
-        {objectUrl ? <img alt={name ?? 'Image jointe'} className="max-h-56 w-auto max-w-full object-cover" src={objectUrl} /> : <span className="flex h-32 w-48 items-center justify-center bg-slate-100 text-slate-400"><LoaderCircle className="animate-spin" size={16} /></span>}
+        {objectUrl ? <img alt={name ?? 'Image jointe'} className="max-h-56 w-auto max-w-full object-cover" src={objectUrl} /> : <span className="flex h-32 w-48 items-center justify-center bg-slate-100 text-slate-500"><LoaderCircle className="animate-spin" size={16} /></span>}
       </button>
     )
   }

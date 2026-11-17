@@ -118,10 +118,10 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
                 <p className="text-[13px] font-bold">{userName}</p>
                 <p className="text-[10px] font-medium" style={{ color: AMBER }}>{roleLabel}</p>
               </div>
-              <span className="hidden h-11 w-11 items-center justify-center rounded-full bg-[#FDF0D5] text-[13px] font-bold text-[#B45309] md:flex">{initialsOf(userName)}</span>
+              <span className="hidden h-11 w-11 items-center justify-center rounded-full bg-[#FDF0D5] text-[13px] font-bold text-[#AF5109] md:flex">{initialsOf(userName)}</span>
               {/* Téléphone : l'avatar ouvre un petit menu (profil, cockpit, déconnexion) */}
               <div className="relative md:hidden">
-                <button aria-expanded={isProfileMenuOpen} aria-haspopup="menu" aria-label="Menu du profil" className="flex h-11 w-11 items-center justify-center rounded-full bg-[#FDF0D5] text-[13px] font-bold text-[#B45309]" onClick={() => setIsProfileMenuOpen((open) => !open)} type="button">{initialsOf(userName)}</button>
+                <button aria-expanded={isProfileMenuOpen} aria-haspopup="menu" aria-label="Menu du profil" className="flex h-11 w-11 items-center justify-center rounded-full bg-[#FDF0D5] text-[13px] font-bold text-[#AF5109]" onClick={() => setIsProfileMenuOpen((open) => !open)} type="button">{initialsOf(userName)}</button>
                 {isProfileMenuOpen && (
                   <>
                     <button aria-label="Fermer le menu" className="fixed inset-0 z-40 cursor-default" onClick={() => setIsProfileMenuOpen(false)} tabIndex={-1} type="button" />

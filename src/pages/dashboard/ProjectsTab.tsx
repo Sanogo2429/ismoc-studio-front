@@ -56,7 +56,7 @@ function ProjectsTab({ error, projects: allThreads, userName }: ProjectsTabProps
     <>
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="flex items-center gap-2.5 text-[12px] font-bold tracking-[0.25em] text-[#C2570C]"><span className="h-1.5 w-1.5 rounded-full bg-[#F59E0B]" />{today.toLocaleUpperCase('fr-FR')}</p>
+          <p className="flex items-center gap-2.5 text-[12px] font-bold tracking-[0.25em] text-[#B8530B]"><span className="h-1.5 w-1.5 rounded-full bg-[#F59E0B]" />{today.toLocaleUpperCase('fr-FR')}</p>
           <h1 className="mt-4 text-[34px] font-bold leading-tight tracking-tight sm:text-[44px]">Bonjour, {userName}.</h1>
           <p className="mt-2 text-sm text-slate-500">Voici où en sont vos projets aujourd’hui.</p>
         </div>
@@ -98,7 +98,7 @@ function ProjectsTab({ error, projects: allThreads, userName }: ProjectsTabProps
                   </button>
 
                   <div className="flex flex-1 flex-col p-6">
-                    <p className="text-[10px] font-bold tracking-[0.25em] text-[#C2570C]">PROJET #{projectCode(project.projectId)}</p>
+                    <p className="text-[10px] font-bold tracking-[0.25em] text-[#B8530B]">PROJET #{projectCode(project.projectId)}</p>
                     <h3 className="mt-2 truncate text-lg font-bold" title={project.projectName}>{project.projectName}</h3>
                     <p className="text-xs text-slate-500">{projectTypeLabel(project.format)} · créé le {formatDate(project.createdAt, { day: 'numeric', month: 'short', year: 'numeric' })}</p>
 
@@ -140,7 +140,7 @@ function ProjectsTab({ error, projects: allThreads, userName }: ProjectsTabProps
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white px-6 py-5">
-      <dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{label}</dt>
+      <dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">{label}</dt>
       <dd className="mt-2 text-2xl font-bold tracking-tight">{value}</dd>
     </div>
   )

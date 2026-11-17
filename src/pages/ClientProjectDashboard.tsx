@@ -125,7 +125,7 @@ function ProjectWorkspace({ project, rtc }: { project: ClientProject; rtc: Proje
     <>
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <p className="text-[12px] font-bold tracking-[0.3em] text-[#C2570C]">PROJET #{projectCode(project.projectId)}</p>
+          <p className="text-[12px] font-bold tracking-[0.3em] text-[#B8530B]">PROJET #{projectCode(project.projectId)}</p>
           <h1 className="mt-4 truncate text-[34px] font-bold leading-tight tracking-tight sm:text-[40px]">{project.projectName || 'Votre projet'}</h1>
           <p className="mt-2 text-[13px] text-slate-500">{projectTypeLabel(project.format)} • Démarré le {formatDate(startedAt, { day: '2-digit', month: 'long', year: 'numeric' })}</p>
         </div>
@@ -139,11 +139,11 @@ function ProjectWorkspace({ project, rtc }: { project: ClientProject; rtc: Proje
         {steps.map((step, index) => (
           <li className="relative flex flex-col items-center text-center" key={step.label}>
             {index > 0 && <span aria-hidden className="absolute right-1/2 top-4 h-px w-full bg-slate-200" />}
-            <span className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-bold ${step.state === 'done' ? 'bg-[#22C55E] text-white' : step.state === 'active' ? 'bg-[#FBBF24] text-[#7C2D12] ring-4 ring-amber-100' : 'border border-slate-200 bg-white text-slate-400'}`}>
+            <span className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-bold ${step.state === 'done' ? 'bg-[#22C55E] text-white' : step.state === 'active' ? 'bg-[#FBBF24] text-[#7C2D12] ring-4 ring-amber-100' : 'border border-slate-200 bg-white text-slate-500'}`}>
               {step.state === 'done' ? <Check size={15} strokeWidth={3} /> : index + 1}
             </span>
             <span className="mt-3 text-[10px] font-semibold leading-tight sm:text-[12px]">{step.label}</span>
-            <span className={`mt-1.5 text-[9px] sm:text-[10px] ${step.state === 'active' ? 'font-medium text-[#D97706]' : 'text-slate-400'}`}>{step.sub}</span>
+            <span className={`mt-1.5 text-[9px] sm:text-[10px] ${step.state === 'active' ? 'font-medium text-[#D97706]' : 'text-slate-500'}`}>{step.sub}</span>
           </li>
         ))}
       </ol>
@@ -152,11 +152,11 @@ function ProjectWorkspace({ project, rtc }: { project: ClientProject; rtc: Proje
         <ChatPanel className={MOBILE_CHAT_HEIGHT + ' md:h-[640px]'} inputId={CHAT_INPUT_ID} rtc={rtc} />
 
         <section aria-labelledby="progress-heading" className="rounded-2xl border border-slate-200/80 bg-white px-7 py-8">
-          <h2 className="text-[12px] font-bold tracking-[0.3em] text-[#C2570C]" id="progress-heading">DERNIÈRES AVANCÉES</h2>
+          <h2 className="text-[12px] font-bold tracking-[0.3em] text-[#B8530B]" id="progress-heading">DERNIÈRES AVANCÉES</h2>
           <ol className="mt-9">
             {milestones.map((milestone, index) => (
               <li className="grid grid-cols-[60px_24px_minmax(0,1fr)] gap-x-3" key={`${milestone.title}-${milestone.date}`}>
-                <span className="pt-0.5 text-[10px] text-slate-400">{shortDate(milestone.date)}</span>
+                <span className="pt-0.5 text-[10px] text-slate-500">{shortDate(milestone.date)}</span>
                 <span className="relative flex justify-center">
                   <span className="relative z-10 mt-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 bg-white" style={{ borderColor: AMBER }}><span className="h-1 w-1 rounded-full" style={{ background: AMBER }} /></span>
                   {index < milestones.length - 1 && <span aria-hidden className="absolute bottom-0 top-4 w-px bg-slate-200" />}
@@ -167,7 +167,7 @@ function ProjectWorkspace({ project, rtc }: { project: ClientProject; rtc: Proje
                 </div>
               </li>
             ))}
-            {milestones.length === 0 && <li className="text-sm text-slate-400">Les prochaines avancées apparaîtront ici.</li>}
+            {milestones.length === 0 && <li className="text-sm text-slate-500">Les prochaines avancées apparaîtront ici.</li>}
           </ol>
         </section>
       </div>

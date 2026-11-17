@@ -93,9 +93,9 @@ function ProfileForm({ onSaved, profile }: { onSaved: (profile: AccountProfile) 
   return (
     <Card icon={<UserRound size={18} />} subtitle="Nom affiché dans vos échanges avec l’équipe et sur vos factures." title="Informations personnelles">
       <dl className="mb-6 grid gap-3 rounded-xl bg-slate-50 p-4 text-sm sm:grid-cols-3">
-        <div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">E-mail</dt><dd className="mt-1 break-all font-medium">{profile.email}</dd></div>
-        <div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Rôle</dt><dd className="mt-1 font-medium">{roleLabel(profile.role)}</dd></div>
-        <div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Membre depuis</dt><dd className="mt-1 font-medium">{formatDate(profile.createdAt, { month: 'long', year: 'numeric' })}</dd></div>
+        <div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">E-mail</dt><dd className="mt-1 break-all font-medium">{profile.email}</dd></div>
+        <div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Rôle</dt><dd className="mt-1 font-medium">{roleLabel(profile.role)}</dd></div>
+        <div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Membre depuis</dt><dd className="mt-1 font-medium">{formatDate(profile.createdAt, { month: 'long', year: 'numeric' })}</dd></div>
       </dl>
       <form className="grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
         <Field label="Prénom"><input autoComplete="given-name" className={INPUT} maxLength={60} onChange={(event) => setFirstName(event.target.value)} required value={firstName} /></Field>
@@ -147,7 +147,7 @@ function PasswordForm() {
         <Field label="Mot de passe actuel"><input autoComplete="current-password" className={INPUT} onChange={(event) => setCurrentPassword(event.target.value)} required type="password" value={currentPassword} /></Field>
         <Field error={newError} label="Nouveau mot de passe"><input autoComplete="new-password" className={INPUT} onChange={(event) => setNewPassword(event.target.value)} type="password" value={newPassword} /></Field>
         <Field error={confirmError} label="Confirmer le nouveau mot de passe"><input autoComplete="new-password" className={INPUT} onChange={(event) => setConfirmation(event.target.value)} type="password" value={confirmation} /></Field>
-        <p className="text-[11px] leading-5 text-slate-400">Compte créé avec Google ? Utilisez « Mot de passe oublié » sur la page de connexion pour définir un mot de passe.</p>
+        <p className="text-[11px] leading-5 text-slate-500">Compte créé avec Google ? Utilisez « Mot de passe oublié » sur la page de connexion pour définir un mot de passe.</p>
         <div className="flex flex-wrap items-center gap-4">
           <button className={PRIMARY_BUTTON} disabled={isSaving} type="submit">{isSaving && <LoaderCircle className="animate-spin" size={15} />} Modifier le mot de passe</button>
           {feedback && <Feedback {...feedback} />}
@@ -164,7 +164,7 @@ function Card({ children, icon, subtitle, title }: { children: ReactNode; icon: 
   return (
     <section className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8">
       <div className="mb-6 flex items-start gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FDF0D5] text-[#B45309]">{icon}</span>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FDF0D5] text-[#AF5109]">{icon}</span>
         <div><h2 className="text-base font-bold">{title}</h2><p className="mt-0.5 text-xs text-slate-500">{subtitle}</p></div>
       </div>
       {children}

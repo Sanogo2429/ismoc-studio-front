@@ -72,7 +72,7 @@ function ProjectConversation({ project }: { project: ProjectSummary }) {
         <div className="flex min-w-0 items-center gap-3">
           <ConnectionIndicator status={rtc.hubStatus} />
           <div className="min-w-0">
-            <p className="text-[10px] font-bold tracking-[0.25em] text-[#C2570C]">{general ? 'AVANT-PROJET' : `PROJET #${projectCode(project.projectId)}`}</p>
+            <p className="text-[10px] font-bold tracking-[0.25em] text-[#B8530B]">{general ? 'AVANT-PROJET' : `PROJET #${projectCode(project.projectId)}`}</p>
             <p className="truncate text-sm font-bold">{project.projectName} <span className="font-normal text-slate-500">· {general ? 'posez vos questions avant de démarrer' : projectStep(project.status).label}</span></p>
           </div>
         </div>
@@ -90,7 +90,7 @@ function ProjectConversation({ project }: { project: ProjectSummary }) {
 export function TabHeading({ subtitle, title }: { subtitle: string; title: string }) {
   return (
     <div>
-      <p className="text-[12px] font-bold tracking-[0.25em] text-[#C2570C]">ESPACE CLIENT</p>
+      <p className="text-[12px] font-bold tracking-[0.25em] text-[#B8530B]">ESPACE CLIENT</p>
       <h1 className="mt-3 text-[32px] font-bold leading-tight tracking-tight sm:text-[38px]">{title}</h1>
       <p className="mt-2 text-sm text-slate-500">{subtitle}</p>
     </div>

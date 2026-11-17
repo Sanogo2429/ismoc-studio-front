@@ -173,7 +173,7 @@ function CheckoutPage() {
         <main className="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:py-14">
           {/* ---------------- Colonne gauche : paiement ---------------- */}
           <form noValidate onSubmit={handlePay}>
-            <p className="text-[11px] font-bold tracking-[0.22em] text-[#B45309]">DERNIÈRE ÉTAPE</p>
+            <p className="text-[11px] font-bold tracking-[0.22em] text-[#AF5109]">DERNIÈRE ÉTAPE</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Finalisez votre projet.</h1>
             <p className="mt-3 max-w-lg text-sm leading-6 text-slate-500">Réglez le premier tiers aujourd’hui : nos développeurs démarrent immédiatement à partir de votre maquette validée.</p>
 

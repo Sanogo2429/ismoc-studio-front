@@ -457,7 +457,7 @@ function ModeCard({ active, badge, description, disabled, icon, onSelect, title 
     >
       <div className="flex items-start justify-between gap-3">
         <span className={`flex h-10 w-10 items-center justify-center rounded-lg ${active ? 'bg-vibrantOrange text-darkSlate' : 'bg-slate-100 text-slate-600'}`}>{icon}</span>
-        <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${active ? 'bg-darkSlate text-white' : 'bg-slate-100 text-slate-500'}`}>{badge}</span>
+        <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${active ? 'bg-darkSlate text-white' : 'bg-slate-100 text-slate-600'}`}>{badge}</span>
       </div>
       <h2 className="mt-4 text-base font-semibold text-darkSlate">{title}</h2>
       <p className="mt-1.5 text-xs leading-5 text-slate-500">{description}</p>
