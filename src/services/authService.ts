@@ -1,4 +1,5 @@
 import { api } from './api'
+import { clearSessionCache } from './sessionCache'
 
 export interface AuthCredentials {
   email: string
@@ -51,6 +52,7 @@ export async function forgotPassword(email: string): Promise<void> {
  */
 export function startGoogleLogin(): void {
   localStorage.removeItem('token')
+  clearSessionCache()
   localStorage.removeItem('userName')
   window.location.assign(getGoogleLoginUrl())
 }

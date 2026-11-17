@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Briefcase, ExternalLink, LogOut, MessagesSquare, RefreshCw, Users } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import type { HubStatus } from '../../hooks/useProjectRtc'
+import { clearSessionCache } from '../../services/sessionCache'
 
 export type AdminTab = 'orders' | 'messages' | 'clients'
 
@@ -39,6 +40,7 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
 
   function logout() {
     localStorage.removeItem('token')
+    clearSessionCache()
     localStorage.removeItem('userName')
     navigate('/connexion')
   }

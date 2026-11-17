@@ -5,8 +5,21 @@ import { apiErrorMessage } from '../services/apiError'
 import { unlockCallAudio } from '../services/callAudio'
 import type { ClientMessage, ProjectMilestone, ProjectStatus } from '../services/projectTypes'
 import { connectResilientHub, type HubStatus } from '../services/realtimeHub'
+import { readCache, writeCache, writePreference } from '../services/sessionCache'
 
 export type { HubStatus }
+
+/** Dernière conversation ouverte (préchargée à la prochaine visite de Messages). */
+export const LAST_CONVERSATION_KEY = 'last-conversation'
+const MAX_CACHED_MESSAGES = 200
+const messagesKey = (projectId: string) => `messages:${projectId}`
+
+/** Charge l'historique d'une conversation dans le cache de l'onglet, sans attendre l'ouverture de la page. */
+export function prefetchMessages(projectId: string): void {
+  api.get<ClientMessage[]>(`/api/Projects/${encodeURIComponent(projectId)}/client-messages`)
+    .then((response) => writeCache(messagesKey(projectId), response.data.slice(-MAX_CACHED_MESSAGES)))
+    .catch(() => undefined)
+}
 
 /** Diffusé par POST /api/Projects/{id}/progress. */
 export interface ProjectLiveUpdate {
@@ -47,9 +60,17 @@ function mediaErrorMessage(error: unknown): string {
  */
 export function useProjectRtc(projectId: string) {
   const [hubStatus, setHubStatus] = useState<HubStatus>('connecting')
-  const [messages, setMessages] = useState<ClientMessage[]>([])
+  // Historique déjà connu (cache de l'onglet) affiché immédiatement, puis complété par l'API.
+  const [messages, setMessages] = useState<ClientMessage[]>(() => readCache<ClientMessage[]>(messagesKey(projectId)) ?? [])
   // Historique pas encore reçu : la messagerie affiche des squelettes, pas « Aucun message ».
-  const [isLoadingMessages, setIsLoadingMessages] = useState(true)
+  const [isLoadingMessages, setIsLoadingMessages] = useState(() => readCache(messagesKey(projectId)) === undefined)
+
+  // Mémorise la conversation (affichage instantané au prochain passage) et la dernière ouverte.
+  useEffect(() => {
+    if (!projectId) return
+    writePreference(LAST_CONVERSATION_KEY, projectId)
+    if (!isLoadingMessages) writeCache(messagesKey(projectId), messages.slice(-MAX_CACHED_MESSAGES))
+  }, [isLoadingMessages, messages, projectId])
   const [isTeamOnline, setIsTeamOnline] = useState(false)
   const [isClientOnline, setIsClientOnline] = useState(false)
   const [projectUpdate, setProjectUpdate] = useState<ProjectLiveUpdate | null>(null)

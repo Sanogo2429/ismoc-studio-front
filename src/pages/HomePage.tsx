@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import { hasValidSession } from '../services/session'
 import './HomePage.css'
+import { clearSessionCache } from '../services/sessionCache'
 
 const navigation = [
   { label: 'Services', href: '#expertises' },
@@ -110,6 +111,7 @@ function HomePage() {
   // Déconnexion : session effacée et en-tête mis à jour immédiatement.
   function logout() {
     localStorage.removeItem('token')
+    clearSessionCache()
     localStorage.removeItem('userName')
     setSession(readSession())
     setMobileMenuOpen(false)

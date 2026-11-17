@@ -5,6 +5,7 @@ import type { ClientNavId } from '../services/clientNavigation'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import { isAdmin } from '../services/session'
 import '../pages/Portal.css' // charge la police DM Sans de l'espace client
+import { clearSessionCache } from '../services/sessionCache'
 
 const NAVY = '#0B132B'
 const AMBER = '#F59E0B'
@@ -61,6 +62,7 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
 
   function logout() {
     localStorage.removeItem('token')
+    clearSessionCache()
     localStorage.removeItem('userName')
     navigate('/connexion')
   }

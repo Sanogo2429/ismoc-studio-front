@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { clearSessionCache } from './sessionCache'
 
 /**
  * VITE_API_BASE_URL : URL de l'API (appels HTTP, temps réel SignalR, connexion Google).
@@ -43,6 +44,7 @@ api.interceptors.response.use(
 
       if (!isAuthRequest) {
         localStorage.removeItem('token')
+        clearSessionCache()
         localStorage.removeItem('userName')
 
         if (window.location.pathname !== '/connexion') {
