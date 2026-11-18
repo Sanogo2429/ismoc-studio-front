@@ -53,7 +53,8 @@ export interface ClientMessage {
   audioDurationSeconds?: number | null
 }
 
-export type ClientMessageType = 'text' | 'image' | 'file' | 'sticker' | 'voice'
+/** 'missed_call' : message système ajouté par le serveur (content = 'audio' | 'video', authorName = l'appelant). */
+export type ClientMessageType = 'text' | 'image' | 'file' | 'sticker' | 'voice' | 'missed_call'
 export type ThreadType = 'project' | 'general'
 
 /** Fil « Discussion générale · Avant-projet » (ouvert dès l'inscription, sans maquette). */
@@ -66,6 +67,7 @@ export function messagePreview(message: Pick<ClientMessage, 'messageType' | 'con
   switch (message.messageType) {
     case 'sticker': return `Sticker · ${message.attachmentName ?? message.content}`
     case 'voice': return `🎙️ Message vocal (${message.audioDurationSeconds ?? 0} s)`
+    case 'missed_call': return message.content === 'video' ? '📞 Appel vidéo manqué' : '📞 Appel audio manqué'
     case 'image': return message.content || '📷 Photo'
     case 'file': return message.content || `📎 ${message.attachmentName ?? 'Fichier'}`
     default: return message.content

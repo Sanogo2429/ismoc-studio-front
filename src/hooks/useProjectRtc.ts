@@ -70,6 +70,9 @@ function isNetworkFailure(error: unknown): boolean {
 }
 
 const RING_TIMEOUT_MS = 45_000
+/** Client qui appelle l'équipe hors ligne : sonnerie simulée, puis appel manqué enregistré dans le fil. */
+const OFFLINE_RING_MS = 30_000
+const TEAM_NOTIFIED_NOTICE = 'L’équipe a été prévenue et vous rappellera dès que possible.'
 const ICE_SERVERS: RTCIceServer[] = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }]
 
 /**
@@ -134,6 +137,8 @@ export function useProjectRtc(projectId: string) {
   const callStatusRef = useRef<CallStatus>('idle')
   const callTypeRef = useRef<CallType>('video')
   const ringTimerRef = useRef<number | null>(null)
+  // Appel en cours vers l'équipe hors ligne (le serveur l'a signalé au lancement).
+  const teamOfflineCallRef = useRef(false)
 
   function updateCallStatus(status: CallStatus) {
     callStatusRef.current = status
@@ -491,12 +496,24 @@ export function useProjectRtc(projectId: string) {
     }
 
     callTypeRef.current = type
+    teamOfflineCallRef.current = false
     setCallType(type)
     setCallNotice('')
     updateCallStatus('outgoing')
     try {
       await acquireMedia(type)
-      await connection.invoke('InitiateCall', projectId, type)
+      const teamOffline = await connection.invoke<boolean>('InitiateCall', projectId, type)
+      if (teamOffline) {
+        // Équipe hors ligne : l'appel sonne ~30 s (l'équipe est prévenue par e-mail côté serveur), puis
+        // l'appel manqué est ajouté au fil et le client est rassuré.
+        teamOfflineCallRef.current = true
+        ringTimerRef.current = window.setTimeout(() => {
+          teamOfflineCallRef.current = false
+          void connection.invoke('ReportMissedCall', projectId).catch((error: unknown) => console.warn('[IsMoc] Appel manqué non enregistré :', error))
+          cleanupCall(TEAM_NOTIFIED_NOTICE)
+        }, OFFLINE_RING_MS)
+        return
+      }
       ringTimerRef.current = window.setTimeout(() => {
         void connection.invoke('RejectOrEndCall', projectId).catch(() => undefined)
         cleanupCall('Pas de réponse de l’équipe. Laissez-lui un message ou réessayez plus tard.')
@@ -522,8 +539,11 @@ export function useProjectRtc(projectId: string) {
   }
 
   function endCall() {
+    // Raccroché pendant la sonnerie vers l'équipe hors ligne : le serveur enregistre l'appel manqué.
+    const notifiedTeam = teamOfflineCallRef.current && callStatusRef.current === 'outgoing'
+    teamOfflineCallRef.current = false
     void connectionRef.current?.invoke('RejectOrEndCall', projectId).catch(() => undefined)
-    cleanupCall()
+    cleanupCall(notifiedTeam ? TEAM_NOTIFIED_NOTICE : '')
   }
 
   function toggleMic() {

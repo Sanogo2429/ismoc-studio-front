@@ -213,13 +213,14 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
           </div>
           <div className="min-w-0">
             <p className="truncate text-[14px] font-semibold text-slate-900">{peer.title}</p>
-            <p className="truncate text-[12px] text-slate-500">{peer.subtitle} • <span className={peer.online ? 'text-emerald-600' : 'text-slate-500'}>{peer.online ? 'En ligne' : 'Hors ligne'}</span></p>
+            {/* Seul le sous-titre se tronque : l'état « En ligne / Hors ligne » reste toujours visible. */}
+            <p className="flex min-w-0 text-[12px] text-slate-500"><span className="truncate">{peer.subtitle}</span><span className={`shrink-0 whitespace-pre ${peer.online ? 'text-emerald-600' : 'text-slate-500'}`}> • {peer.online ? 'En ligne' : 'Hors ligne'}</span></p>
           </div>
         </div>
-        <div className="flex gap-2.5">
-          {/* Appels possibles seulement si l'interlocuteur est en ligne (sinon l'appel sonnerait dans le vide). */}
-          <IconSquareButton disabled={rtc.callStatus !== 'idle' || !peer.online} label={peer.online ? 'Appel audio' : 'Appel audio indisponible : hors ligne'} onClick={() => void rtc.startCall('audio')}><Phone size={19} /></IconSquareButton>
-          <IconSquareButton disabled={rtc.callStatus !== 'idle' || !peer.online} label={peer.online ? 'Appel vidéo' : 'Appel vidéo indisponible : hors ligne'} onClick={() => void rtc.startCall('video')}><Video size={19} /></IconSquareButton>
+        {/* Toujours actifs : équipe hors ligne, l'appel sonne ~30 s, l'équipe est prévenue et l'appel manqué s'affiche. */}
+        <div className="flex shrink-0 items-center gap-2">
+          <IconSquareButton label="Appel audio" onClick={() => void rtc.startCall('audio')}><Phone className="h-5 w-5" /></IconSquareButton>
+          <IconSquareButton label="Appel vidéo" onClick={() => void rtc.startCall('video')}><Video className="h-5 w-5" /></IconSquareButton>
         </div>
       </div>
 
@@ -233,7 +234,7 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
             <div key={group.key}>
               <p className="my-4 text-center text-[12px] font-semibold tracking-[0.12em] text-slate-500">{group.label}</p>
               <div className="space-y-5">
-                {group.items.map((message) => <MessageBubble key={message.id} message={message} viewer={viewer} />)}
+                {group.items.map((message) => <MessageBubble key={message.id} message={message} onCallBack={(type) => void rtc.startCall(type)} viewer={viewer} />)}
               </div>
             </div>
           ))}
@@ -299,7 +300,25 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
   )
 }
 
-function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'client' | 'team' }) {
+function MessageBubble({ message, onCallBack, viewer }: { message: ClientMessage; onCallBack: (type: 'audio' | 'video') => void; viewer: 'client' | 'team' }) {
+  // Appel manqué (message système) : pastille centrée ; côté équipe, nom de l'appelant et bouton « Rappeler ».
+  if (message.messageType === 'missed_call') {
+    const type = message.content === 'video' ? 'video' : 'audio'
+    return (
+      <div className="flex justify-center">
+        <div className="flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-2xl border border-red-100 bg-white px-4 py-2.5 text-[12.5px] text-[#0B132B] shadow-sm">
+          <span className="font-semibold">📞 Appel {type === 'video' ? 'vidéo' : 'audio'} manqué · {timeOf(message.sentAt)}</span>
+          {viewer === 'team' && message.authorName && <span className="text-slate-600">{message.authorName}</span>}
+          {viewer === 'team' && (
+            <button className="flex min-h-9 items-center gap-1.5 rounded-lg px-3 text-[12.5px] font-semibold text-white transition hover:opacity-90" onClick={() => onCallBack(type)} style={{ background: NAVY }} type="button">
+              {type === 'video' ? <Video aria-hidden className="h-4 w-4" /> : <Phone aria-hidden className="h-4 w-4" />}Rappeler
+            </button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   const mine = viewer === 'team' ? message.author !== 'client' : message.author === 'client'
   const showAuthor = !mine && message.authorName && message.authorName !== 'Équipe IsMoc'
 
@@ -412,9 +431,9 @@ function AttachmentPreview({ contentType, mine, name, url }: { contentType?: str
   )
 }
 
-function IconSquareButton({ children, disabled, label, onClick }: { children: ReactNode; disabled?: boolean; label: string; onClick: () => void }) {
+function IconSquareButton({ children, label, onClick }: { children: ReactNode; label: string; onClick: () => void }) {
   return (
-    <button aria-label={label} className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-[#0B132B] transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40" disabled={disabled} onClick={onClick} title={label} type="button">
+    <button aria-label={label} className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-[#0B132B] transition hover:border-slate-400 hover:bg-slate-50" onClick={onClick} title={label} type="button">
       {children}
     </button>
   )
