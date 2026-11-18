@@ -45,14 +45,14 @@ interface ClientShellProps {
   /** Indicateur affiché à gauche du profil (cloche ou état du temps réel). */
   statusSlot?: ReactNode
   /**
-   * Téléphone : le contenu occupe exactement la zone visible (Messages) — seule la zone interne défile,
-   * rien ne glisse quand le clavier s'ouvre.
+   * Téléphone : conversation plein écran — ni en-tête ni barre de navigation, le contenu occupe exactement la zone
+   * visible (rétrécie par le clavier) et seule la liste des messages défile. Sans effet sur grand écran.
    */
-  fillViewport?: boolean
+  immersive?: boolean
 }
 
 /** Barre latérale + barre supérieure communes à /dashboard et /client/project/:id. */
-function ClientShell({ active, children, fillViewport = false, onHelp, onNavigate, roleLabel = 'Client', statusSlot, userName }: ClientShellProps) {
+function ClientShell({ active, children, immersive = false, onHelp, onNavigate, roleLabel = 'Client', statusSlot, userName }: ClientShellProps) {
   const navigate = useNavigate()
   const [showCockpit] = useState(isAdmin)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
@@ -105,7 +105,7 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
       </aside>
 
       <div className="lg:pl-[280px]">
-        <header className="pt-safe sticky top-0 z-20 border-b border-slate-200/80 bg-white">
+        <header className={`pt-safe sticky top-0 z-20 border-b border-slate-200/80 bg-white${immersive ? ' max-md:hidden' : ''}`}>
           <div className="flex h-16 items-center justify-between px-4 sm:px-12 md:h-[90px]">
             {/* Téléphone : logo seul, comme une application native */}
             <Link aria-label="IsMoc Studio, accueil de l’espace client" className="flex min-h-[44px] items-center gap-2.5 md:hidden" to="/dashboard">
@@ -155,19 +155,19 @@ function ClientShell({ active, children, fillViewport = false, onHelp, onNavigat
         </header>
 
         {/* Téléphone : marge basse pour que la barre inférieure ne masque pas la fin du contenu.
-            fillViewport (Messages) : hauteur = zone visible, gérée par .client-main-fill (index.css). */}
+            immersive (conversation sur téléphone) : hauteur = zone visible, gérée par .client-main-immersive (index.css). */}
         <main
-          className={fillViewport
-            ? 'client-main-fill px-4 max-[359px]:px-3 sm:px-12 md:pb-[calc(3.5rem+var(--safe-bottom))] md:pt-14'
+          className={immersive
+            ? 'client-main-immersive sm:px-12 md:pb-[calc(3.5rem+var(--safe-bottom))] md:pt-14'
             : 'px-5 pb-[calc(6rem+var(--safe-bottom))] pt-10 sm:px-12 sm:pt-14 md:pb-[calc(3.5rem+var(--safe-bottom))]'}
-          data-fill-viewport={fillViewport || undefined}
+          data-fill-viewport={immersive || undefined}
         >
           {children}
         </main>
       </div>
 
       {/* Barre de navigation inférieure (téléphone uniquement), à portée de pouce */}
-      <nav aria-label="Navigation espace client (mobile)" className="client-bottom-nav pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white md:hidden">
+      <nav aria-label="Navigation espace client (mobile)" className={`client-bottom-nav pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white md:hidden${immersive ? ' hidden' : ''}`}>
         <div className="flex h-16 items-stretch justify-around px-1">
           {BOTTOM_NAVIGATION.map(({ id, label, icon: Icon }) => {
             const isActive = active === id

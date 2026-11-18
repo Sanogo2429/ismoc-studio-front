@@ -8,6 +8,7 @@ import type { ProjectSummary } from '../services/projectTypes'
 import { isAdmin } from '../services/session'
 import { readCache, readPreference, writeCache } from '../services/sessionCache'
 import { LAST_CONVERSATION_KEY, prefetchMessages } from '../hooks/useProjectRtc'
+import { PHONE_QUERY, useMediaQuery } from '../hooks/useMediaQuery'
 import BillingTab from './dashboard/BillingTab'
 import HomeTab from './dashboard/HomeTab'
 import MessagesTab from './dashboard/MessagesTab'
@@ -28,6 +29,7 @@ function DashboardPage() {
   const activeTab: ClientNavId = isNavId(tabParam) ? tabParam : 'home'
   const selectedProjectId = searchParams.get('project')
   const [activeTabOnMount] = useState(activeTab)
+  const isPhone = useMediaQuery(PHONE_QUERY)
 
   // Dernière liste connue affichée immédiatement (cache de l'onglet), puis rafraîchie par l'API.
   const [projects, setProjects] = useState<ProjectSummary[] | null>(() => readCache<ProjectSummary[]>('projects') ?? null)
@@ -82,8 +84,8 @@ function DashboardPage() {
   return (
     <ClientShell
       active={activeTab}
-      // Messages sur téléphone : écran plein (seule la conversation défile, barre de saisie fixe en bas).
-      fillViewport={activeTab === 'messages' && (projects?.length ?? 0) > 0}
+      // Téléphone : conversation ouverte en plein écran (sans en-tête ni barre de navigation).
+      immersive={isPhone && activeTab === 'messages' && !!projects?.some((project) => project.projectId === selectedProjectId)}
       onHelp={writeToTeam}
       onNavigate={(tab) => openTab(tab)}
       userName={userName}
@@ -92,6 +94,7 @@ function DashboardPage() {
       {activeTab === 'projects' && <ProjectsTab error={projectsError} projects={projects} />}
       {activeTab === 'messages' && (
         <MessagesTab
+          onCloseConversation={() => openTab('messages')}
           onSelectProject={(projectId) => openTab('messages', { project: projectId })}
           projects={projects}
           selectedProjectId={selectedProjectId}

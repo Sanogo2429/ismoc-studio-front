@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
-import { Download, FileText, LoaderCircle, Mic, Paperclip, Phone, Send, Smile, Video, X } from 'lucide-react'
+import { ArrowLeft, Download, FileText, LoaderCircle, Mic, Paperclip, Phone, Send, Smile, Video, X } from 'lucide-react'
 import type { HubStatus, ProjectRtc } from '../hooks/useProjectRtc'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { api } from '../services/api'
@@ -48,10 +48,14 @@ interface ChatPanelProps {
   /** Côté de l'utilisateur : « client » (espace client) ou « team » (cockpit agence). */
   viewer?: 'client' | 'team'
   counterpart?: ChatCounterpart
+  /** Téléphone : conversation plein écran (sans bordure, zones sécurisées haut et bas, bouton retour). */
+  immersive?: boolean
+  /** Bouton ← de l'en-tête (retour à la liste des conversations). */
+  onBack?: () => void
 }
 
 /** Messagerie temps réel : présence, appels audio/vidéo, pièces jointes. */
-export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'client-message', rtc, viewer = 'client' }: ChatPanelProps) {
+export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = false, inputId = 'client-message', onBack, rtc, viewer = 'client' }: ChatPanelProps) {
   const peer = counterpart ?? { title: 'Équipe IsMoc', subtitle: 'Ismael & Moctar', online: rtc.isTeamOnline, avatars: ['IS', 'MO'] }
   const [draft, setDraft] = useState('')
   const [pendingFile, setPendingFile] = useState<File | null>(null)
@@ -192,9 +196,12 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
   }
 
   return (
-    <section aria-label="Messagerie avec l’équipe IsMoc" className={`flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white text-[#0B132B] ${className}`}>
-      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200/80 px-4 py-3 md:px-6 md:py-5">
+    <section aria-label="Messagerie avec l’équipe IsMoc" className={`flex flex-col overflow-hidden bg-white text-[#0B132B] ${immersive ? 'chat-immersive' : 'rounded-2xl border border-slate-200/80'} ${className}`}>
+      <div className={`flex shrink-0 items-center justify-between gap-3 border-b border-slate-200/80 px-4 md:px-6 md:py-5 ${immersive ? 'pb-2.5 pl-1.5 pt-[calc(0.625rem+var(--safe-top))]' : 'py-3'}`}>
         <div className="flex min-w-0 items-center gap-3">
+          {onBack && (
+            <button aria-label="Retour aux conversations" className="-mr-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#0B132B] transition hover:bg-slate-100" onClick={onBack} type="button"><ArrowLeft size={22} /></button>
+          )}
           <div className="relative flex -space-x-3">
             {peer.avatars.map((avatar, index) => (
               <span className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-[11px] font-bold text-white ring-2 ring-white ${index === 0 ? 'from-sky-500 to-indigo-600' : 'from-amber-400 to-orange-600'}`} key={avatar}>{avatar}</span>
@@ -207,8 +214,9 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
           </div>
         </div>
         <div className="flex gap-2.5">
-          <IconSquareButton disabled={rtc.callStatus !== 'idle'} label="Appel audio" onClick={() => void rtc.startCall('audio')}><Phone size={19} /></IconSquareButton>
-          <IconSquareButton disabled={rtc.callStatus !== 'idle'} label="Appel vidéo" onClick={() => void rtc.startCall('video')}><Video size={19} /></IconSquareButton>
+          {/* Appels possibles seulement si l'interlocuteur est en ligne (sinon l'appel sonnerait dans le vide). */}
+          <IconSquareButton disabled={rtc.callStatus !== 'idle' || !peer.online} label={peer.online ? 'Appel audio' : 'Appel audio indisponible : hors ligne'} onClick={() => void rtc.startCall('audio')}><Phone size={19} /></IconSquareButton>
+          <IconSquareButton disabled={rtc.callStatus !== 'idle' || !peer.online} label={peer.online ? 'Appel vidéo' : 'Appel vidéo indisponible : hors ligne'} onClick={() => void rtc.startCall('video')}><Video size={19} /></IconSquareButton>
         </div>
       </div>
 
@@ -238,7 +246,7 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
       )}
       {recorder.isRecording ? (
         /* ---------------- Enregistrement vocal ---------------- */
-        <div className="flex shrink-0 items-center gap-3 border-t border-slate-200/80 px-3 py-3 md:px-6 md:py-4" role="status" aria-live="polite">
+        <div className="chat-composer flex shrink-0 items-center gap-3 border-t border-slate-200/80 px-3 py-3 md:px-6 md:py-4" role="status" aria-live="polite">
           <span className="relative flex h-3 w-3 shrink-0"><span className="absolute inset-0 animate-ping rounded-full bg-red-500/60" /><span className="relative h-3 w-3 rounded-full bg-red-500" /></span>
           <span className="text-[13px] font-semibold tabular-nums text-red-600">{formatClock(Math.min(recorder.elapsed, recorder.maxSeconds))}</span>
           <span className="min-w-0 flex-1 truncate text-[12px] text-slate-500">{recorder.elapsed >= recorder.maxSeconds ? 'Durée maximale atteinte (3 min)' : 'Enregistrement en cours…'}</span>
@@ -248,7 +256,7 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, inputId = 'cli
       ) : (
         // Barre de saisie (style messagerie mobile) : capsule [emoji | message | pièce jointe] + bouton rond
         // micro / envoi. Hors de la zone qui défile, elle reste toujours en bas de la conversation.
-        <form className="relative flex shrink-0 items-center gap-2 border-t border-slate-200/80 bg-white px-2 py-2 max-[359px]:gap-1.5 max-[359px]:px-1.5 md:px-4 md:py-3" onSubmit={handleSend}>
+        <form className="chat-composer relative flex shrink-0 items-center gap-2 border-t border-slate-200/80 bg-white px-2 py-2 max-[359px]:gap-1.5 max-[359px]:px-1.5 md:px-4 md:py-3" onSubmit={handleSend}>
           <input accept={ACCEPTED_FILES} className="hidden" onChange={handleFile} ref={fileInputRef} type="file" />
           {isPickerOpen && <EmojiStickerPicker onClose={closePicker} onEmoji={insertEmoji} onSticker={(stickerId) => void sendSticker(stickerId)} />}
           <div className="flex min-w-0 flex-1 items-center rounded-full border border-slate-200 bg-[#F7F8FA] px-0.5 transition focus-within:border-[#F59E0B] focus-within:bg-white focus-within:ring-4 focus-within:ring-amber-100">
@@ -295,7 +303,7 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
         <div className={`flex items-center gap-2.5 rounded-2xl bg-gradient-to-br px-4 py-3 text-[13px] font-bold text-white shadow-lg shadow-slate-900/10 ${sticker?.className ?? 'from-slate-400 to-slate-600'}`}>
           <span className="text-3xl leading-none">{sticker?.emoji ?? '✨'}</span>{sticker?.label ?? message.attachmentName ?? 'Sticker'}
         </div>
-        <p className="mt-1 text-[8.5px] text-slate-500">{timeOf(message.sentAt)}</p>
+        <p className="mt-1 text-[8.5px] text-slate-600">{timeOf(message.sentAt)}</p>
       </div>
     )
   }
@@ -308,7 +316,7 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
           ? <VoiceNotePlayer durationSeconds={message.audioDurationSeconds ?? 0} mine={mine} url={message.attachmentUrl} />
           : message.attachmentUrl && <AttachmentPreview contentType={message.attachmentContentType} mine={mine} name={message.attachmentName} url={message.attachmentUrl} />}
         {message.content && <p className="whitespace-pre-line break-words">{message.content}</p>}
-        <p className={`mt-1 text-right text-[8.5px] ${mine ? 'text-white/50' : 'text-slate-500'}`}>{timeOf(message.sentAt)}</p>
+        <p className={`mt-1 text-right text-[8.5px] ${mine ? 'text-white/75' : 'text-slate-600'}`}>{timeOf(message.sentAt)}</p>
       </div>
     </div>
   )
@@ -376,7 +384,7 @@ function AttachmentPreview({ contentType, mine, name, url }: { contentType?: str
 
 function IconSquareButton({ children, disabled, label, onClick }: { children: ReactNode; disabled?: boolean; label: string; onClick: () => void }) {
   return (
-    <button aria-label={label} className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-[#0B132B] transition hover:border-slate-400 hover:bg-slate-50 disabled:opacity-40" disabled={disabled} onClick={onClick} title={label} type="button">
+    <button aria-label={label} className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-[#0B132B] transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40" disabled={disabled} onClick={onClick} title={label} type="button">
       {children}
     </button>
   )
