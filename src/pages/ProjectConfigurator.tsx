@@ -80,6 +80,8 @@ function ProjectConfigurator() {
   const [mode, setMode] = useState<CreationMode>('ai')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  // Erreur du moteur IA (code AI_…) : un lien vers Messages accompagne le message générique.
+  const [isAiError, setIsAiError] = useState(false)
   const [quota, setQuota] = useState<AiQuota | null>(null)
 
   useEffect(() => {
@@ -118,13 +120,15 @@ function ProjectConfigurator() {
 
   async function generate(endpoint: string, payload: object) {
     setError('')
+    setIsAiError(false)
     setIsLoading(true)
     try {
       const response = await api.post<GenerationResponse>(endpoint, payload)
       navigate(`/configurator/preview?id=${encodeURIComponent(response.data.projectId)}`)
     } catch (requestError: unknown) {
-      const { quota: updatedQuota } = readAiError(requestError)
+      const { code, quota: updatedQuota } = readAiError(requestError)
       if (updatedQuota) setQuota(updatedQuota)
+      setIsAiError(code?.startsWith('AI_') ?? false)
       setError(apiErrorMessage(requestError, 'La création du projet a échoué. Vérifiez la connexion puis réessayez.'))
     } finally {
       setIsLoading(false)
@@ -288,7 +292,7 @@ function ProjectConfigurator() {
                 <GenerationProgress estimatedSeconds={GENERATION_ESTIMATE_SECONDS} />
               </div>
             )}
-            {error && <ErrorBanner message={error} />}
+            {error && <ErrorBanner contact={isAiError} message={error} />}
           </form>
         ) : (
           <form className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg shadow-slate-900/5" onSubmit={handleManualSubmit}>
@@ -428,7 +432,7 @@ function ProjectConfigurator() {
                 <GenerationProgress estimatedSeconds={GENERATION_ESTIMATE_SECONDS} />
               </div>
             )}
-            {error && <ErrorBanner message={error} />}
+            {error && <ErrorBanner contact={isAiError} message={error} />}
           </form>
         )}
       </section>
@@ -519,8 +523,8 @@ function SubmitButton({ disabled, isLoading, label }: { disabled: boolean; isLoa
   )
 }
 
-function ErrorBanner({ message }: { message: string }) {
-  return <p className="border-t border-red-100 bg-red-50 px-5 py-3 text-xs text-red-700 sm:px-6" role="alert">{message}</p>
+function ErrorBanner({ contact = false, message }: { contact?: boolean; message: string }) {
+  return <p className="border-t border-red-100 bg-red-50 px-5 py-3 text-xs text-red-700 sm:px-6" role="alert">{message}{contact && <> <Link className="ml-1 font-semibold underline underline-offset-2" to="/dashboard?tab=messages">Écrire à l’équipe</Link></>}</p>
 }
 
 export default ProjectConfigurator

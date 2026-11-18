@@ -73,6 +73,8 @@ function MvpPreviewPage() {
   const [workKind, setWorkKind] = useState<'refine' | 'estimate' | null>(null)
   const [device, setDevice] = useState<PreviewDevice>('desktop')
   const [error, setError] = useState('')
+  // Erreur du moteur IA (code AI_…) : un lien vers Messages accompagne le message générique.
+  const [isAiError, setIsAiError] = useState(false)
   const [referenceImage, setReferenceImage] = useState<ReferenceImage | null>(null)
   const [quota, setQuota] = useState<AiQuota | null>(null)
   const refinementsExhausted = quota !== null && !quota.unlimited && quota.remainingRefinements <= 0
@@ -148,8 +150,9 @@ function MvpPreviewPage() {
       setMessages((current) => [...current, { role: 'assistant', content: reply, estimate }])
       if (html) void fetchAiQuota().then(setQuota).catch(() => undefined)
     } catch (requestError: unknown) {
-      const { quota: updatedQuota } = readAiError(requestError)
+      const { code, quota: updatedQuota } = readAiError(requestError)
       if (updatedQuota) setQuota(updatedQuota)
+      setIsAiError(code?.startsWith('AI_') ?? false)
       setError(apiErrorMessage(requestError, 'La demande a échoué. Vérifiez la connexion puis réessayez.'))
       setMessages((current) => [...current, { role: 'assistant', content: 'Je n’ai pas pu traiter cette demande. Votre maquette actuelle est conservée.' }])
     } finally {
@@ -265,7 +268,7 @@ function MvpPreviewPage() {
               <div ref={chatEndRef} />
             </div>
 
-            {visibleError && <p className="mx-3 mb-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[11px] leading-4 text-red-700" role="alert">{visibleError}</p>}
+            {visibleError && <p className="mx-3 mb-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[11px] leading-4 text-red-700" role="alert">{visibleError}{isAiError && visibleError === error && <> <Link className="ml-1 font-semibold underline underline-offset-2" to="/dashboard?tab=messages">Écrire à l’équipe</Link></>}</p>}
 
             {refinementsExhausted && (
               <div className="mx-3 mb-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-[11px] leading-4 text-amber-900" role="status">
