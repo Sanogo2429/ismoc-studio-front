@@ -6,6 +6,7 @@ import { api } from '../../services/api'
 import { apiErrorMessage } from '../../services/apiError'
 import type { AuthResponse } from '../../services/authService'
 import { formatDate } from '../../services/projectTypes'
+import { isGoogleSession } from '../../services/session'
 import PageHeader from '../../components/PageHeader'
 
 interface AccountProfile {
@@ -17,6 +18,8 @@ interface AccountProfile {
   phoneNumber: string
   role: string
   createdAt: string
+  /** Faux pour un compte créé avec Google sans mot de passe IsMoc. */
+  hasPassword?: boolean
 }
 
 function roleLabel(role: string): string {
@@ -43,7 +46,7 @@ function SettingsTab({ onProfileUpdated }: { onProfileUpdated: (fullName: string
 
   return (
     <>
-      <PageHeader subtitle="Les informations de votre compte IsMoc Studio." title="Paramètres" />
+      <PageHeader subtitle="Vos informations personnelles et la sécurité de votre compte IsMoc Studio." title="Profil" />
       {loadError ? (
         <p className="mt-10 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{loadError}</p>
       ) : !profile ? (
@@ -57,7 +60,8 @@ function SettingsTab({ onProfileUpdated }: { onProfileUpdated: (fullName: string
             }}
             profile={profile}
           />
-          <PasswordForm />
+          {/* Compte Google (créé avec Google ou session Google) : pas de changement de mot de passe IsMoc. */}
+          {profile.hasPassword === false || isGoogleSession() ? <GoogleAccountCard /> : <PasswordForm />}
         </div>
       )}
       {/* Lien discret vers le site public (retiré de la barre de navigation de l'espace client). */}
@@ -113,6 +117,16 @@ function ProfileForm({ onSaved, profile }: { onSaved: (profile: AccountProfile) 
   )
 }
 
+/** Compte Google : la connexion passe par Google, il n'y a pas de mot de passe IsMoc à modifier. */
+function GoogleAccountCard() {
+  return (
+    <Card icon={<Lock size={18} />} subtitle="Votre compte est relié à Google." title="Connexion avec Google">
+      <p className="text-sm leading-6 text-slate-600">Vous vous connectez avec votre compte Google : il n’y a pas de mot de passe IsMoc à modifier ici. La sécurité de votre connexion est gérée par Google.</p>
+      <p className="mt-3 text-[13px] leading-5 text-slate-500">Pour pouvoir aussi vous connecter avec votre e-mail, définissez un mot de passe via « Mot de passe oublié » sur la page de connexion.</p>
+    </Card>
+  )
+}
+
 function PasswordForm() {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -150,7 +164,6 @@ function PasswordForm() {
         <Field label="Mot de passe actuel"><input autoComplete="current-password" className={INPUT} onChange={(event) => setCurrentPassword(event.target.value)} required type="password" value={currentPassword} /></Field>
         <Field error={newError} label="Nouveau mot de passe"><input autoComplete="new-password" className={INPUT} onChange={(event) => setNewPassword(event.target.value)} type="password" value={newPassword} /></Field>
         <Field error={confirmError} label="Confirmer le nouveau mot de passe"><input autoComplete="new-password" className={INPUT} onChange={(event) => setConfirmation(event.target.value)} type="password" value={confirmation} /></Field>
-        <p className="text-[11px] leading-5 text-slate-500">Compte créé avec Google ? Utilisez « Mot de passe oublié » sur la page de connexion pour définir un mot de passe.</p>
         <div className="flex flex-wrap items-center gap-4">
           <button className={PRIMARY_BUTTON} disabled={isSaving} type="submit">{isSaving && <LoaderCircle className="animate-spin" size={15} />} Modifier le mot de passe</button>
           {feedback && <Feedback {...feedback} />}

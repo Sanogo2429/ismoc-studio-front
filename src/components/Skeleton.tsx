@@ -81,7 +81,7 @@ export function BillingSkeleton() {
   )
 }
 
-/** Formulaires de profil et de mot de passe (onglet Paramètres). */
+/** Formulaires de profil et de mot de passe (onglet Profil). */
 export function SettingsSkeleton() {
   return (
     <Loading className="mt-10 grid gap-6 xl:grid-cols-2" label="Chargement de votre compte…">

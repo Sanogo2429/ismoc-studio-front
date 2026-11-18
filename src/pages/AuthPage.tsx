@@ -174,7 +174,7 @@ function AuthPage() {
           {isForgotPassword ? (
             forgotPasswordSuccess ? (
               <div className="forgot-success-view">
-                <p className="auth-success" role="status">Si un compte est associé à cette adresse, un e-mail avec un mot de passe temporaire vient d’être envoyé. Connectez-vous avec ce mot de passe, puis modifiez-le dans « Paramètres ».</p>
+                <p className="auth-success" role="status">Si un compte est associé à cette adresse, un e-mail avec un mot de passe temporaire vient d’être envoyé. Connectez-vous avec ce mot de passe, puis modifiez-le dans « Profil ».</p>
                 <button className="auth-submit" type="button" onClick={returnToLogin}>Retour à la connexion</button>
               </div>
             ) : (

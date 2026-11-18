@@ -5,6 +5,7 @@ import PageHeader from '../../components/PageHeader'
 import { SkeletonBlock } from '../../components/Skeleton'
 import { projectPath, type ClientNavId } from '../../services/clientNavigation'
 import { formatEuros, isGeneralThread, isPaid, projectStep, type ProjectSummary } from '../../services/projectTypes'
+import { getFirstName } from '../../services/session'
 
 interface HomeTabProps {
   error: string
@@ -24,7 +25,7 @@ function HomeTab({ error, onNavigate, projects: allThreads, userName }: HomeTabP
 
   return (
     <>
-      <PageHeader subtitle={`${today.charAt(0).toLocaleUpperCase('fr-FR')}${today.slice(1)} · voici où en sont vos projets.`} title={`Bonjour, ${userName}.`} />
+      <PageHeader subtitle={`${today.charAt(0).toLocaleUpperCase('fr-FR')}${today.slice(1)} · voici où en sont vos projets.`} title={`Bonjour, ${getFirstName(userName) || userName}.`} />
 
       {projects && projects.length > 0 && (
         <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">

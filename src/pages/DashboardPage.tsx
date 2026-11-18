@@ -20,7 +20,7 @@ function isNavId(value: string | null): value is ClientNavId {
 }
 
 /**
- * Espace client : Mes projets, Messages (SignalR + WebRTC), Facturation (€) et Paramètres.
+ * Espace client : Mes projets, Messages (SignalR + WebRTC), Facturation (€) et Profil.
  * L'onglet actif est porté par l'URL (?tab=…) pour que les autres pages puissent y renvoyer.
  */
 function DashboardPage() {

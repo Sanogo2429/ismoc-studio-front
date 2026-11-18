@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { ArrowRight, Bell, CreditCard, Gauge, Globe, Home, LayoutDashboard, LogOut, MessageSquare, Settings } from 'lucide-react'
+import { ArrowRight, Bell, CreditCard, Gauge, Globe, Home, LayoutDashboard, LogOut, MessageSquare, UserRound } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import type { ClientNavId } from '../services/clientNavigation'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
@@ -15,19 +15,19 @@ const NAVIGATION: Array<{ id: ClientNavId; label: string; icon: typeof LayoutDas
   { id: 'projects', label: 'Mes projets', icon: LayoutDashboard },
   { id: 'messages', label: 'Messages', icon: MessageSquare },
   { id: 'billing', label: 'Facturation', icon: CreditCard },
-  { id: 'settings', label: 'Paramètres', icon: Settings },
+  { id: 'settings', label: 'Profil', icon: UserRound },
 ]
 
 /**
  * Barre inférieure mobile : les 5 rubriques de l'espace client, libellés courts. Aucune ne mène au site public
- * (« Voir le site » est dans le menu du profil et dans Paramètres).
+ * (« Voir le site » est dans le menu du profil et dans Profil). Même nom et même icône partout : « Profil ».
  */
 const BOTTOM_NAVIGATION: Array<{ id: ClientNavId; label: string; icon: typeof LayoutDashboard }> = [
   { id: 'home', label: 'Accueil', icon: Home },
   { id: 'projects', label: 'Projets', icon: LayoutDashboard },
   { id: 'messages', label: 'Messages', icon: MessageSquare },
   { id: 'billing', label: 'Facturation', icon: CreditCard },
-  { id: 'settings', label: 'Profil', icon: Settings },
+  { id: 'settings', label: 'Profil', icon: UserRound },
 ]
 
 function initialsOf(name: string): string {
@@ -135,7 +135,7 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
                         <p className="truncate text-[13px] font-bold">{userName}</p>
                         <p className="text-[10px] font-medium" style={{ color: AMBER }}>{roleLabel}</p>
                       </div>
-                      <button className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => { setIsProfileMenuOpen(false); onNavigate('settings') }} role="menuitem" type="button"><Settings size={16} /> Mon profil</button>
+                      <button className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => { setIsProfileMenuOpen(false); onNavigate('settings') }} role="menuitem" type="button"><UserRound size={16} /> Mon profil</button>
                       {showCockpit && <Link className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => setIsProfileMenuOpen(false)} role="menuitem" to="/admin"><Gauge size={16} style={{ color: AMBER }} /> Cockpit Agence</Link>}
                       <Link className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => setIsProfileMenuOpen(false)} role="menuitem" to="/"><Globe size={16} /> Voir le site</Link>
                       <button className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-600" onClick={logout} role="menuitem" type="button"><LogOut size={16} /> Déconnexion</button>

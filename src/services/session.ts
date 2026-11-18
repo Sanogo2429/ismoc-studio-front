@@ -40,6 +40,19 @@ export function getUserRoles(): string[] {
   })
 }
 
+/** Prénom seul pour saluer l'utilisateur : claim « given_name » du jeton, sinon premier mot du nom affiché. */
+export function getFirstName(fallbackFullName = ''): string {
+  const givenName = readTokenPayload()?.given_name
+  if (typeof givenName === 'string' && givenName.trim()) return givenName.trim()
+  return fallbackFullName.trim().split(/\s+/)[0] ?? ''
+}
+
+/** Session ouverte avec Google (claim « amr » posé par l'API) : pas de mot de passe IsMoc connu de l'utilisateur. */
+export function isGoogleSession(): boolean {
+  const amr = readTokenPayload()?.amr
+  return amr === 'google' || (Array.isArray(amr) && amr.includes('google'))
+}
+
 export function isAdmin(): boolean {
   return getUserRoles().some((role) => role.toLowerCase() === 'admin')
 }
