@@ -13,6 +13,7 @@ import { api } from '../services/api'
 import { apiErrorMessage } from '../services/apiError'
 import { downloadInvoice } from '../services/invoice'
 import { useConnectionRestoredKey } from '../hooks/useConnectionRestoredKey'
+import { getDisplayName } from '../services/session'
 import {
   PROJECT_STEPS,
   formatDate,
@@ -59,7 +60,7 @@ function ClientProjectDashboard() {
   const [loadedProject, setProject] = useState<ClientProject | null>(null)
   const [loadError, setLoadError] = useState('')
   const rtc = useProjectRtc(projectId)
-  const userName = localStorage.getItem('userName')?.trim() || 'Client'
+  const userName = getDisplayName('Client')
   // Étape et jalons publiés par l'équipe en temps réel (SignalR « ProjectUpdated »).
   const project = loadedProject && rtc.projectUpdate
     ? { ...loadedProject, status: rtc.projectUpdate.status, milestones: rtc.projectUpdate.milestones }

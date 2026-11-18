@@ -23,6 +23,7 @@ import { api } from '../services/api'
 import { apiErrorMessage } from '../services/apiError'
 import { fetchAiQuota, readAiError, type AiQuota } from '../services/aiQuota'
 import { IMAGE_ACCEPT, prepareReferenceImage, type ReferenceImage } from '../services/imageUpload'
+import BrandLogo from '../components/BrandLogo'
 
 type CreationMode = 'ai' | 'manual'
 type ProjectFormat = 'web' | 'mobile'
@@ -206,8 +207,7 @@ function ProjectConfigurator() {
       <header className="pt-safe sticky top-0 z-30 border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 sm:px-8 sm:py-4">
           <Link className="inline-flex min-h-[44px] items-center gap-3" to="/dashboard" aria-label="IsMoc Studio, retour à mes projets">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-darkSlate text-sm font-bold text-white">I<span className="text-vibrantOrange">/</span>M</span>
-            <span className="leading-tight"><strong className="block text-lg font-semibold">IsMoc</strong><small className="block text-[12px] font-semibold tracking-[0.3em] text-slate-500">AI STUDIO</small></span>
+            <BrandLogo />
           </Link>
           <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 hover:text-darkSlate" to="/dashboard?tab=projects"><ArrowLeft size={15} /> Mes projets</Link>
         </div>

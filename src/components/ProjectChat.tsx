@@ -200,25 +200,27 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
 
   return (
     <section aria-label="Messagerie avec l’équipe IsMoc" className={`flex flex-col overflow-hidden bg-white text-[#0B132B] ${immersive ? 'chat-immersive' : 'rounded-2xl border border-slate-200/80'} ${className}`}>
-      <div className={`flex shrink-0 items-center justify-between gap-3 border-b border-slate-200/80 px-4 md:px-6 md:py-5 ${immersive ? 'pb-2.5 pl-1.5 pt-[calc(0.625rem+var(--safe-top))]' : 'py-3'}`}>
-        <div className="flex min-w-0 items-center gap-3">
+      <div className={`flex shrink-0 items-center justify-between gap-3 border-b border-slate-200/80 px-4 max-[359px]:gap-1.5 max-[359px]:pr-2 md:px-6 md:py-5 ${immersive ? 'pb-2.5 pl-1.5 pt-[calc(0.625rem+var(--safe-top))]' : 'py-3'}`}>
+        <div className="flex min-w-0 items-center gap-3 max-[359px]:gap-2">
           {onBack && (
             <button aria-label="Retour aux conversations" className="-mr-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#0B132B] transition hover:bg-slate-100" onClick={onBack} type="button"><ArrowLeft size={22} /></button>
           )}
           <div className="relative flex -space-x-3">
             {peer.avatars.map((avatar, index) => (
-              <span className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-[12px] font-bold text-white ring-2 ring-white ${index === 0 ? 'from-sky-500 to-indigo-600' : 'from-amber-400 to-orange-600'}`} key={avatar}>{avatar}</span>
+              // Très petit écran (< 360 px) : un seul avatar, pour laisser la place au nom.
+              <span className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-[12px] font-bold text-white ring-2 ring-white ${index === 0 ? 'from-sky-500 to-indigo-600' : 'from-amber-400 to-orange-600 max-[359px]:hidden'}`} key={avatar}>{avatar}</span>
             ))}
             <span className={`absolute -bottom-0.5 right-0 h-3 w-3 rounded-full ring-2 ring-white ${peer.online ? 'bg-emerald-500' : 'bg-slate-300'}`} />
           </div>
           <div className="min-w-0">
             <p className="truncate text-[14px] font-semibold text-slate-900">{peer.title}</p>
-            {/* Seul le sous-titre se tronque : l'état « En ligne / Hors ligne » reste toujours visible. */}
-            <p className="flex min-w-0 text-[12px] text-slate-500"><span className="truncate">{peer.subtitle}</span><span className={`shrink-0 whitespace-pre ${peer.online ? 'text-emerald-600' : 'text-slate-500'}`}> • {peer.online ? 'En ligne' : 'Hors ligne'}</span></p>
+            {/* L'état « En ligne / Hors ligne » reste toujours visible. Téléphone (< 480 px) : il occupe seul la ligne,
+                le sous-titre n'y tiendrait qu'en quelques lettres tronquées. */}
+            <p className="flex min-w-0 text-[12px] text-slate-500"><span className="truncate max-[479px]:hidden">{peer.subtitle}</span><span className={`shrink-0 whitespace-pre ${peer.online ? 'text-emerald-600' : 'text-slate-500'}`}><span className="max-[479px]:hidden"> • </span>{peer.online ? 'En ligne' : 'Hors ligne'}</span></p>
           </div>
         </div>
         {/* Toujours actifs : équipe hors ligne, l'appel sonne ~30 s, l'équipe est prévenue et l'appel manqué s'affiche. */}
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 max-[359px]:gap-1">
           <IconSquareButton label="Appel audio" onClick={() => void rtc.startCall('audio')}><Phone className="h-5 w-5" /></IconSquareButton>
           <IconSquareButton label="Appel vidéo" onClick={() => void rtc.startCall('video')}><Video className="h-5 w-5" /></IconSquareButton>
         </div>

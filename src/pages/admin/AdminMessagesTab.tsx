@@ -3,6 +3,7 @@ import { Eye, Inbox, LoaderCircle, Mail, Paperclip, Phone, Search } from 'lucide
 import CallOverlay from '../../components/CallOverlay'
 import { ChatPanel } from '../../components/ProjectChat'
 import { STATUS_BADGES } from '../../components/admin/statusBadges'
+import { NARROW_QUERY, useMediaQuery } from '../../hooks/useMediaQuery'
 import { useProjectRtc } from '../../hooks/useProjectRtc'
 import type { AdminProject } from '../../services/adminApi'
 
@@ -24,11 +25,17 @@ interface AdminMessagesTabProps {
   unreadIds: ReadonlySet<string>
   onMockup: (project: AdminProject) => void
   onSelect: (projectId: string) => void
+  /** Écran étroit : retour de la conversation vers la liste des dossiers. */
+  onClose: () => void
 }
 
-/** Messagerie pro split-screen : dossiers clients à gauche, conversation temps réel à droite. */
-function AdminMessagesTab({ onMockup, onSelect, projects, selectedProjectId, unreadIds }: AdminMessagesTabProps) {
+/**
+ * Messagerie pro split-screen : dossiers clients à gauche, conversation temps réel à droite.
+ * Écran étroit : liste des dossiers → conversation (bouton retour), comme l'espace client.
+ */
+function AdminMessagesTab({ onClose, onMockup, onSelect, projects, selectedProjectId, unreadIds }: AdminMessagesTabProps) {
   const [query, setQuery] = useState('')
+  const isNarrow = useMediaQuery(NARROW_QUERY)
 
   if (!projects) return <p className="flex items-center gap-2 text-sm text-slate-400"><LoaderCircle className="animate-spin" size={16} /> Chargement des dossiers…</p>
 
@@ -36,10 +43,14 @@ function AdminMessagesTab({ onMockup, onSelect, projects, selectedProjectId, unr
   const visible = projects.filter((project) => !search || `${project.reference} ${project.title} ${project.client.fullName}`.toLocaleLowerCase('fr-FR').includes(search))
   const selected = projects.find((project) => project.projectId === selectedProjectId) ?? null
 
+  if (isNarrow && selected) {
+    return <AdminConversation key={selected.projectId} onBack={onClose} onMockup={() => onMockup(selected)} project={selected} />
+  }
+
   return (
-    <div className="grid min-h-[640px] gap-4 lg:h-[calc(100dvh-190px)] lg:grid-cols-[340px_minmax(0,1fr)]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:h-[calc(100dvh-190px)] lg:min-h-[640px] lg:grid-cols-[340px_minmax(0,1fr)]">
       {/* ---------------- Dossiers ---------------- */}
-      <aside className="flex min-h-[320px] flex-col overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02]">
+      <aside className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] lg:min-h-[320px]">
         <div className="border-b border-white/[0.06] p-3">
           <label className="relative block">
             <span className="sr-only">Rechercher un dossier</span>
@@ -76,8 +87,8 @@ function AdminMessagesTab({ onMockup, onSelect, projects, selectedProjectId, unr
         </ul>
       </aside>
 
-      {/* ---------------- Conversation ---------------- */}
-      {selected ? (
+      {/* ---------------- Conversation (écran large uniquement) ---------------- */}
+      {isNarrow ? null : selected ? (
         <AdminConversation key={selected.projectId} onMockup={() => onMockup(selected)} project={selected} />
       ) : (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 px-6 py-16 text-center">
@@ -90,14 +101,14 @@ function AdminMessagesTab({ onMockup, onSelect, projects, selectedProjectId, unr
   )
 }
 
-function AdminConversation({ onMockup, project }: { onMockup: () => void; project: AdminProject }) {
+function AdminConversation({ onBack, onMockup, project }: { onBack?: () => void; onMockup: () => void; project: AdminProject }) {
   const rtc = useProjectRtc(project.projectId)
   const isGeneral = project.threadType === 'general'
   const badge = isGeneral ? { label: 'Avant-projet', className: 'bg-amber-500/15 text-amber-300 ring-amber-400/25' } : STATUS_BADGES[project.status]
 
   return (
-    <section className="flex min-h-[560px] flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 py-3.5">
+    <section className="flex min-h-[560px] min-w-0 flex-col gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.025] px-4 py-3.5 sm:px-5">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-[12px] font-bold text-[#F59E0B]">#{project.reference}</span>
@@ -107,15 +118,16 @@ function AdminConversation({ onMockup, project }: { onMockup: () => void; projec
           <p className="mt-1 truncate text-[13px] text-slate-300"><strong className="text-white">{project.client.fullName}</strong> · {project.title}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-[12px] text-slate-400">
-          {project.client.email && <span className="flex items-center gap-1.5"><Mail size={13} />{project.client.email}</span>}
-          {project.client.phoneNumber && <span className="flex items-center gap-1.5"><Phone size={13} />{project.client.phoneNumber}</span>}
-          {!isGeneral && <button className="inline-flex items-center gap-1.5 rounded-lg bg-white/[0.06] px-3 py-1.5 font-semibold text-slate-200 ring-1 ring-inset ring-white/10 hover:bg-white/[0.1]" onClick={onMockup} type="button"><Eye size={13} /> Maquette</button>}
+          {project.client.email && <a className="flex min-h-[44px] min-w-0 items-center gap-1.5 break-all hover:text-slate-200" href={`mailto:${project.client.email}`}><Mail className="shrink-0" size={13} />{project.client.email}</a>}
+          {project.client.phoneNumber && <a className="flex min-h-[44px] items-center gap-1.5 hover:text-slate-200" href={`tel:${project.client.phoneNumber}`}><Phone className="shrink-0" size={13} />{project.client.phoneNumber}</a>}
+          {!isGeneral && <button className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-white/[0.06] px-3 py-1.5 font-semibold text-slate-200 ring-1 ring-inset ring-white/10 hover:bg-white/[0.1]" onClick={onMockup} type="button"><Eye size={13} /> Maquette</button>}
         </div>
       </div>
       <ChatPanel
         className="min-h-[520px] flex-1"
-        counterpart={{ title: project.client.fullName, subtitle: `#${project.reference} · ${project.title}`, online: rtc.isClientOnline, avatars: [initials(project.client.fullName)] }}
+        counterpart={{ title: project.client.fullName, subtitle: `#${project.reference}`, online: rtc.isClientOnline, avatars: [initials(project.client.fullName)] }}
         inputId="admin-message"
+        onBack={onBack}
         rtc={rtc}
         viewer="team"
       />

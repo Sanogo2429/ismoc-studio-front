@@ -40,6 +40,18 @@ export function getUserRoles(): string[] {
   })
 }
 
+/**
+ * Nom complet affiché (en-têtes, menus, factures) : celui mémorisé à la connexion, sinon prénom + nom du jeton,
+ * sinon fallback. Évite « Client » dans l'en-tête quand la page salue déjà la personne par son prénom.
+ */
+export function getDisplayName(fallback: string): string {
+  const stored = localStorage.getItem('userName')?.trim()
+  if (stored) return stored
+  const payload = readTokenPayload()
+  const fromToken = [payload?.given_name, payload?.family_name].filter((part): part is string => typeof part === 'string' && Boolean(part.trim())).join(' ').trim()
+  return fromToken || fallback
+}
+
 /** Prénom seul pour saluer l'utilisateur : claim « given_name » du jeton, sinon premier mot du nom affiché. */
 export function getFirstName(fallbackFullName = ''): string {
   const givenName = readTokenPayload()?.given_name

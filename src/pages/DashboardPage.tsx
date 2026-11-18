@@ -5,7 +5,7 @@ import { api } from '../services/api'
 import { apiErrorMessage } from '../services/apiError'
 import { CLIENT_NAV_IDS, DASHBOARD_CHAT_INPUT_ID, type ClientNavId } from '../services/clientNavigation'
 import type { ProjectSummary } from '../services/projectTypes'
-import { isAdmin } from '../services/session'
+import { getDisplayName, isAdmin } from '../services/session'
 import { readCache, readPreference, writeCache } from '../services/sessionCache'
 import { LAST_CONVERSATION_KEY, prefetchMessages } from '../hooks/useProjectRtc'
 import { PHONE_QUERY, useMediaQuery } from '../hooks/useMediaQuery'
@@ -37,7 +37,7 @@ function DashboardPage() {
   // Dernière liste connue affichée immédiatement (cache de l'onglet), puis rafraîchie par l'API.
   const [projects, setProjects] = useState<ProjectSummary[] | null>(() => readCache<ProjectSummary[]>('projects') ?? null)
   const [projectsError, setProjectsError] = useState('')
-  const [userName, setUserName] = useState(() => localStorage.getItem('userName')?.trim() || 'Client')
+  const [userName, setUserName] = useState(() => getDisplayName('Client'))
 
   // Compte promu Admin depuis sa dernière connexion : on récupère un jeton à jour (rôle Admin) SANS quitter
   // l'espace client — « Mon espace » reste ici ; le cockpit s'ouvre via le bouton « Cockpit Agence ».

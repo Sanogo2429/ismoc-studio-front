@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
-import { hasValidSession } from '../services/session'
+import { getDisplayName, hasValidSession } from '../services/session'
 import './HomePage.css'
 import { clearSessionCache } from '../services/sessionCache'
 
@@ -86,7 +86,7 @@ function readSession(): SessionInfo {
   const isLoggedIn = hasValidSession()
   return {
     isLoggedIn,
-    name: localStorage.getItem('userName')?.trim() || 'Mon compte',
+    name: getDisplayName('Mon compte'),
     spacePath: isLoggedIn ? CLIENT_SPACE_PATH : '/connexion',
     projectPath: isLoggedIn ? CONFIGURATOR_PATH : '/connexion',
   }
@@ -229,7 +229,7 @@ function HomePage() {
           <div className="stats-inner">
             <p><strong>32</strong><span>projets lancés</span></p>
             <p><strong>06</strong><span>secteurs maîtrisés</span></p>
-            <p><strong>14j</strong><span>pour un premier aperçu</span></p>
+            <p><strong>14j</strong><span>pour une première version développée</span></p>
             <blockquote>“Une agence qui écoute avant de créer.”</blockquote>
           </div>
         </section>

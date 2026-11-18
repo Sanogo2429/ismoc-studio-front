@@ -1,4 +1,5 @@
 import { formatDate, formatEuros, projectCode, projectTypeLabel, type ProjectOrder } from './projectTypes'
+import { getDisplayName } from './session'
 
 const NAVY = '#0B132B'
 const AMBER = '#F59E0B'
@@ -19,7 +20,7 @@ function escapeHtml(value: string): string {
 export function downloadInvoice(project: InvoiceProject) {
   const order = project.order
   if (!order) return
-  const clientName = localStorage.getItem('userName')?.trim() || 'Client'
+  const clientName = getDisplayName('Client')
   const planLabel = order.maintenancePlan === 'annual' ? 'Maintenance annuelle' : order.maintenancePlan === 'monthly' ? 'Maintenance mensuelle' : null
   const rows = [
     ['Développement sur mesure', formatEuros(order.developmentPriceEur)],

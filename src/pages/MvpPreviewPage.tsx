@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import { ArrowLeft, ArrowRight, Calculator, ImagePlus, LoaderCircle, MessageCircle, Monitor, Send, ShoppingBag, Smartphone, Sparkles, X } from 'lucide-react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import GenerationProgress from '../components/GenerationProgress'
 import PreviewComponent, { type PreviewDevice } from '../components/PreviewComponent'
 import { api } from '../services/api'
@@ -187,6 +187,9 @@ function MvpPreviewPage() {
     }
   }
 
+  // Adresse sans projet (lien tronqué, favori) : retour à la liste plutôt qu'un aperçu vide et deux erreurs.
+  if (!projectId) return <Navigate replace to="/dashboard?tab=projects" />
+
   return (
     <div className="pb-safe min-h-screen bg-[#f6f7f9] text-darkSlate">
       <header className="pt-safe border-b border-slate-200 bg-white">
@@ -196,11 +199,11 @@ function MvpPreviewPage() {
           <div className="flex flex-wrap items-center gap-2">
             {/* Sélecteur d'aperçu responsive */}
             <div aria-label="Taille de l’aperçu" className="flex rounded-lg border border-slate-200 bg-slate-50 p-0.5" role="group">
-              <button aria-pressed={device === 'desktop'} className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-semibold transition ${device === 'desktop' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('desktop')} title="Aperçu ordinateur (100 %)" type="button"><Monitor size={14} /> Desktop</button>
-              <button aria-pressed={device === 'mobile'} className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-semibold transition ${device === 'mobile' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('mobile')} title="Aperçu smartphone (390 px)" type="button"><Smartphone size={14} /> Mobile</button>
+              <button aria-pressed={device === 'desktop'} className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-semibold transition ${device === 'desktop' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('desktop')} title="Aperçu ordinateur (100 %)" type="button"><Monitor size={14} /> Ordinateur</button>
+              <button aria-pressed={device === 'mobile'} className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-semibold transition ${device === 'mobile' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('mobile')} title="Aperçu smartphone (390 px)" type="button"><Smartphone size={14} /> Mobile</button>
             </div>
             <button
-              className="inline-flex items-center gap-1.5 rounded-lg bg-vibrantOrange px-3 py-2 text-xs font-semibold text-darkSlate transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-vibrantOrange px-3 py-2 text-xs font-semibold text-darkSlate transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={!memory || isWorking}
               onClick={() => void send('Estime le tarif et les délais de ce projet.', 'estimate')}
               type="button"
@@ -312,10 +315,10 @@ function MvpPreviewPage() {
               <div className="mt-2 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <input accept={IMAGE_ACCEPT} className="hidden" onChange={(event) => void handleImage(event)} ref={imageInputRef} type="file" />
-                  <button aria-label="Joindre une image d’inspiration (optionnel)" className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-slate-400 hover:text-darkSlate disabled:opacity-50" disabled={!memory || isWorking} onClick={() => imageInputRef.current?.click()} title="Joindre une image d’inspiration (optionnel)" type="button"><ImagePlus size={15} /></button>
+                  <button aria-label="Joindre une image d’inspiration (optionnel)" className="flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-slate-400 hover:text-darkSlate disabled:opacity-50" disabled={!memory || isWorking} onClick={() => imageInputRef.current?.click()} title="Joindre une image d’inspiration (optionnel)" type="button"><ImagePlus size={15} /></button>
                   <span className="text-[12px] text-slate-400">Entrée pour envoyer · Maj+Entrée pour une ligne</span>
                 </div>
-                <button aria-label="Envoyer le message" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-vibrantOrange text-darkSlate transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50" disabled={(!instruction.trim() && !referenceImage) || !memory || isWorking} type="submit"><Send size={15} /></button>
+                <button aria-label="Envoyer le message" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-vibrantOrange text-darkSlate transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50" disabled={(!instruction.trim() && !referenceImage) || !memory || isWorking} type="submit"><Send size={15} /></button>
               </div>
             </form>
           </aside>

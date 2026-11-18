@@ -3,7 +3,7 @@ import { ArrowRight, CircleCheck, CreditCard, Download, Smartphone } from 'lucid
 import { BillingSkeleton } from '../../components/Skeleton'
 import { Link } from 'react-router-dom'
 import { downloadInvoice } from '../../services/invoice'
-import { formatDate, formatEuros, isPaid, maintenanceLabel, projectCode, type ProjectSummary } from '../../services/projectTypes'
+import { formatDate, formatEuros, isGeneralThread, isPaid, maintenanceLabel, projectCode, type ProjectSummary } from '../../services/projectTypes'
 import PageHeader from '../../components/PageHeader'
 
 function paymentMethodLabel(project: ProjectSummary): string {
@@ -53,7 +53,10 @@ function BillingTab({ projects }: { projects: ProjectSummary[] | null }) {
         <div className="mt-10 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
           <h2 className="text-lg font-bold">Aucune facture pour le moment</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Vos factures en euros apparaîtront ici dès la commande de votre premier projet.</p>
-          <Link className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#0B132B] px-5 py-3 text-sm font-semibold text-white" to="/dashboard?tab=projects">Voir mes projets <ArrowRight size={16} /></Link>
+          {/* Sans projet, « Voir mes projets » mènerait à une autre page vide : on propose d'en créer un. */}
+          {projects.some((project) => !isGeneralThread(project))
+            ? <Link className="mt-6 inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[#0B132B] px-5 py-3 text-sm font-semibold text-white" to="/dashboard?tab=projects">Voir mes projets <ArrowRight size={16} /></Link>
+            : <Link className="mt-6 inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[#0B132B] px-5 py-3 text-sm font-semibold text-white" to="/configurator">Créer mon premier projet <ArrowRight size={16} /></Link>}
         </div>
       ) : (
         <div className="mt-8 space-y-6">

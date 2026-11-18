@@ -61,7 +61,7 @@ function ProjectsTab({ error, projects: allThreads }: ProjectsTabProps) {
         ) : projects.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
             <h2 className="text-lg font-bold">Aucun projet pour le moment</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Décrivez votre idée ou importez une maquette : IsMoc AI génère une première version interactive en quelques secondes.</p>
+            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Décrivez votre idée ou importez une maquette : IsMoc AI génère une première maquette interactive en quelques secondes.</p>
             <Link className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#0B132B] px-5 py-3 text-sm font-semibold text-white" to="/configurator">Créer mon premier projet <ArrowRight size={16} /></Link>
           </div>
         ) : (

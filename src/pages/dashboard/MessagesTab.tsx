@@ -125,7 +125,9 @@ function ProjectConversation({ immersive = false, onBack, project }: { immersive
       <>
         <ChatPanel
           className="min-h-0 flex-1"
-          counterpart={{ title: 'Équipe IsMoc', subtitle: project.projectName, online: rtc.isTeamOnline, avatars: ['IS', 'MO'] }}
+          // Téléphone : le titre porte ce qui distingue la conversation (nom du projet ; « Équipe IsMoc » pour la
+          // discussion générale) ; la ligne du dessous n'affiche que l'état En ligne / Hors ligne.
+          counterpart={{ title: general ? 'Équipe IsMoc' : project.projectName, subtitle: general ? 'Ismael & Moctar' : 'Équipe IsMoc', online: rtc.isTeamOnline, avatars: ['IS', 'MO'] }}
           immersive
           inputId={DASHBOARD_CHAT_INPUT_ID}
           onBack={onBack}
@@ -137,8 +139,8 @@ function ProjectConversation({ immersive = false, onBack, project }: { immersive
   }
 
   return (
-    <div className="mt-8">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-2xl border border-slate-200/80 bg-white px-5 py-4">
+    <div className="mt-6">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-2xl border border-slate-200/80 bg-white px-5 py-2.5">
         <div className="flex min-w-0 items-center gap-3">
           <ConnectionIndicator status={rtc.hubStatus} />
           <div className="min-w-0">
@@ -150,7 +152,8 @@ function ProjectConversation({ immersive = false, onBack, project }: { immersive
           {link.label} <ArrowRight size={14} />
         </Link>
       </div>
-      <ChatPanel className="h-[620px]" inputId={DASHBOARD_CHAT_INPUT_ID} rtc={rtc} />
+      {/* Hauteur calée sur l'écran (en-têtes de page + bandeau projet ≈ 385 px) : la barre de saisie reste visible sans défiler. */}
+      <ChatPanel className="h-[clamp(300px,calc(100dvh-385px),760px)]" inputId={DASHBOARD_CHAT_INPUT_ID} rtc={rtc} />
       <CallOverlay rtc={rtc} />
     </div>
   )
