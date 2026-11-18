@@ -60,7 +60,7 @@ function HomeTab({ error, onNavigate, projects: allThreads, userName }: HomeTabP
             <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{error}</p>
           ) : recent.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-10 text-center">
-              <p className="text-sm text-slate-500">Aucun projet pour le moment. Décrivez votre idée : IsMoc AI génère une première maquette en quelques secondes.</p>
+              <p className="text-sm text-slate-500">Aucun projet pour le moment. Décrivez votre idée : IsMoc AI génère une première maquette interactive en quelques secondes.</p>
             </div>
           ) : (
             <ul className="space-y-3">

@@ -1,9 +1,10 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { ArrowLeft, Building2, Check, CreditCard, LoaderCircle, Lock, ShieldCheck, Smartphone } from 'lucide-react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../services/api'
 import { apiErrorMessage } from '../services/apiError'
 import { formatEuros, isPaid, projectTypeLabel, type MaintenancePlanId } from '../services/projectTypes'
+import BrandLogo from '../components/BrandLogo'
 
 interface MaintenancePlan {
   id: MaintenancePlanId
@@ -146,13 +147,15 @@ function CheckoutPage() {
 
   const visibleLoadError = projectId ? loadError : 'Identifiant de projet manquant.'
 
+  // Adresse sans projet : retour à la liste des projets plutôt qu'un écran d'erreur.
+  if (!projectId) return <Navigate replace to="/dashboard?tab=projects" />
+
   return (
     <div className="pb-safe min-h-screen bg-white text-slate-900">
       <header className="pt-safe border-b border-slate-100">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <Link className="inline-flex min-h-[44px] items-center gap-3" to="/dashboard" aria-label="IsMoc Studio, retour à mes projets">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold text-white" style={{ background: NAVY }}>I<span className="text-[#F59E0B]">/</span>M</span>
-            <span className="text-sm font-semibold">IsMoc <span className="text-[12px] font-semibold tracking-[0.3em] text-slate-400">STUDIO</span></span>
+            <BrandLogo />
           </Link>
           {projectId && <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 hover:text-slate-900" to={`/configurator/preview?id=${encodeURIComponent(projectId)}`}><ArrowLeft size={15} /> Retour à la maquette</Link>}
         </div>

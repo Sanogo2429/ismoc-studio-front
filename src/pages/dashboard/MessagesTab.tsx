@@ -150,8 +150,8 @@ function ProjectConversation({ immersive = false, onBack, project }: { immersive
           {link.label} <ArrowRight size={14} />
         </Link>
       </div>
-      {/* Hauteur calée sur l'écran (en-têtes de page + bandeau projet ≈ 415 px) : la barre de saisie reste visible sans défiler. */}
-      <ChatPanel className="h-[clamp(340px,calc(100dvh-415px),760px)]" inputId={DASHBOARD_CHAT_INPUT_ID} rtc={rtc} />
+      {/* Hauteur calée sur l'écran (en-têtes de page + bandeau projet ≈ 385 px) : la barre de saisie reste visible sans défiler. */}
+      <ChatPanel className="h-[clamp(300px,calc(100dvh-385px),760px)]" inputId={DASHBOARD_CHAT_INPUT_ID} rtc={rtc} />
       <CallOverlay rtc={rtc} />
     </div>
   )

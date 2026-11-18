@@ -212,7 +212,7 @@ function AuthPage() {
               <div className="auth-input-wrap"><Phone size={17} /><input id="auth-phone" name="phoneNumber" type="tel" autoComplete="tel" placeholder="+33 6 12 34 56 78" required /></div>
             </>}
             {error && <p className="auth-error" role="alert">{error}</p>}
-            <label htmlFor="auth-email">Email</label>
+            <label htmlFor="auth-email">E-mail</label>
             <div className="auth-input-wrap"><Mail size={17} /><input defaultValue={registeredEmail} id="auth-email" name="email" type="email" autoComplete="email" placeholder="vous@exemple.com" required /></div>
             <label htmlFor="auth-password">Mot de passe</label>
             <div className="auth-input-wrap"><LockKeyhole size={17} /><input id="auth-password" name="password" type={showPassword ? 'text' : 'password'} autoComplete={isSignup ? 'new-password' : 'current-password'} minLength={8} placeholder="8 caractères minimum" required /><button className="password-toggle" type="button" aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'} onClick={() => setShowPassword((visible) => !visible)}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>

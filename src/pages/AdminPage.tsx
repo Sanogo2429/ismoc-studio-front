@@ -8,6 +8,7 @@ import { NARROW_QUERY, useMediaQuery } from '../hooks/useMediaQuery'
 import { fetchAdminOverview, type AdminOverview, type AdminProject, type ProgressResult } from '../services/adminApi'
 import { apiErrorMessage } from '../services/apiError'
 import { PROJECT_STEPS, messagePreview, type ClientMessage } from '../services/projectTypes'
+import { getDisplayName } from '../services/session'
 import AdminMessagesTab from './admin/AdminMessagesTab'
 import ClientsTab from './admin/ClientsTab'
 import OrdersTab from './admin/OrdersTab'
@@ -37,7 +38,7 @@ function AdminPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [unreadIds, setUnreadIds] = useState<ReadonlySet<string>>(() => new Set())
   const [mockupProject, setMockupProject] = useState<AdminProject | null>(null)
-  const [userName] = useState(() => localStorage.getItem('userName')?.trim() || 'Équipe IsMoc')
+  const [userName] = useState(() => getDisplayName('Équipe IsMoc'))
 
   // Écran large : le dossier le plus récent s'ouvre d'office. Écran étroit : la liste d'abord (pas de présélection).
   const isNarrow = useMediaQuery(NARROW_QUERY)

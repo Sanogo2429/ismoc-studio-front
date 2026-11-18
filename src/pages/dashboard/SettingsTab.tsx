@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
-import { CircleCheck, Globe, LoaderCircle, Lock, UserRound } from 'lucide-react'
+import { CircleCheck, Eye, EyeOff, Globe, LoaderCircle, Lock, UserRound } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { SettingsSkeleton } from '../../components/Skeleton'
 import { api } from '../../services/api'
@@ -101,9 +101,10 @@ function ProfileForm({ onSaved, profile }: { onSaved: (profile: AccountProfile) 
 
   return (
     <Card icon={<UserRound size={18} />} subtitle="Nom affiché dans vos échanges avec l’équipe et sur vos factures." title="Informations personnelles">
-      <dl className="mb-6 grid gap-3 rounded-xl bg-slate-50 p-4 text-sm sm:grid-cols-3">
+      {/* Rôle : affiché seulement pour l'équipe (pour un client, « Client » n'apporte rien). */}
+      <dl className={`mb-6 grid gap-3 rounded-xl bg-slate-50 p-4 text-sm ${profile.role === 'Admin' ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
         <div><dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">E-mail</dt><dd className="mt-1 break-all font-medium">{profile.email}</dd></div>
-        <div><dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">Rôle</dt><dd className="mt-1 font-medium">{roleLabel(profile.role)}</dd></div>
+        {profile.role === 'Admin' && <div><dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">Rôle</dt><dd className="mt-1 font-medium">{roleLabel(profile.role)}</dd></div>}
         <div><dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">Membre depuis</dt><dd className="mt-1 font-medium">{formatDate(profile.createdAt, { month: 'long', year: 'numeric' })}</dd></div>
       </dl>
       <form className="grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
@@ -163,9 +164,9 @@ function PasswordForm() {
   return (
     <Card icon={<Lock size={18} />} subtitle="8 caractères minimum, avec au moins une lettre et un chiffre." title="Mot de passe">
       <form className="grid gap-4" onSubmit={handleSubmit}>
-        <Field label="Mot de passe actuel"><input autoComplete="current-password" className={INPUT} onChange={(event) => setCurrentPassword(event.target.value)} required type="password" value={currentPassword} /></Field>
-        <Field error={newError} label="Nouveau mot de passe"><input autoComplete="new-password" className={INPUT} onChange={(event) => setNewPassword(event.target.value)} type="password" value={newPassword} /></Field>
-        <Field error={confirmError} label="Confirmer le nouveau mot de passe"><input autoComplete="new-password" className={INPUT} onChange={(event) => setConfirmation(event.target.value)} type="password" value={confirmation} /></Field>
+        <Field label="Mot de passe actuel"><PasswordInput autoComplete="current-password" onChange={setCurrentPassword} required value={currentPassword} /></Field>
+        <Field error={newError} label="Nouveau mot de passe"><PasswordInput autoComplete="new-password" onChange={setNewPassword} value={newPassword} /></Field>
+        <Field error={confirmError} label="Confirmer le nouveau mot de passe"><PasswordInput autoComplete="new-password" onChange={setConfirmation} value={confirmation} /></Field>
         <div className="flex flex-wrap items-center gap-4">
           <button className={PRIMARY_BUTTON} disabled={isSaving} type="submit">{isSaving && <LoaderCircle className="animate-spin" size={15} />} Modifier le mot de passe</button>
           {feedback && <Feedback {...feedback} />}
@@ -187,6 +188,19 @@ function Card({ children, icon, subtitle, title }: { children: ReactNode; icon: 
       </div>
       {children}
     </section>
+  )
+}
+
+/** Champ mot de passe avec bouton afficher / masquer (même comportement que l'écran de connexion). */
+function PasswordInput({ autoComplete, onChange, required = false, value }: { autoComplete: string; onChange: (value: string) => void; required?: boolean; value: string }) {
+  const [visible, setVisible] = useState(false)
+  return (
+    <span className="relative block">
+      <input autoComplete={autoComplete} className={`${INPUT} pr-12`} onChange={(event) => onChange(event.target.value)} required={required} type={visible ? 'text' : 'password'} value={value} />
+      <button aria-label={visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'} className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 hover:text-[#0B132B]" onClick={() => setVisible((current) => !current)} type="button">
+        {visible ? <EyeOff size={17} /> : <Eye size={17} />}
+      </button>
+    </span>
   )
 }
 

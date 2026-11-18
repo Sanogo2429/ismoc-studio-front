@@ -6,6 +6,7 @@ import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import { isAdmin } from '../services/session'
 import '../pages/Portal.css' // charge la police DM Sans de l'espace client
 import { clearSessionCache } from '../services/sessionCache'
+import BrandLogo from './BrandLogo'
 
 const NAVY = '#0B132B'
 const AMBER = '#F59E0B'
@@ -76,8 +77,7 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
     <div className="min-h-screen bg-[#F7F8FA] text-[#0B132B]" style={{ fontFamily: "'DM Sans', ui-sans-serif, system-ui, sans-serif" }}>
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[280px] flex-col overflow-y-auto px-5 pb-4 pt-6 text-white lg:flex" style={{ background: NAVY }}>
         <Link className="flex items-center gap-3.5 px-1" to="/dashboard" aria-label="IsMoc Studio, accueil de l’espace client">
-          <span className="flex h-[46px] w-[46px] items-center justify-center rounded-xl bg-white text-lg font-extrabold tracking-tight text-[#0B132B]">I<span style={{ color: AMBER }}>/</span>M</span>
-          <span className="leading-none"><strong className="block text-[22px] font-bold tracking-tight">IsMoc</strong><small className="mt-1.5 block text-[12px] font-semibold tracking-[0.35em] text-white/80">STUDIO</small></span>
+          <BrandLogo size="lg" tone="dark" />
         </Link>
 
         <p className="mt-8 px-3 text-[12px] font-semibold tracking-[0.25em] text-white/50">ESPACE CLIENT</p>
@@ -107,13 +107,11 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
       <div className="lg:pl-[280px]">
         <header className={`pt-safe sticky top-0 z-20 border-b border-slate-200/80 bg-white${immersive ? ' max-md:hidden' : ''}`}>
           <div className="flex h-16 items-center justify-between px-4 sm:px-12 md:h-[90px]">
-            {/* Téléphone : logo seul, comme une application native */}
-            <Link aria-label="IsMoc Studio, accueil de l’espace client" className="flex min-h-[44px] items-center gap-2.5 md:hidden" to="/dashboard">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg text-[13px] font-extrabold tracking-tight text-white" style={{ background: NAVY }}>I<span style={{ color: AMBER }}>/</span>M</span>
-              <strong className="text-[17px] font-bold tracking-tight">IsMoc</strong>
+            {/* Téléphone et tablette : logo (la barre latérale qui le porte n'apparaît qu'en écran large) */}
+            <Link aria-label="IsMoc Studio, accueil de l’espace client" className="flex min-h-[44px] items-center lg:hidden" to="/dashboard">
+              <BrandLogo />
             </Link>
-            <div className="hidden min-w-0 items-center gap-4 md:flex">
-              <span className="text-[12px] font-semibold tracking-[0.3em] text-slate-400">ESPACE CLIENT</span>
+            <div className="hidden min-w-0 items-center gap-4 md:ml-auto md:mr-4 md:flex lg:ml-0 lg:mr-0">
               <Link className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 py-2 text-[12px] font-semibold text-slate-600 transition hover:border-slate-400 hover:text-[#0B132B]" to="/"><Globe size={14} /> Voir le site</Link>
             </div>
             <div className="flex items-center gap-3 md:gap-4">
