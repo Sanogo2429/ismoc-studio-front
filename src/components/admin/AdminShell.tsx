@@ -50,10 +50,10 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[264px] flex-col border-r border-white/[0.06] bg-[#060A14] px-4 pb-5 pt-7 lg:flex">
         <Link className="flex items-center gap-3 px-2" to="/admin" aria-label="Cockpit agence IsMoc">
           <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F59E0B] text-[15px] font-extrabold text-[#0B132B]">I<span className="text-white">/</span>M</span>
-          <span className="leading-none"><strong className="block text-lg font-bold tracking-tight text-white">IsMoc</strong><small className="mt-1.5 block text-[9px] font-bold tracking-[0.3em] text-[#F59E0B]">COCKPIT AGENCE</small></span>
+          <span className="leading-none"><strong className="block text-lg font-bold tracking-tight text-white">IsMoc</strong><small className="mt-1.5 block text-[12px] font-bold tracking-[0.3em] text-[#F59E0B]">COCKPIT AGENCE</small></span>
         </Link>
 
-        <p className="mt-12 px-3 text-[10px] font-semibold tracking-[0.25em] text-slate-500">PILOTAGE</p>
+        <p className="mt-12 px-3 text-[12px] font-semibold tracking-[0.25em] text-slate-500">PILOTAGE</p>
         <nav className="mt-3 space-y-1" aria-label="Navigation du cockpit">
           {NAVIGATION.map(({ id, label, icon: Icon }) => {
             const isActive = active === id
@@ -61,7 +61,7 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
               <button aria-current={isActive ? 'page' : undefined} className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-[13.5px] font-medium transition ${isActive ? 'bg-[#F59E0B]/10 text-[#FCD34D] ring-1 ring-inset ring-[#F59E0B]/25' : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-100'}`} key={id} onClick={() => onNavigate(id)} type="button">
                 <Icon size={18} />
                 <span className="flex-1 text-left">{label}</span>
-                {id === 'messages' && unreadCount > 0 && <span className="rounded-full bg-[#F59E0B] px-2 py-0.5 text-[10px] font-bold text-[#0B132B]">{unreadCount}</span>}
+                {id === 'messages' && unreadCount > 0 && <span className="rounded-full bg-[#F59E0B] px-2 py-0.5 text-[12px] font-bold text-[#0B132B]">{unreadCount}</span>}
               </button>
             )
           })}
@@ -69,7 +69,7 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
 
         <div className="mt-auto rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4">
           <p className="flex items-center gap-2 text-[12px] font-semibold text-slate-200"><span className={`h-2 w-2 rounded-full ${lobby.color} ${lobbyStatus === 'connected' ? 'shadow-[0_0_10px] shadow-emerald-400/70' : ''}`} />{lobby.label}</p>
-          <p className="mt-2 text-[11px] leading-5 text-slate-500">Tant que le cockpit est ouvert, l’équipe apparaît « En ligne » auprès des clients et reçoit leurs appels.</p>
+          <p className="mt-2 text-[12px] leading-5 text-slate-500">Tant que le cockpit est ouvert, l’équipe apparaît « En ligne » auprès des clients et reçoit leurs appels.</p>
         </div>
         <div className="mt-4 space-y-1 border-t border-white/[0.06] pt-4">
           <Link className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12.5px] text-slate-400 transition hover:bg-white/[0.04] hover:text-slate-100" to="/dashboard"><ExternalLink size={15} /> Espace client</Link>
@@ -88,7 +88,7 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
               <button aria-label="Actualiser les données" className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 text-slate-300 transition hover:border-white/25 hover:text-white disabled:opacity-50" disabled={isRefreshing} onClick={onRefresh} title="Actualiser" type="button"><RefreshCw className={isRefreshing ? 'animate-spin' : ''} size={16} /></button>
               <div className="hidden text-right leading-tight sm:block">
                 <p className="text-[13px] font-semibold text-white">{userName}</p>
-                <p className="text-[10px] font-semibold text-[#F59E0B]">Administrateur</p>
+                <p className="text-[12px] font-semibold text-[#F59E0B]">Administrateur</p>
               </div>
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F59E0B]/15 text-[12px] font-bold text-[#FCD34D] ring-1 ring-[#F59E0B]/30">{initials}</span>
             </div>

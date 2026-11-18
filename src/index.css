@@ -74,21 +74,19 @@ body {
   html, body { overscroll-behavior-y: none; }
 }
 
-/* iOS (iPhone en portrait ET en paysage, iPad) zoome automatiquement sur un champ dont le texte fait moins
-   de 16 px : sur tout écran tactile, les champs de saisie sont à 16 px minimum. Le zoom manuel (pincement)
-   reste possible : aucun maximum-scale ni user-scalable=no dans la balise viewport (accessibilité).
-   (Aucun champ de l'application n'est plus grand que 16 px : la valeur fixe ne réduit rien.) */
-@media (pointer: coarse) {
-  /* :is() donne à tous les champs la spécificité la plus forte de la liste : un simple « textarea » ou « select »
-     perdait sinon face aux classes Tailwind (text-sm…) et restait à 14 px. */
-  :is(
-    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='color']),
-    select,
-    textarea,
-    [contenteditable='true']
-  ) {
-    font-size: 16px;
-  }
+/* Champs de saisie à 16 px minimum sur TOUS les écrans : lisibilité, et pas de zoom automatique d'iOS (iPhone,
+   iPad) sur un champ de moins de 16 px. Le zoom manuel (pincement) reste possible : aucun maximum-scale ni
+   user-scalable=no dans la balise viewport (accessibilité).
+   (Aucun champ de l'application n'est plus grand que 16 px : la valeur fixe ne réduit rien.)
+   :is() donne à tous les champs la spécificité la plus forte de la liste : un simple « textarea » ou « select »
+   perdrait sinon face aux classes Tailwind (text-sm…). */
+:is(
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='color']),
+  select,
+  textarea,
+  [contenteditable='true']
+) {
+  font-size: 16px;
 }
 
 /* Champs de saisie ramenés dans la zone visible (focus, clavier) : jamais sous l'en-tête collant ni sous la barre

@@ -100,9 +100,9 @@ function ProfileForm({ onSaved, profile }: { onSaved: (profile: AccountProfile) 
   return (
     <Card icon={<UserRound size={18} />} subtitle="Nom affiché dans vos échanges avec l’équipe et sur vos factures." title="Informations personnelles">
       <dl className="mb-6 grid gap-3 rounded-xl bg-slate-50 p-4 text-sm sm:grid-cols-3">
-        <div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">E-mail</dt><dd className="mt-1 break-all font-medium">{profile.email}</dd></div>
-        <div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Rôle</dt><dd className="mt-1 font-medium">{roleLabel(profile.role)}</dd></div>
-        <div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Membre depuis</dt><dd className="mt-1 font-medium">{formatDate(profile.createdAt, { month: 'long', year: 'numeric' })}</dd></div>
+        <div><dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">E-mail</dt><dd className="mt-1 break-all font-medium">{profile.email}</dd></div>
+        <div><dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">Rôle</dt><dd className="mt-1 font-medium">{roleLabel(profile.role)}</dd></div>
+        <div><dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">Membre depuis</dt><dd className="mt-1 font-medium">{formatDate(profile.createdAt, { month: 'long', year: 'numeric' })}</dd></div>
       </dl>
       <form className="grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
         <Field label="Prénom"><input autoComplete="given-name" className={INPUT} maxLength={60} onChange={(event) => setFirstName(event.target.value)} required value={firstName} /></Field>
@@ -193,7 +193,7 @@ function Field({ children, className = '', error, label }: { children: ReactNode
     <label className={`block ${className}`}>
       <span className="mb-1.5 block text-xs font-medium text-slate-600">{label}</span>
       {children}
-      {error && <span className="mt-1 block text-[11px] text-red-600">{error}</span>}
+      {error && <span className="mt-1 block text-[12px] text-red-600">{error}</span>}
     </label>
   )
 }

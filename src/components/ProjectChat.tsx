@@ -204,13 +204,13 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
           )}
           <div className="relative flex -space-x-3">
             {peer.avatars.map((avatar, index) => (
-              <span className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-[11px] font-bold text-white ring-2 ring-white ${index === 0 ? 'from-sky-500 to-indigo-600' : 'from-amber-400 to-orange-600'}`} key={avatar}>{avatar}</span>
+              <span className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-[12px] font-bold text-white ring-2 ring-white ${index === 0 ? 'from-sky-500 to-indigo-600' : 'from-amber-400 to-orange-600'}`} key={avatar}>{avatar}</span>
             ))}
             <span className={`absolute -bottom-0.5 right-0 h-3 w-3 rounded-full ring-2 ring-white ${peer.online ? 'bg-emerald-500' : 'bg-slate-300'}`} />
           </div>
           <div className="min-w-0">
             <p className="truncate text-[14px] font-semibold text-slate-900">{peer.title}</p>
-            <p className="truncate text-[10px] text-slate-500">{peer.subtitle} • <span className={peer.online ? 'text-emerald-600' : 'text-slate-500'}>{peer.online ? 'En ligne' : 'Hors ligne'}</span></p>
+            <p className="truncate text-[12px] text-slate-500">{peer.subtitle} • <span className={peer.online ? 'text-emerald-600' : 'text-slate-500'}>{peer.online ? 'En ligne' : 'Hors ligne'}</span></p>
           </div>
         </div>
         <div className="flex gap-2.5">
@@ -228,7 +228,7 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
             : <p className="py-16 text-center text-xs text-slate-500">Aucun message pour le moment. Écrivez à l’équipe IsMoc.</p>)}
           {groups.map((group) => (
             <div key={group.key}>
-              <p className="my-4 text-center text-[9px] font-semibold tracking-[0.12em] text-slate-500">{group.label}</p>
+              <p className="my-4 text-center text-[12px] font-semibold tracking-[0.12em] text-slate-500">{group.label}</p>
               <div className="space-y-5">
                 {group.items.map((message) => <MessageBubble key={message.id} message={message} viewer={viewer} />)}
               </div>
@@ -303,7 +303,7 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
         <div className={`flex items-center gap-2.5 rounded-2xl bg-gradient-to-br px-4 py-3 text-[13px] font-bold text-white shadow-lg shadow-slate-900/10 ${sticker?.className ?? 'from-slate-400 to-slate-600'}`}>
           <span className="text-3xl leading-none">{sticker?.emoji ?? '✨'}</span>{sticker?.label ?? message.attachmentName ?? 'Sticker'}
         </div>
-        <p className="mt-1 text-[8.5px] text-slate-600">{timeOf(message.sentAt)}</p>
+        <p className="mt-1 text-[12px] text-slate-600">{timeOf(message.sentAt)}</p>
       </div>
     )
   }
@@ -311,12 +311,12 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
   return (
     <div className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
       <div className={`max-w-[75%] rounded-xl px-4 pb-2 pt-3 text-[12.5px] leading-5 ${mine ? 'text-white shadow-md shadow-slate-900/10' : 'border border-slate-200/70 bg-white text-[#0B132B] shadow-sm'}`} style={mine ? { background: NAVY } : undefined}>
-        {showAuthor && <p className="mb-1 text-[10px] font-semibold text-[#B8530B]">{message.authorName}</p>}
+        {showAuthor && <p className="mb-1 text-[12px] font-semibold text-[#B8530B]">{message.authorName}</p>}
         {message.messageType === 'voice' && message.attachmentUrl
           ? <VoiceNotePlayer durationSeconds={message.audioDurationSeconds ?? 0} mine={mine} url={message.attachmentUrl} />
           : message.attachmentUrl && <AttachmentPreview contentType={message.attachmentContentType} mine={mine} name={message.attachmentName} url={message.attachmentUrl} />}
         {message.content && <p className="whitespace-pre-line break-words">{message.content}</p>}
-        <p className={`mt-1 text-right text-[8.5px] ${mine ? 'text-white/75' : 'text-slate-600'}`}>{timeOf(message.sentAt)}</p>
+        <p className={`mt-1 text-right text-[12px] ${mine ? 'text-white/75' : 'text-slate-600'}`}>{timeOf(message.sentAt)}</p>
       </div>
     </div>
   )
@@ -376,7 +376,7 @@ function AttachmentPreview({ contentType, mine, name, url }: { contentType?: str
   }
 
   return (
-    <button className={`mb-2 flex items-center gap-2 rounded-lg px-3 py-2 text-left text-[11px] font-medium ${mine ? 'bg-white/10' : 'bg-slate-100'}`} onClick={() => void download()} type="button">
+    <button className={`mb-2 flex items-center gap-2 rounded-lg px-3 py-2 text-left text-[12px] font-medium ${mine ? 'bg-white/10' : 'bg-slate-100'}`} onClick={() => void download()} type="button">
       <FileText size={15} /><span className="max-w-[220px] truncate">{name ?? 'Pièce jointe'}</span><Download size={13} />
     </button>
   )

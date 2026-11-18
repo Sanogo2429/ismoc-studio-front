@@ -74,18 +74,18 @@ function ProjectsTab({ error, projects: allThreads }: ProjectsTabProps) {
               return (
                 <article className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-slate-900/5" key={project.projectId}>
                   <button className={`relative flex h-36 items-end justify-between bg-gradient-to-br p-5 text-left text-white ${PREVIEW_GRADIENTS[index % PREVIEW_GRADIENTS.length]}`} onClick={() => openProject(project)} type="button" aria-label={`Ouvrir ${project.projectName}`}>
-                    <span className={`absolute left-5 top-5 rounded-full px-2.5 py-1 text-[10px] font-semibold ring-1 ring-inset ${TONE_CLASSES[payment.tone]}`}>{payment.label}</span>
+                    <span className={`absolute left-5 top-5 rounded-full px-2.5 py-1 text-[12px] font-semibold ring-1 ring-inset ${TONE_CLASSES[payment.tone]}`}>{payment.label}</span>
                     <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 text-lg font-bold backdrop-blur">{initials(project.projectName)}</span>
-                    <span className="flex items-center gap-1.5 rounded-full bg-black/20 px-3 py-1 text-[10px] font-medium backdrop-blur"><FormatIcon size={12} /> {project.format === 'mobile' ? 'Mobile' : 'Web'}</span>
+                    <span className="flex items-center gap-1.5 rounded-full bg-black/20 px-3 py-1 text-[12px] font-medium backdrop-blur"><FormatIcon size={12} /> {project.format === 'mobile' ? 'Mobile' : 'Web'}</span>
                   </button>
 
                   <div className="flex flex-1 flex-col p-6">
-                    <p className="text-[10px] font-bold tracking-[0.25em] text-[#B8530B]">PROJET #{projectCode(project.projectId)}</p>
+                    <p className="text-[12px] font-bold tracking-[0.25em] text-[#B8530B]">PROJET #{projectCode(project.projectId)}</p>
                     <h3 className="mt-2 truncate text-lg font-bold" title={project.projectName}>{project.projectName}</h3>
                     <p className="text-xs text-slate-500">{projectTypeLabel(project.format)} · créé le {formatDate(project.createdAt, { day: 'numeric', month: 'short', year: 'numeric' })}</p>
 
                     <div className="mt-5">
-                      <div className="flex items-center justify-between text-[11px]">
+                      <div className="flex items-center justify-between text-[12px]">
                         <span className="font-semibold">Étape {step.index}/5</span>
                         <span className="text-slate-500">{step.label}</span>
                       </div>

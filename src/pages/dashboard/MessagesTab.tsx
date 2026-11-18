@@ -59,7 +59,7 @@ function MessagesTab({ onCloseConversation, onSelectProject, projects, selectedP
       <PageHeader
         actions={projects.length > 1 ? (
           <label className="block w-full sm:w-80">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">Projet</span>
+            <span className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wider text-slate-500">Projet</span>
             <select className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none focus:border-[#F59E0B] focus:ring-4 focus:ring-amber-100" onChange={(event) => onSelectProject(event.target.value)} value={selected.projectId}>
               {projects.map((project) => <option key={project.projectId} value={project.projectId}>{isGeneralThread(project) ? `💬 ${project.projectName}` : `#${projectCode(project.projectId)} · ${project.projectName}`}</option>)}
             </select>
@@ -142,7 +142,7 @@ function ProjectConversation({ immersive = false, onBack, project }: { immersive
         <div className="flex min-w-0 items-center gap-3">
           <ConnectionIndicator status={rtc.hubStatus} />
           <div className="min-w-0">
-            <p className="text-[10px] font-bold tracking-[0.25em] text-[#B8530B]">{general ? 'AVANT-PROJET' : `PROJET #${projectCode(project.projectId)}`}</p>
+            <p className="text-[12px] font-bold tracking-[0.25em] text-[#B8530B]">{general ? 'AVANT-PROJET' : `PROJET #${projectCode(project.projectId)}`}</p>
             <p className="truncate text-sm font-bold">{project.projectName} <span className="font-normal text-slate-500">· {general ? 'posez vos questions avant de démarrer' : projectStep(project.status).label}</span></p>
           </div>
         </div>

@@ -77,10 +77,10 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[280px] flex-col overflow-y-auto px-5 pb-4 pt-6 text-white lg:flex" style={{ background: NAVY }}>
         <Link className="flex items-center gap-3.5 px-1" to="/dashboard" aria-label="IsMoc Studio, accueil de l’espace client">
           <span className="flex h-[46px] w-[46px] items-center justify-center rounded-xl bg-white text-lg font-extrabold tracking-tight text-[#0B132B]">I<span style={{ color: AMBER }}>/</span>M</span>
-          <span className="leading-none"><strong className="block text-[22px] font-bold tracking-tight">IsMoc</strong><small className="mt-1.5 block text-[10px] font-semibold tracking-[0.35em] text-white/80">STUDIO</small></span>
+          <span className="leading-none"><strong className="block text-[22px] font-bold tracking-tight">IsMoc</strong><small className="mt-1.5 block text-[12px] font-semibold tracking-[0.35em] text-white/80">STUDIO</small></span>
         </Link>
 
-        <p className="mt-8 px-3 text-[10px] font-semibold tracking-[0.25em] text-white/50">ESPACE CLIENT</p>
+        <p className="mt-8 px-3 text-[12px] font-semibold tracking-[0.25em] text-white/50">ESPACE CLIENT</p>
         <nav className="mt-3 space-y-1" aria-label="Navigation espace client">
           {NAVIGATION.map(({ id, label, icon: Icon }) => {
             const isActive = active === id
@@ -113,7 +113,7 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
               <strong className="text-[17px] font-bold tracking-tight">IsMoc</strong>
             </Link>
             <div className="hidden min-w-0 items-center gap-4 md:flex">
-              <span className="text-[11px] font-semibold tracking-[0.3em] text-slate-400">ESPACE CLIENT</span>
+              <span className="text-[12px] font-semibold tracking-[0.3em] text-slate-400">ESPACE CLIENT</span>
               <Link className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 py-2 text-[12px] font-semibold text-slate-600 transition hover:border-slate-400 hover:text-[#0B132B]" to="/"><Globe size={14} /> Voir le site</Link>
             </div>
             <div className="flex items-center gap-3 md:gap-4">
@@ -121,7 +121,7 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
               {statusSlot ?? <span className="relative flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500"><Bell size={17} /></span>}
               <div className="hidden text-right leading-tight md:block">
                 <p className="text-[13px] font-bold">{userName}</p>
-                <p className="text-[10px] font-medium" style={{ color: AMBER }}>{roleLabel}</p>
+                <p className="text-[12px] font-medium" style={{ color: AMBER }}>{roleLabel}</p>
               </div>
               <span className="hidden h-11 w-11 items-center justify-center rounded-full bg-[#FDF0D5] text-[13px] font-bold text-[#AF5109] md:flex">{initialsOf(userName)}</span>
               {/* Téléphone : l'avatar ouvre un petit menu (profil, cockpit, déconnexion) */}
@@ -133,7 +133,7 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
                     <div className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1.5 shadow-xl" role="menu">
                       <div className="border-b border-slate-100 px-4 pb-2.5 pt-1.5 leading-tight">
                         <p className="truncate text-[13px] font-bold">{userName}</p>
-                        <p className="text-[10px] font-medium" style={{ color: AMBER }}>{roleLabel}</p>
+                        <p className="text-[12px] font-medium" style={{ color: AMBER }}>{roleLabel}</p>
                       </div>
                       <button className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => { setIsProfileMenuOpen(false); onNavigate('settings') }} role="menuitem" type="button"><UserRound size={16} /> Mon profil</button>
                       {showCockpit && <Link className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-[13px] text-slate-700" onClick={() => setIsProfileMenuOpen(false)} role="menuitem" to="/admin"><Gauge size={16} style={{ color: AMBER }} /> Cockpit Agence</Link>}
@@ -172,7 +172,7 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
           {BOTTOM_NAVIGATION.map(({ id, label, icon: Icon }) => {
             const isActive = active === id
             return (
-              <button aria-current={isActive ? 'page' : undefined} className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 text-[10px] ${isActive ? 'font-semibold text-[#0B132B]' : 'font-medium text-slate-500'}`} key={id} onClick={() => onNavigate(id)} type="button">
+              <button aria-current={isActive ? 'page' : undefined} className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 text-[12px] ${isActive ? 'font-semibold text-[#0B132B]' : 'font-medium text-slate-500'}`} key={id} onClick={() => onNavigate(id)} type="button">
                 <Icon size={20} style={isActive ? { color: AMBER } : undefined} />{label}
               </button>
             )

@@ -141,7 +141,7 @@ function HomePage() {
               {session.isLoggedIn ? (
                 <span className="flex flex-wrap items-center gap-3">
                   <span className="flex items-center gap-2" title={session.name}>
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#FDF0D5] text-[11px] font-bold text-[#AF5109]">{initialsOf(session.name)}</span>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#FDF0D5] text-[12px] font-bold text-[#AF5109]">{initialsOf(session.name)}</span>
                     <span className="max-w-[140px] truncate text-[13px] font-bold text-[#111a2e]">{session.name}</span>
                   </span>
                   <Link className="rounded-lg border border-slate-200 px-3 py-2 text-[12px] font-bold text-[#111a2e] transition hover:border-slate-400" to={session.spacePath} onClick={() => setMobileMenuOpen(false)}>Mon espace</Link>

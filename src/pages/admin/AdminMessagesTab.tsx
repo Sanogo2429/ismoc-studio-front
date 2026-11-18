@@ -64,9 +64,9 @@ function AdminMessagesTab({ onMockup, onSelect, projects, selectedProjectId, unr
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline justify-between gap-2">
                       <span className={`truncate text-[13px] ${isUnread ? 'font-bold text-white' : 'font-semibold text-slate-200'}`}>{project.client.fullName}</span>
-                      <span className="shrink-0 text-[10px] text-slate-500">{relativeTime(last?.sentAt ?? project.lastActivityAt)}</span>
+                      <span className="shrink-0 text-[12px] text-slate-500">{relativeTime(last?.sentAt ?? project.lastActivityAt)}</span>
                     </span>
-                    <span className="block truncate text-[11px] text-slate-500"><span className="font-mono text-[#F59E0B]/80">#{project.reference}</span> · {project.title}</span>
+                    <span className="block truncate text-[12px] text-slate-500"><span className="font-mono text-[#F59E0B]/80">#{project.reference}</span> · {project.title}</span>
                     <span className={`mt-0.5 flex items-center gap-1 truncate text-[12px] ${isUnread ? 'text-slate-200' : 'text-slate-500'}`}>{last?.hasAttachment && <Paperclip className="shrink-0" size={11} />}<span className="truncate">{preview}</span></span>
                   </span>
                 </button>
@@ -100,9 +100,9 @@ function AdminConversation({ onMockup, project }: { onMockup: () => void; projec
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 py-3.5">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-[11px] font-bold text-[#F59E0B]">#{project.reference}</span>
-            <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ring-inset ${badge.className}`}>{badge.label}</span>
-            {!isGeneral && <span className="text-[11px] text-slate-500">Étape {project.step}/5</span>}
+            <span className="font-mono text-[12px] font-bold text-[#F59E0B]">#{project.reference}</span>
+            <span className={`rounded-full px-2 py-0.5 text-[12px] font-semibold ring-1 ring-inset ${badge.className}`}>{badge.label}</span>
+            {!isGeneral && <span className="text-[12px] text-slate-500">Étape {project.step}/5</span>}
           </div>
           <p className="mt-1 truncate text-[13px] text-slate-300"><strong className="text-white">{project.client.fullName}</strong> · {project.title}</p>
         </div>

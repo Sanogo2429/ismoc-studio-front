@@ -207,15 +207,15 @@ function ProjectConfigurator() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 sm:px-8 sm:py-4">
           <Link className="inline-flex min-h-[44px] items-center gap-3" to="/dashboard" aria-label="IsMoc Studio, retour à mes projets">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-darkSlate text-sm font-bold text-white">I<span className="text-vibrantOrange">/</span>M</span>
-            <span className="leading-tight"><strong className="block text-lg font-semibold">IsMoc</strong><small className="block text-[9px] font-semibold tracking-[0.3em] text-slate-500">AI STUDIO</small></span>
+            <span className="leading-tight"><strong className="block text-lg font-semibold">IsMoc</strong><small className="block text-[12px] font-semibold tracking-[0.3em] text-slate-500">AI STUDIO</small></span>
           </Link>
           <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 hover:text-darkSlate" to="/dashboard?tab=projects"><ArrowLeft size={15} /> Mes projets</Link>
         </div>
       </header>
 
       <section className="mx-auto max-w-5xl px-5 py-12 sm:px-8">
-        <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-amber-700"><Sparkles size={14} /> STUDIO IA UNIVERSEL</p>
-        <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight tracking-tight text-darkSlate sm:text-5xl">Qu’aimeriez-vous construire ?</h1>
+        <p className="inline-flex items-center gap-2 text-[12px] font-bold tracking-[0.22em] text-amber-700"><Sparkles size={14} /> STUDIO IA UNIVERSEL</p>
+        <h1 className="mt-5 max-w-3xl text-[clamp(2rem,1.3rem+3vw,3rem)] font-semibold leading-tight tracking-tight text-darkSlate">Qu’aimeriez-vous construire ?</h1>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-500">Décrivez simplement votre idée : IsMoc AI conçoit directement votre maquette interactive et cliquable, que vous ferez évoluer par conversation. Aucun fichier de design n’est nécessaire.</p>
 
         {/* Les deux modes. La carte « Créer avec IsMoc AI » sélectionnée contient directement sa zone de texte. */}
@@ -244,7 +244,7 @@ function ProjectConfigurator() {
                       </div>
                     </div>
                   ) : (
-                    <p className="mx-5 mb-4 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-[11px] font-medium text-slate-600 ring-1 ring-slate-200">
+                    <p className="mx-5 mb-4 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-[12px] font-medium text-slate-600 ring-1 ring-slate-200">
                       <Sparkles className="text-amber-600" size={13} />
                       {quota.unlimited ? 'Crédits IA illimités' : `Crédits IA : ${quota.remainingGenerations}/${quota.generationsLimit} générations · ${quota.remainingRefinements}/${quota.refinementsLimit} retouches restantes`}
                     </p>
@@ -265,15 +265,15 @@ function ProjectConfigurator() {
                   {referenceImage && (
                     <div className="mx-5 mb-4 flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-2 pr-3 sm:mx-6">
                       <img alt="Image d’inspiration jointe" className="h-14 w-20 rounded-md object-cover" src={referenceImage.dataUrl} />
-                      <div className="min-w-0 flex-1"><p className="truncate text-xs font-medium text-darkSlate">{referenceImage.name}</p><p className="text-[10px] text-slate-400">Image d’inspiration : IsMoc AI s’en inspire pour concevoir votre maquette interactive.</p></div>
+                      <div className="min-w-0 flex-1"><p className="truncate text-xs font-medium text-darkSlate">{referenceImage.name}</p><p className="text-[12px] text-slate-400">Image d’inspiration : IsMoc AI s’en inspire pour concevoir votre maquette interactive.</p></div>
                       <button aria-label="Retirer l’image" className="rounded-md p-1 text-slate-400 hover:bg-slate-200 hover:text-darkSlate" onClick={() => setReferenceImage(null)} type="button"><X size={15} /></button>
                     </div>
                   )}
                   <div className="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                     <div className="flex items-center gap-3">
                       <input accept={IMAGE_ACCEPT} className="hidden" onChange={(event) => void handleImage(event)} ref={imageInputRef} type="file" />
-                      <button className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-[11px] font-medium text-slate-600 transition hover:border-slate-400 disabled:opacity-50" disabled={isLoading} onClick={() => imageInputRef.current?.click()} type="button"><ImagePlus size={14} /> Joindre une image d’inspiration (optionnel)</button>
-                      <span className="hidden text-[10px] text-slate-400 sm:inline">{idea.length} / {MAX_DESCRIPTION_LENGTH}</span>
+                      <button className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-[12px] font-medium text-slate-600 transition hover:border-slate-400 disabled:opacity-50" disabled={isLoading} onClick={() => imageInputRef.current?.click()} type="button"><ImagePlus size={14} /> Joindre une image d’inspiration (optionnel)</button>
+                      <span className="hidden text-[12px] text-slate-400 sm:inline">{idea.length} / {MAX_DESCRIPTION_LENGTH}</span>
                     </div>
                     <SubmitButton disabled={(!idea.trim() && !referenceImage) || isLoading || aiExhausted} isLoading={isLoading} label="Créer le prototype" />
                   </div>
@@ -324,7 +324,7 @@ function ProjectConfigurator() {
                       onClick={() => setStep(index)}
                       type="button"
                     >
-                      <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] ${index < step ? 'bg-emerald-500 text-white' : index === step ? 'bg-vibrantOrange text-darkSlate' : 'bg-slate-100'}`}>{index < step ? <Check size={11} /> : index + 1}</span>
+                      <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[12px] ${index < step ? 'bg-emerald-500 text-white' : index === step ? 'bg-vibrantOrange text-darkSlate' : 'bg-slate-100'}`}>{index < step ? <Check size={11} /> : index + 1}</span>
                       <Icon className="hidden sm:block" size={14} /> {item.title}
                     </button>
                   </li>
@@ -429,7 +429,7 @@ function ProjectConfigurator() {
                   <dl className="mt-5 grid gap-3 rounded-lg bg-slate-50 p-4 text-xs sm:grid-cols-2">
                     <Summary label="Format" value={format === 'web' ? 'Site / application web' : 'Application mobile'} />
                     <Summary label="Secteur" value={effectiveSector || '—'} />
-                    <div><dt className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Couleurs</dt><dd className="mt-1 flex items-center gap-2"><span className="h-4 w-4 rounded" style={{ background: primaryColor }} /><span className="h-4 w-4 rounded" style={{ background: secondaryColor }} />{primaryColor} · {secondaryColor}</dd></div>
+                    <div><dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-400">Couleurs</dt><dd className="mt-1 flex items-center gap-2"><span className="h-4 w-4 rounded" style={{ background: primaryColor }} /><span className="h-4 w-4 rounded" style={{ background: secondaryColor }} />{primaryColor} · {secondaryColor}</dd></div>
                     <Summary label="Pages" value={modules.join(', ')} />
                   </dl>
                 </StepSection>
@@ -486,7 +486,7 @@ function ModeCard({ active, badge, children, description, disabled, fullWidth = 
       >
         <div className="flex items-start justify-between gap-3">
           <span className={`flex h-10 w-10 items-center justify-center rounded-lg ${active ? 'bg-vibrantOrange text-darkSlate' : 'bg-slate-100 text-slate-600'}`}>{icon}</span>
-          <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${active ? 'bg-darkSlate text-white' : 'bg-slate-100 text-slate-600'}`}>{badge}</span>
+          <span className={`rounded-full px-2.5 py-1 text-[12px] font-semibold ${active ? 'bg-darkSlate text-white' : 'bg-slate-100 text-slate-600'}`}>{badge}</span>
         </div>
         <h2 className="mt-4 text-base font-semibold text-darkSlate">{title}</h2>
         <p className="mt-1.5 text-xs leading-5 text-slate-500">{description}</p>
@@ -518,7 +518,7 @@ function ColorField({ label, onChange, value }: { label: string; onChange: (valu
   const id = `color-${label.replace(/\s+/g, '-')}`
   return (
     <div>
-      <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-400" htmlFor={id}>{label}</label>
+      <label className="text-[12px] font-semibold uppercase tracking-wider text-slate-400" htmlFor={id}>{label}</label>
       <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-slate-200 px-2 py-1.5">
         <input aria-label={`${label} (sélecteur)`} className="h-8 w-10 cursor-pointer rounded border-0 bg-transparent p-0" onChange={(event) => onChange(event.target.value.toUpperCase())} type="color" value={HEX_COLOR.test(value) ? value : '#000000'} />
         <input className={`min-w-0 flex-1 bg-transparent font-mono text-sm uppercase outline-none ${HEX_COLOR.test(value) ? '' : 'text-red-600'}`} id={id} maxLength={7} onChange={(event) => onChange(event.target.value.trim())} value={value} />
@@ -538,7 +538,7 @@ function StepSection({ children, subtitle, title }: { children: ReactNode; subti
 }
 
 function Summary({ label, value }: { label: string; value: string }) {
-  return <div><dt className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">{label}</dt><dd className="mt-1 text-darkSlate">{value}</dd></div>
+  return <div><dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-400">{label}</dt><dd className="mt-1 text-darkSlate">{value}</dd></div>
 }
 
 function SubmitButton({ disabled, isLoading, label }: { disabled: boolean; isLoading: boolean; label: string }) {

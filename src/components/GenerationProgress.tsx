@@ -90,7 +90,7 @@ function GenerationProgress({ estimatedSeconds, title = 'IsMoc AI conçoit votre
           </span>
           <div>
             <p className="text-sm font-semibold text-darkSlate">{title}</p>
-            <p className="text-[11px] text-slate-500">{timeLabel}</p>
+            <p className="text-[12px] text-slate-500">{timeLabel}</p>
           </div>
         </div>
         <span className="text-2xl font-bold tabular-nums tracking-tight text-darkSlate">{percent} %</span>
@@ -102,8 +102,8 @@ function GenerationProgress({ estimatedSeconds, title = 'IsMoc AI conçoit votre
         {STEPS.map((label, index) => {
           const state = index < stepIndex ? 'done' : index === stepIndex ? 'active' : 'upcoming'
           return (
-            <li className={`flex items-start gap-2 rounded-lg px-2.5 py-2 text-[11px] leading-4 transition ${state === 'active' ? 'bg-white font-semibold text-darkSlate shadow-sm ring-1 ring-amber-200' : state === 'done' ? 'text-slate-500' : 'text-slate-400'}`} key={label}>
-              <span className={`mt-px flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold ${state === 'done' ? 'bg-emerald-500 text-white' : state === 'active' ? 'bg-vibrantOrange text-darkSlate' : 'bg-slate-200 text-slate-500'}`}>
+            <li className={`flex items-start gap-2 rounded-lg px-2.5 py-2 text-[12px] leading-4 transition ${state === 'active' ? 'bg-white font-semibold text-darkSlate shadow-sm ring-1 ring-amber-200' : state === 'done' ? 'text-slate-500' : 'text-slate-400'}`} key={label}>
+              <span className={`mt-px flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[12px] font-bold ${state === 'done' ? 'bg-emerald-500 text-white' : state === 'active' ? 'bg-vibrantOrange text-darkSlate' : 'bg-slate-200 text-slate-500'}`}>
                 {state === 'done' ? <Check size={10} strokeWidth={3} /> : index + 1}
               </span>
               <span>{index + 1}/4 {label}</span>

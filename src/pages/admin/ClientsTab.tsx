@@ -59,7 +59,7 @@ function ClientsTab({ refreshKey }: { refreshKey: number }) {
       <div className="mt-6 overflow-x-auto rounded-2xl border border-white/[0.07] bg-white/[0.02]">
         <table className="w-full min-w-[860px] text-left text-[13px]">
           <thead>
-            <tr className="border-b border-white/[0.07] text-[10.5px] uppercase tracking-wider text-slate-500">
+            <tr className="border-b border-white/[0.07] text-[12px] uppercase tracking-wider text-slate-500">
               <th className="px-5 py-3.5 font-semibold">Nom</th>
               <th className="px-5 py-3.5 font-semibold">E-mail</th>
               <th className="px-5 py-3.5 font-semibold">Téléphone</th>
@@ -74,20 +74,20 @@ function ClientsTab({ refreshKey }: { refreshKey: number }) {
               <tr className="border-b border-white/[0.04] transition last:border-0 hover:bg-white/[0.025]" key={client.clientId}>
                 <td className="px-5 py-3.5">
                   <div className="flex items-center gap-3">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.07] text-[11px] font-bold text-slate-200">{client.fullName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0].toLocaleUpperCase('fr-FR')).join('') || '?'}</span>
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.07] text-[12px] font-bold text-slate-200">{client.fullName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0].toLocaleUpperCase('fr-FR')).join('') || '?'}</span>
                     <div className="min-w-0">
                       <p className="truncate font-semibold text-white">{client.fullName || '—'}</p>
-                      {client.role === 'Admin' && <span className="text-[10px] font-semibold text-[#F59E0B]">Équipe IsMoc</span>}
+                      {client.role === 'Admin' && <span className="text-[12px] font-semibold text-[#F59E0B]">Équipe IsMoc</span>}
                     </div>
                   </div>
                 </td>
                 <td className="px-5 py-3.5 text-slate-300">{client.email}</td>
                 <td className="px-5 py-3.5 text-slate-400">{client.phoneNumber || '—'}</td>
                 <td className="px-5 py-3.5 text-slate-400">{formatDate(client.registeredAt, { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                <td className="px-5 py-3.5 text-right text-slate-300">{client.projectsCount}{client.paidProjectsCount > 0 && <span className="ml-1 text-[11px] text-emerald-400">({client.paidProjectsCount} payé{client.paidProjectsCount > 1 ? 's' : ''})</span>}</td>
+                <td className="px-5 py-3.5 text-right text-slate-300">{client.projectsCount}{client.paidProjectsCount > 0 && <span className="ml-1 text-[12px] text-emerald-400">({client.paidProjectsCount} payé{client.paidProjectsCount > 1 ? 's' : ''})</span>}</td>
                 <td className="px-5 py-3.5 text-right">
                   <p className="font-bold text-white">{formatEuros(client.revenueEur)}</p>
-                  {client.committedEur > client.revenueEur && <p className="text-[10.5px] text-slate-500">sur {formatEuros(client.committedEur)} engagés</p>}
+                  {client.committedEur > client.revenueEur && <p className="text-[12px] text-slate-500">sur {formatEuros(client.committedEur)} engagés</p>}
                 </td>
               </tr>
             ))}

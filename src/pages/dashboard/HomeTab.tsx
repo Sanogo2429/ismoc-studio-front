@@ -94,7 +94,7 @@ function ShortcutButton({ icon, label, onClick }: { icon: ReactNode; label: stri
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="h-full rounded-2xl border border-slate-200/80 bg-white px-5 py-4 sm:px-6 sm:py-5">
-      <dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">{label}</dt>
+      <dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">{label}</dt>
       <dd className="mt-2 text-2xl font-bold tracking-tight">{value}</dd>
     </div>
   )

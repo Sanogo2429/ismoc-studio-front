@@ -99,7 +99,7 @@ function CallOverlay({ peerName = 'Équipe IsMoc', rtc }: { peerName?: string; r
 
           <div className="absolute left-6 top-6 rounded-xl bg-black/40 px-4 py-2 text-white backdrop-blur">
             <p className="text-[13px] font-semibold">{callLabel(rtc.callType)} · {peerName}</p>
-            <p className="text-[11px] tabular-nums text-white/70">{statusText}</p>
+            <p className="text-[12px] tabular-nums text-white/70">{statusText}</p>
           </div>
 
           {rtc.callType === 'video' && rtc.localStream && (

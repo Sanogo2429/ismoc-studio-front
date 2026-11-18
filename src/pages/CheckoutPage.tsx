@@ -152,7 +152,7 @@ function CheckoutPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <Link className="inline-flex min-h-[44px] items-center gap-3" to="/dashboard" aria-label="IsMoc Studio, retour à mes projets">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold text-white" style={{ background: NAVY }}>I<span className="text-[#F59E0B]">/</span>M</span>
-            <span className="text-sm font-semibold">IsMoc <span className="text-[10px] font-semibold tracking-[0.3em] text-slate-400">STUDIO</span></span>
+            <span className="text-sm font-semibold">IsMoc <span className="text-[12px] font-semibold tracking-[0.3em] text-slate-400">STUDIO</span></span>
           </Link>
           {projectId && <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 hover:text-slate-900" to={`/configurator/preview?id=${encodeURIComponent(projectId)}`}><ArrowLeft size={15} /> Retour à la maquette</Link>}
         </div>
@@ -173,7 +173,7 @@ function CheckoutPage() {
         <main className="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:py-14">
           {/* ---------------- Colonne gauche : paiement ---------------- */}
           <form noValidate onSubmit={handlePay}>
-            <p className="text-[11px] font-bold tracking-[0.22em] text-[#AF5109]">DERNIÈRE ÉTAPE</p>
+            <p className="text-[12px] font-bold tracking-[0.22em] text-[#AF5109]">DERNIÈRE ÉTAPE</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Finalisez votre projet.</h1>
             <p className="mt-3 max-w-lg text-sm leading-6 text-slate-500">Réglez le premier tiers aujourd’hui : nos développeurs démarrent immédiatement à partir de votre maquette validée.</p>
 
@@ -230,7 +230,7 @@ function CheckoutPage() {
                   const active = item.id === plan
                   return (
                     <button aria-checked={active} className={`relative rounded-xl border p-4 text-left transition ${active ? 'border-[#F59E0B] bg-amber-50/60 ring-2 ring-[#F59E0B]/30' : 'border-slate-200 hover:border-slate-400'}`} key={item.id} onClick={() => setPlan(item.id)} role="radio" type="button">
-                      {item.id === 'annual' && item.discountPercent > 0 && <span className="absolute -top-2.5 right-3 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-semibold text-white">−{item.discountPercent} %</span>}
+                      {item.id === 'annual' && item.discountPercent > 0 && <span className="absolute -top-2.5 right-3 rounded-full bg-emerald-500 px-2 py-0.5 text-[12px] font-semibold text-white">−{item.discountPercent} %</span>}
                       <span className="flex items-center justify-between"><strong className="text-sm">{item.label}</strong>{active && <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#F59E0B] text-white"><Check size={12} /></span>}</span>
                       <span className="mt-2 block text-xs text-slate-500">{planDescription(item)}</span>
                     </button>
@@ -245,16 +245,16 @@ function CheckoutPage() {
               {isPaying ? <><LoaderCircle className="animate-spin" size={17} /> Traitement sécurisé…</> : <>Payer {formatEuros(firstInstallment)} 🔒</>}
             </button>
             <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-slate-500"><Lock size={12} /> Paiement chiffré et sécurisé</p>
-            <p className="mt-1 text-center text-[10px] text-slate-400">Environnement de démonstration : aucun prélèvement réel n’est effectué.</p>
+            <p className="mt-1 text-center text-[12px] text-slate-400">Environnement de démonstration : aucun prélèvement réel n’est effectué.</p>
           </form>
 
           {/* ---------------- Colonne droite : récapitulatif ---------------- */}
           <aside className="h-fit rounded-3xl p-7 text-white shadow-2xl shadow-slate-900/20 lg:sticky lg:top-8" style={{ background: NAVY }}>
-            <p className="text-[11px] font-bold tracking-[0.22em] text-white/50">RÉCAPITULATIF</p>
+            <p className="text-[12px] font-bold tracking-[0.22em] text-white/50">RÉCAPITULATIF</p>
             <div className="mt-5 flex items-start gap-3">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#F59E0B] text-[#0B132B]">{summary.format === 'mobile' ? <Smartphone size={20} /> : <ShieldCheck size={20} />}</span>
               <div className="min-w-0">
-                <span className="inline-block rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-semibold text-[#FCD34D]">{projectTypeLabel(summary.format)}</span>
+                <span className="inline-block rounded-full bg-white/10 px-2.5 py-0.5 text-[12px] font-semibold text-[#FCD34D]">{projectTypeLabel(summary.format)}</span>
                 <h2 className="mt-1.5 truncate text-lg font-semibold" title={summary.projectName}>{summary.projectName}</h2>
                 {summary.estimatedDays && <p className="text-xs text-white/50">Complexité {summary.complexityLevel?.toLocaleLowerCase('fr-FR')} · livraison estimée sous {summary.estimatedDays} jours ouvrés</p>}
               </div>
@@ -271,12 +271,12 @@ function CheckoutPage() {
             </dl>
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
-              <p className="text-[10px] font-bold tracking-[0.2em] text-[#FCD34D]">PAIEMENT DU PROJET EN 3 FOIS</p>
+              <p className="text-[12px] font-bold tracking-[0.2em] text-[#FCD34D]">PAIEMENT DU PROJET EN 3 FOIS</p>
               <ol className="mt-4 space-y-3">
                 {summary.installments.map((installment, index) => (
                   <li className="flex items-center justify-between text-sm" key={installment.label}>
                     <span className="flex items-center gap-2.5">
-                      <span className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold ${index === 0 ? 'bg-[#F59E0B] text-[#0B132B]' : 'bg-white/10 text-white/60'}`}>{index + 1}</span>
+                      <span className={`flex h-6 w-6 items-center justify-center rounded-full text-[12px] font-bold ${index === 0 ? 'bg-[#F59E0B] text-[#0B132B]' : 'bg-white/10 text-white/60'}`}>{index + 1}</span>
                       <span className={index === 0 ? 'font-medium' : 'text-white/60'}>{installment.label}</span>
                     </span>
                     <strong className={index === 0 ? 'text-[#FCD34D]' : 'font-medium text-white/80'}>{formatEuros(installment.amountEur)}</strong>
@@ -289,7 +289,7 @@ function CheckoutPage() {
               <span className="text-sm text-white/60">Total projet</span>
               <strong className="text-3xl font-bold tracking-tight">{formatEuros(summary.projectTotalEur)}</strong>
             </div>
-            <p className="mt-2 text-right text-[10px] text-white/40">Montants HT en euros{selectedPlan && selectedPlan.id !== 'none' ? ' · maintenance facturée séparément après livraison' : ''}</p>
+            <p className="mt-2 text-right text-[12px] text-white/40">Montants HT en euros{selectedPlan && selectedPlan.id !== 'none' ? ' · maintenance facturée séparément après livraison' : ''}</p>
           </aside>
         </main>
       )}
@@ -306,7 +306,7 @@ function Field({ children, className = '', error, label }: { children: ReactNode
     <label className={`block ${className}`}>
       <span className="mb-1.5 block text-xs font-medium text-slate-600">{label}</span>
       {children}
-      {error && <span className="mt-1 block text-[11px] text-red-600">{error}</span>}
+      {error && <span className="mt-1 block text-[12px] text-red-600">{error}</span>}
     </label>
   )
 }

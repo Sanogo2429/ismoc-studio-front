@@ -73,7 +73,7 @@ function VoiceNotePlayer({ durationSeconds, mine, url }: { durationSeconds: numb
         <button aria-label="Position de lecture" className={`relative block h-1.5 w-full overflow-hidden rounded-full ${mine ? 'bg-white/20' : 'bg-slate-200'}`} onClick={(event) => void seek(event)} type="button">
           <span className={`absolute inset-y-0 left-0 rounded-full ${mine ? 'bg-[#F59E0B]' : 'bg-[#0B132B]'}`} style={{ width: `${progress}%` }} />
         </button>
-        <p className={`mt-1.5 text-[10px] tabular-nums ${mine ? 'text-white/60' : 'text-slate-500'}`}>
+        <p className={`mt-1.5 text-[12px] tabular-nums ${mine ? 'text-white/60' : 'text-slate-500'}`}>
           {failed ? 'Lecture impossible' : `${formatSeconds(isPlaying || current > 0 ? current : 0)} / ${formatSeconds(total)}`}
         </p>
       </div>

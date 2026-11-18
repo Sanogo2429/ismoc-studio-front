@@ -63,12 +63,12 @@ function BillingTab({ projects }: { projects: ProjectSummary[] | null }) {
               <article className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white" key={project.projectId}>
                 <header className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">
                   <div>
-                    <p className="text-[10px] font-bold tracking-[0.25em] text-[#B8530B]">#{projectCode(project.projectId)} · FACTURE {order.invoiceNumber}</p>
+                    <p className="text-[12px] font-bold tracking-[0.25em] text-[#B8530B]">#{projectCode(project.projectId)} · FACTURE {order.invoiceNumber}</p>
                     <h2 className="mt-1.5 text-lg font-bold">{project.projectName}</h2>
                     <p className="text-xs text-slate-500">Commandé le {formatDate(order.paidAt ?? order.orderedAt)}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Total projet</p>
+                    <p className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">Total projet</p>
                     <p className="text-2xl font-bold tracking-tight">{formatEuros(order.projectTotalEur)}</p>
                   </div>
                 </header>
@@ -76,15 +76,15 @@ function BillingTab({ projects }: { projects: ProjectSummary[] | null }) {
                 <div className="grid gap-6 px-6 py-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[380px] text-sm">
-                      <caption className="mb-2 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Paiement en 3 fois</caption>
+                      <caption className="mb-2 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">Paiement en 3 fois</caption>
                       <tbody>
                         {order.installments.map((installment) => (
                           <tr className="border-t border-slate-100" key={installment.label}>
                             <td className="py-3 font-medium">{installment.label}</td>
                             <td className="py-3">
                               {installment.status === 'paid'
-                                ? <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700"><CircleCheck size={12} /> Réglée le {formatDate(installment.paidAt, { day: 'numeric', month: 'short' })}</span>
-                                : <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-500">À venir</span>}
+                                ? <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[12px] font-semibold text-emerald-700"><CircleCheck size={12} /> Réglée le {formatDate(installment.paidAt, { day: 'numeric', month: 'short' })}</span>
+                                : <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[12px] font-semibold text-slate-500">À venir</span>}
                             </td>
                             <td className="py-3 text-right font-semibold tabular-nums">{formatEuros(installment.amountEur)}</td>
                           </tr>
@@ -116,7 +116,7 @@ function BillingTab({ projects }: { projects: ProjectSummary[] | null }) {
 function Tile({ label, tone, value }: { label: string; tone?: 'green' | 'amber'; value: string }) {
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white px-6 py-5">
-      <dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">{label}</dt>
+      <dt className="text-[12px] font-semibold uppercase tracking-wider text-slate-500">{label}</dt>
       <dd className={`mt-2 text-2xl font-bold tracking-tight ${tone === 'green' ? 'text-emerald-600' : tone === 'amber' ? 'text-[#B8530B]' : ''}`}>{value}</dd>
     </div>
   )

@@ -188,12 +188,12 @@ function MvpPreviewPage() {
       <header className="pt-safe border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-[1700px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
           <Link className="inline-flex min-h-[44px] items-center gap-2 text-xs font-medium text-slate-500 transition hover:text-darkSlate" to="/dashboard?tab=projects"><ArrowLeft size={16} /> Mes projets</Link>
-          <div className="hidden items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:flex"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> IsMoc AI Studio</div>
+          <div className="hidden items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:flex"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> IsMoc AI Studio</div>
           <div className="flex flex-wrap items-center gap-2">
             {/* Sélecteur d'aperçu responsive */}
             <div aria-label="Taille de l’aperçu" className="flex rounded-lg border border-slate-200 bg-slate-50 p-0.5" role="group">
-              <button aria-pressed={device === 'desktop'} className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[11px] font-semibold transition ${device === 'desktop' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('desktop')} title="Aperçu ordinateur (100 %)" type="button"><Monitor size={14} /> Desktop</button>
-              <button aria-pressed={device === 'mobile'} className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[11px] font-semibold transition ${device === 'mobile' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('mobile')} title="Aperçu smartphone (390 px)" type="button"><Smartphone size={14} /> Mobile</button>
+              <button aria-pressed={device === 'desktop'} className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-semibold transition ${device === 'desktop' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('desktop')} title="Aperçu ordinateur (100 %)" type="button"><Monitor size={14} /> Desktop</button>
+              <button aria-pressed={device === 'mobile'} className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-semibold transition ${device === 'mobile' ? 'bg-white text-darkSlate shadow-sm' : 'text-slate-500 hover:text-darkSlate'}`} onClick={() => setDevice('mobile')} title="Aperçu smartphone (390 px)" type="button"><Smartphone size={14} /> Mobile</button>
             </div>
             <button
               className="inline-flex items-center gap-1.5 rounded-lg bg-vibrantOrange px-3 py-2 text-xs font-semibold text-darkSlate transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
@@ -214,7 +214,7 @@ function MvpPreviewPage() {
         <div className="mb-4 flex min-w-0 items-center gap-3">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700"><Sparkles size={18} /></span>
           <div className="min-w-0">
-            <p className="text-[10px] font-bold tracking-[0.2em] text-amber-700">{memory?.creationMode === 'manual' ? 'PROJET MODÉLISÉ' : 'STUDIO IA'}</p>
+            <p className="text-[12px] font-bold tracking-[0.2em] text-amber-700">{memory?.creationMode === 'manual' ? 'PROJET MODÉLISÉ' : 'STUDIO IA'}</p>
             <h1 className="truncate text-lg font-semibold text-darkSlate" title={memory?.initialIdea}>{memory?.initialIdea || (isLoadingMemory ? 'Chargement du projet…' : 'Projet indisponible')}</h1>
           </div>
         </div>
@@ -237,7 +237,7 @@ function MvpPreviewPage() {
                 pointer-events-none + select-none : aucun clic ni sélection n'est intercepté, la maquette reste 100 % interactive. */}
             {memory && !isLoadingMemory && !isPaid(memory.status) && (
               <div className="pointer-events-none absolute bottom-4 right-4 z-10 select-none sm:bottom-6 sm:right-6">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 text-[10px] font-medium tracking-wide text-slate-500 shadow-sm ring-1 ring-slate-900/5 backdrop-blur-sm">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 text-[12px] font-medium tracking-wide text-slate-500 shadow-sm ring-1 ring-slate-900/5 backdrop-blur-sm">
                   <span className="h-1.5 w-1.5 rounded-full bg-amber-400/80" />
                   Maquette IsMoc Studio — Non validé
                 </span>
@@ -248,11 +248,11 @@ function MvpPreviewPage() {
           <aside className="flex min-h-[560px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm lg:sticky lg:top-4 lg:h-[calc(100dvh-120px)]">
             <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-4">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-darkSlate text-white"><MessageCircle size={17} /></span>
-              <div><h2 className="text-sm font-semibold text-darkSlate">IsMoc AI</h2><p className="text-[10px] text-slate-400">{quota && !quota.unlimited ? `${quota.remainingRefinements}/${quota.refinementsLimit} retouches IA gratuites restantes` : 'Votre projet, sa mémoire et ses décisions'}</p></div>
+              <div><h2 className="text-sm font-semibold text-darkSlate">IsMoc AI</h2><p className="text-[12px] text-slate-400">{quota && !quota.unlimited ? `${quota.remainingRefinements}/${quota.refinementsLimit} retouches IA gratuites restantes` : 'Votre projet, sa mémoire et ses décisions'}</p></div>
             </div>
 
             {memory && memory.userPreferences.length > 0 && (
-              <details className="border-b border-slate-100 px-4 py-2 text-[11px] text-slate-500">
+              <details className="border-b border-slate-100 px-4 py-2 text-[12px] text-slate-500">
                 <summary className="cursor-pointer select-none font-medium text-slate-600">Préférences mémorisées ({memory.userPreferences.length})</summary>
                 <ul className="mt-2 list-disc space-y-1 pl-4">{memory.userPreferences.map((preference) => <li key={preference}>{preference}</li>)}</ul>
               </details>
@@ -268,10 +268,10 @@ function MvpPreviewPage() {
               <div ref={chatEndRef} />
             </div>
 
-            {visibleError && <p className="mx-3 mb-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[11px] leading-4 text-red-700" role="alert">{visibleError}{isAiError && visibleError === error && <> <Link className="ml-1 font-semibold underline underline-offset-2" to="/dashboard?tab=messages">Écrire à l’équipe</Link></>}</p>}
+            {visibleError && <p className="mx-3 mb-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[12px] leading-4 text-red-700" role="alert">{visibleError}{isAiError && visibleError === error && <> <Link className="ml-1 font-semibold underline underline-offset-2" to="/dashboard?tab=messages">Écrire à l’équipe</Link></>}</p>}
 
             {refinementsExhausted && (
-              <div className="mx-3 mb-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-[11px] leading-4 text-amber-900" role="status">
+              <div className="mx-3 mb-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-[12px] leading-4 text-amber-900" role="status">
                 <p className="font-semibold">Retouches IA gratuites épuisées.</p>
                 <p className="mt-0.5">Les questions sur le prix restent possibles. Pour faire évoluer la maquette, échangez avec l’équipe ou repartez du Mode Manuel (gratuit et illimité).</p>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -284,7 +284,7 @@ function MvpPreviewPage() {
             <form className="border-t border-slate-100 p-3" onSubmit={handleSubmit}>
               {memory && messages.length <= 2 && (
                 <div className="mb-2 flex flex-wrap gap-1.5">
-                  {SUGGESTIONS.map((suggestion) => <button className="rounded-full border border-slate-200 px-2.5 py-1 text-[10px] text-slate-600 hover:border-slate-400 disabled:opacity-50" disabled={isWorking} key={suggestion} onClick={() => void send(suggestion, 'chat')} type="button">{suggestion}</button>)}
+                  {SUGGESTIONS.map((suggestion) => <button className="rounded-full border border-slate-200 px-2.5 py-1 text-[12px] text-slate-600 hover:border-slate-400 disabled:opacity-50" disabled={isWorking} key={suggestion} onClick={() => void send(suggestion, 'chat')} type="button">{suggestion}</button>)}
                 </div>
               )}
               <label className="sr-only" htmlFor="studio-chat-input">Votre idée ou instruction</label>
@@ -301,7 +301,7 @@ function MvpPreviewPage() {
               {referenceImage && (
                 <div className="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-1.5 pr-2">
                   <img alt="Image de référence" className="h-10 w-14 rounded object-cover" src={referenceImage.dataUrl} />
-                  <span className="min-w-0 flex-1 truncate text-[10px] text-slate-600">{referenceImage.name}</span>
+                  <span className="min-w-0 flex-1 truncate text-[12px] text-slate-600">{referenceImage.name}</span>
                   <button aria-label="Retirer l’image" className="rounded p-0.5 text-slate-400 hover:text-darkSlate" onClick={() => setReferenceImage(null)} type="button"><X size={13} /></button>
                 </div>
               )}
@@ -309,7 +309,7 @@ function MvpPreviewPage() {
                 <div className="flex items-center gap-2">
                   <input accept={IMAGE_ACCEPT} className="hidden" onChange={(event) => void handleImage(event)} ref={imageInputRef} type="file" />
                   <button aria-label="Joindre une image d’inspiration (optionnel)" className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-slate-400 hover:text-darkSlate disabled:opacity-50" disabled={!memory || isWorking} onClick={() => imageInputRef.current?.click()} title="Joindre une image d’inspiration (optionnel)" type="button"><ImagePlus size={15} /></button>
-                  <span className="text-[9px] text-slate-400">Entrée pour envoyer · Maj+Entrée pour une ligne</span>
+                  <span className="text-[12px] text-slate-400">Entrée pour envoyer · Maj+Entrée pour une ligne</span>
                 </div>
                 <button aria-label="Envoyer le message" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-vibrantOrange text-darkSlate transition hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50" disabled={(!instruction.trim() && !referenceImage) || !memory || isWorking} type="submit"><Send size={15} /></button>
               </div>
@@ -325,27 +325,27 @@ function MvpPreviewPage() {
 function EstimateCard({ estimate }: { estimate: EstimateResponse }) {
   return (
     <div className="space-y-3 rounded-lg border border-slate-200 bg-white p-3 text-darkSlate">
-      <p className="text-[10px] font-bold uppercase tracking-wider text-amber-700">Devis indicatif</p>
+      <p className="text-[12px] font-bold uppercase tracking-wider text-amber-700">Devis indicatif</p>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Complexité · {estimate.complexity}</p>
+          <p className="text-[12px] font-semibold uppercase tracking-wider text-slate-400">Complexité · {estimate.complexity}</p>
           <p className="mt-1 text-base font-bold">{formatEuros(estimate.totalBudgetEur.min)} – {formatEuros(estimate.totalBudgetEur.max)}</p>
         </div>
         <div className="text-right">
-          <p className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Délai</p>
+          <p className="text-[12px] font-semibold uppercase tracking-wider text-slate-400">Délai</p>
           <p className="mt-1 text-sm font-semibold">{estimate.deliveryTime.minDays}–{estimate.deliveryTime.maxDays} jours</p>
-          {estimate.deliveryTime.summary && <p className="text-[9px] text-slate-400">{estimate.deliveryTime.summary}</p>}
+          {estimate.deliveryTime.summary && <p className="text-[12px] text-slate-400">{estimate.deliveryTime.summary}</p>}
         </div>
       </div>
       <div className="space-y-2 border-t border-slate-100 pt-2">
         {estimate.breakdown.map((row) => (
-          <div className="flex justify-between gap-3 text-[10px]" key={row.workstream}>
+          <div className="flex justify-between gap-3 text-[12px]" key={row.workstream}>
             <span className="text-slate-500">{row.workstream} · {row.minDays}–{row.maxDays} j</span>
             <strong className="whitespace-nowrap">{formatEuros(row.minPriceEur)} – {formatEuros(row.maxPriceEur)}</strong>
           </div>
         ))}
       </div>
-      <p className="border-t border-slate-100 pt-2 text-[9px] leading-4 text-slate-400">{estimate.summary}</p>
+      <p className="border-t border-slate-100 pt-2 text-[12px] leading-4 text-slate-400">{estimate.summary}</p>
     </div>
   )
 }

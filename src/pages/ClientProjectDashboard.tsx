@@ -139,11 +139,11 @@ function ProjectWorkspace({ project, rtc }: { project: ClientProject; rtc: Proje
         {steps.map((step, index) => (
           <li className="relative flex flex-col items-center text-center" key={step.label}>
             {index > 0 && <span aria-hidden className="absolute right-1/2 top-4 h-px w-full bg-slate-200" />}
-            <span className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-bold ${step.state === 'done' ? 'bg-[#22C55E] text-white' : step.state === 'active' ? 'bg-[#FBBF24] text-[#7C2D12] ring-4 ring-amber-100' : 'border border-slate-200 bg-white text-slate-500'}`}>
+            <span className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-[12px] font-bold ${step.state === 'done' ? 'bg-[#22C55E] text-white' : step.state === 'active' ? 'bg-[#FBBF24] text-[#7C2D12] ring-4 ring-amber-100' : 'border border-slate-200 bg-white text-slate-500'}`}>
               {step.state === 'done' ? <Check size={15} strokeWidth={3} /> : index + 1}
             </span>
-            <span className="mt-3 text-[10px] font-semibold leading-tight sm:text-[12px]">{step.label}</span>
-            <span className={`mt-1.5 text-[9px] sm:text-[10px] ${step.state === 'active' ? 'font-medium text-[#D97706]' : 'text-slate-500'}`}>{step.sub}</span>
+            <span className="mt-3 text-[12px] font-semibold leading-tight sm:text-[12px]">{step.label}</span>
+            <span className={`mt-1.5 text-[12px] sm:text-[12px] ${step.state === 'active' ? 'font-medium text-[#D97706]' : 'text-slate-500'}`}>{step.sub}</span>
           </li>
         ))}
       </ol>
@@ -156,7 +156,7 @@ function ProjectWorkspace({ project, rtc }: { project: ClientProject; rtc: Proje
           <ol className="mt-9">
             {milestones.map((milestone, index) => (
               <li className="grid grid-cols-[60px_24px_minmax(0,1fr)] gap-x-3" key={`${milestone.title}-${milestone.date}`}>
-                <span className="pt-0.5 text-[10px] text-slate-500">{shortDate(milestone.date)}</span>
+                <span className="pt-0.5 text-[12px] text-slate-500">{shortDate(milestone.date)}</span>
                 <span className="relative flex justify-center">
                   <span className="relative z-10 mt-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 bg-white" style={{ borderColor: AMBER }}><span className="h-1 w-1 rounded-full" style={{ background: AMBER }} /></span>
                   {index < milestones.length - 1 && <span aria-hidden className="absolute bottom-0 top-4 w-px bg-slate-200" />}
