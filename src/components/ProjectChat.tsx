@@ -2,13 +2,13 @@ import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEv
 import { ArrowLeft, Clock, Download, FileText, LoaderCircle, Mic, Paperclip, Phone, Send, Smile, Video, X } from 'lucide-react'
 import type { HubStatus, OutgoingMessage, ProjectRtc } from '../hooks/useProjectRtc'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
-import { api } from '../services/api'
 import type { ClientMessage } from '../services/projectTypes'
 import { findSticker } from '../services/stickers'
 import EmojiStickerPicker from './chat/EmojiStickerPicker'
 import { MessageBubblesSkeleton } from './Skeleton'
 import VoiceNotePlayer from './chat/VoiceNotePlayer'
 import { frenchTypography } from '../services/typography'
+import { downloadAttachment, getAttachmentLink } from '../services/attachmentLinks'
 
 const NAVY = '#0B132B'
 const AMBER = '#F59E0B'
@@ -384,48 +384,48 @@ function formatClock(seconds: number): string {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
 }
 
-/** Les pièces jointes sont protégées par JWT : on les charge en blob via axios. */
+/**
+ * Pièces jointes privées : l'API vérifie les droits puis délivre un lien signé de 10 minutes,
+ * utilisé directement par l'image (pas de jeton de connexion dans l'URL, pas de copie en mémoire).
+ */
 function AttachmentPreview({ contentType, mine, name, url }: { contentType?: string | null; mine: boolean; name?: string | null; url: string }) {
-  const [objectUrl, setObjectUrl] = useState<string | null>(null)
+  const [imageSrc, setImageSrc] = useState<string | null>(null)
+  const [imageFailed, setImageFailed] = useState(false)
+  const retriedRef = useRef(false)
   const isImage = contentType?.startsWith('image/') ?? false
 
   useEffect(() => {
     if (!isImage) return
-    let revoked = false
-    let created: string | null = null
-    api.get<Blob>(url, { responseType: 'blob' })
-      .then((response) => {
-        if (revoked) return
-        created = URL.createObjectURL(response.data)
-        setObjectUrl(created)
-      })
-      .catch(() => undefined)
-    return () => {
-      revoked = true
-      if (created) URL.revokeObjectURL(created)
-    }
+    let active = true
+    getAttachmentLink(url)
+      .then((link) => { if (active) setImageSrc(link) })
+      .catch(() => { if (active) setImageFailed(true) })
+    return () => { active = false }
   }, [url, isImage])
 
-  async function download() {
-    const response = await api.get<Blob>(url, { responseType: 'blob' })
-    const href = URL.createObjectURL(response.data)
-    const link = document.createElement('a')
-    link.href = href
-    link.download = name ?? 'piece-jointe'
-    link.click()
-    setTimeout(() => URL.revokeObjectURL(href), 1000)
+  // Lien expiré avant l'affichage (onglet resté ouvert) : un nouveau lien est demandé une seule fois.
+  function handleImageError() {
+    if (retriedRef.current) { setImageFailed(true); return }
+    retriedRef.current = true
+    getAttachmentLink(url, { fresh: true }).then(setImageSrc).catch(() => setImageFailed(true))
+  }
+
+  function download() {
+    void downloadAttachment(url, name ?? 'piece-jointe').catch((error: unknown) => console.warn('[IsMoc] Téléchargement de la pièce jointe impossible :', error))
   }
 
   if (isImage) {
     return (
-      <button className="mb-2 block overflow-hidden rounded-lg" onClick={() => void download()} title={name ?? undefined} type="button">
-        {objectUrl ? <img alt={name ?? 'Image jointe'} className="max-h-56 w-auto max-w-full object-cover" src={objectUrl} /> : <span className="flex h-32 w-48 items-center justify-center bg-slate-100 text-slate-500"><LoaderCircle className="animate-spin" size={16} /></span>}
+      <button className="mb-2 block overflow-hidden rounded-lg" onClick={download} title={name ?? undefined} type="button">
+        {imageSrc && !imageFailed
+          ? <img alt={name ?? 'Image jointe'} className="max-h-56 w-auto max-w-full object-cover" onError={handleImageError} src={imageSrc} />
+          : <span className="flex h-32 w-48 items-center justify-center bg-slate-100 text-[12px] text-slate-500">{imageFailed ? 'Image indisponible' : <LoaderCircle className="animate-spin" size={16} />}</span>}
       </button>
     )
   }
 
   return (
-    <button className={`mb-2 flex items-center gap-2 rounded-lg px-3 py-2 text-left text-[12px] font-medium ${mine ? 'bg-white/10' : 'bg-slate-100'}`} onClick={() => void download()} type="button">
+    <button className={`mb-2 flex items-center gap-2 rounded-lg px-3 py-2 text-left text-[12px] font-medium ${mine ? 'bg-white/10' : 'bg-slate-100'}`} onClick={download} type="button">
       <FileText size={15} /><span className="max-w-[220px] truncate">{name ?? 'Pièce jointe'}</span><Download size={13} />
     </button>
   )

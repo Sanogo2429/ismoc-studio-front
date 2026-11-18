@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { LoaderCircle, Pause, Play } from 'lucide-react'
-import { api } from '../../services/api'
+import { getAttachmentLink } from '../../services/attachmentLinks'
 
 function formatSeconds(value: number): string {
   const seconds = Math.max(0, Math.floor(value))
@@ -10,15 +10,18 @@ function formatSeconds(value: number): string {
 /** Bulle lecteur de note vocale : Play/Pause, barre de progression cliquable et durée. */
 function VoiceNotePlayer({ durationSeconds, mine, url }: { durationSeconds: number; mine: boolean; url: string }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const objectUrlRef = useRef<string | null>(null)
+  const retriedRef = useRef(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [current, setCurrent] = useState(0)
   const [failed, setFailed] = useState(false)
 
   useEffect(() => () => {
-    audioRef.current?.pause()
-    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current)
+    const audio = audioRef.current
+    if (!audio) return
+    audio.pause()
+    audio.removeAttribute('src')
+    audio.load()
   }, [])
 
   // Les fichiers WebM n'exposent pas toujours leur durée : on s'appuie sur celle enregistrée.
@@ -28,11 +31,24 @@ function VoiceNotePlayer({ durationSeconds, mine, url }: { durationSeconds: numb
     if (audioRef.current) return audioRef.current
     setIsLoading(true)
     try {
-      // Fichier protégé par JWT : chargé en blob via axios.
-      const response = await api.get<Blob>(url, { responseType: 'blob' })
-      objectUrlRef.current = URL.createObjectURL(response.data)
-      const audio = new Audio(objectUrlRef.current)
+      // Lien signé temporaire (droits vérifiés par l'API) : lecture en flux, sans télécharger tout le fichier
+      // (requêtes « Range », lecture qui démarre plus vite sur iPhone).
+      const audio = new Audio(await getAttachmentLink(url))
+      audio.preload = 'auto'
       audio.ontimeupdate = () => setCurrent(audio.currentTime)
+      // Lien expiré (pause de plus de 10 min puis reprise) : un nouveau lien est demandé une fois, à la même position.
+      audio.onerror = () => {
+        if (retriedRef.current) { setFailed(true); setIsPlaying(false); return }
+        retriedRef.current = true
+        const position = audio.currentTime
+        void getAttachmentLink(url, { fresh: true })
+          .then((fresh) => {
+            audio.src = fresh
+            audio.currentTime = position
+            return audio.play()
+          })
+          .catch(() => { setFailed(true); setIsPlaying(false) })
+      }
       audio.onended = () => { setIsPlaying(false); setCurrent(0) }
       audio.onpause = () => setIsPlaying(false)
       audio.onplay = () => setIsPlaying(true)
