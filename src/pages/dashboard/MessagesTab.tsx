@@ -86,7 +86,7 @@ function ConversationList({ onSelect, projects }: { onSelect: (projectId: string
           // Aperçu du dernier message s'il est déjà connu (cache de l'onglet) ; sinon l'étape du projet.
           const last = readCache<ClientMessage[]>(`messages:${project.projectId}`)?.at(-1)
           const preview = last
-            ? `${last.author === 'client' ? 'Vous : ' : ''}${last.messageType === 'voice' ? 'Note vocale' : last.messageType === 'sticker' ? 'Sticker' : last.content || 'Pièce jointe'}`
+            ? `${last.author === 'client' ? 'Vous : ' : ''}${last.messageType === 'voice' ? 'Note vocale' : last.messageType === 'sticker' ? 'Sticker' : last.content || 'Pièce jointe'}`
             : general ? 'Posez vos questions avant de démarrer' : projectStep(project.status).label
           return (
             <li key={project.projectId}>

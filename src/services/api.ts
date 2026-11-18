@@ -16,7 +16,7 @@ const apiBaseUrl = configuredApiBase === 'same-origin'
   : configuredApiBase || (import.meta.env.DEV ? 'https://localhost:7060' : '')
 
 if (import.meta.env.PROD && !configuredApiBase) {
-  console.error('VITE_API_BASE_URL est absent du build de production : définissez-le (.env.production ou Vercel).')
+  console.error('VITE_API_BASE_URL est absent du build de production : définissez-le (.env.production ou Vercel).')
 }
 
 export const api = axios.create({

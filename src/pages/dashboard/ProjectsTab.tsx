@@ -61,7 +61,7 @@ function ProjectsTab({ error, projects: allThreads }: ProjectsTabProps) {
         ) : projects.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
             <h2 className="text-lg font-bold">Aucun projet pour le moment</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Décrivez votre idée ou importez une maquette : IsMoc AI génère une première version interactive en quelques secondes.</p>
+            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Décrivez votre idée ou importez une maquette : IsMoc AI génère une première version interactive en quelques secondes.</p>
             <Link className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#0B132B] px-5 py-3 text-sm font-semibold text-white" to="/configurator">Créer mon premier projet <ArrowRight size={16} /></Link>
           </div>
         ) : (
@@ -89,14 +89,14 @@ function ProjectsTab({ error, projects: allThreads }: ProjectsTabProps) {
                         <span className="font-semibold">Étape {step.index}/5</span>
                         <span className="text-slate-500">{step.label}</span>
                       </div>
-                      <div className="mt-2 grid grid-cols-5 gap-1.5" aria-label={`Étape ${step.index} sur 5 : ${PROJECT_STEPS[step.index - 1]}`}>
+                      <div className="mt-2 grid grid-cols-5 gap-1.5" aria-label={`Étape ${step.index} sur 5 : ${PROJECT_STEPS[step.index - 1]}`}>
                         {PROJECT_STEPS.map((label, stepIndex) => (
                           <span className={`h-1.5 rounded-full ${stepIndex < step.index - (paid ? 1 : 0) ? 'bg-emerald-500' : stepIndex === step.index - 1 ? 'bg-[#F59E0B]' : 'bg-slate-200'}`} key={label} title={label} />
                         ))}
                       </div>
                     </div>
 
-                    {project.order && <p className="mt-4 text-xs text-slate-500">Total projet : <strong className="text-[#0B132B]">{formatEuros(project.order.projectTotalEur)}</strong></p>}
+                    {project.order && <p className="mt-4 text-xs text-slate-500">Total projet : <strong className="text-[#0B132B]">{formatEuros(project.order.projectTotalEur)}</strong></p>}
 
                     <div className="mt-auto flex gap-2 pt-6">
                       {paid ? (

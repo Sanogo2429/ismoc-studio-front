@@ -21,7 +21,7 @@ interface ApiErrorBody {
 function authErrorMessage(error: unknown, fallback: string): string {
   if (axios.isAxiosError<ApiErrorBody>(error)) {
     if (!error.response) {
-      console.error('[IsMoc] Échec d’appel (aucune réponse) :', error.message)
+      console.error('[IsMoc] Échec d’appel (aucune réponse) :', error.message)
       return 'Connexion momentanément indisponible. Réessayez dans un instant (le premier accès peut prendre jusqu’à une minute).'
     }
     const data = error.response.data
@@ -204,7 +204,7 @@ function AuthPage() {
             <div className="auth-input-wrap"><Mail size={17} /><input defaultValue={registeredEmail} id="auth-email" name="email" type="email" autoComplete="email" placeholder="vous@exemple.com" required /></div>
             <label htmlFor="auth-password">Mot de passe</label>
             <div className="auth-input-wrap"><LockKeyhole size={17} /><input id="auth-password" name="password" type={showPassword ? 'text' : 'password'} autoComplete={isSignup ? 'new-password' : 'current-password'} minLength={8} placeholder="8 caractères minimum" required /><button className="password-toggle" type="button" aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'} onClick={() => setShowPassword((visible) => !visible)}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>
-            {!isSignup && <button className="forgot-link" type="button" onClick={() => { setError(''); setIsForgotPassword(true) }}>Mot de passe oublié ?</button>}
+            {!isSignup && <button className="forgot-link" type="button" onClick={() => { setError(''); setIsForgotPassword(true) }}>Mot de passe oublié ?</button>}
             <button className="auth-submit" type="submit" disabled={isLoading}>{isLoading ? isSignup ? 'Création en cours…' : 'Connexion en cours…' : isSignup ? 'Créer mon compte' : 'Se connecter'} <ArrowRight size={18} /></button>
           </form>
 

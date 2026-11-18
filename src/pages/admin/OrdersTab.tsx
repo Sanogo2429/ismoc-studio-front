@@ -182,7 +182,7 @@ function ProgressPanel({ onPublished, project }: { onPublished: (result: Progres
       onPublished(result)
       setTitle('')
       setDescription('')
-      setFeedback({ ok: true, text: 'Avancée publiée : le client la voit en direct dans sa timeline.' })
+      setFeedback({ ok: true, text: 'Avancée publiée : le client la voit en direct dans sa timeline.' })
     } catch (error: unknown) {
       setFeedback({ ok: false, text: apiErrorMessage(error, 'Publication impossible.') })
     } finally {

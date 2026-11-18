@@ -53,7 +53,7 @@ function AdminMessagesTab({ onMockup, onSelect, projects, selectedProjectId, unr
             const isSelected = project.projectId === selectedProjectId
             const isUnread = unreadIds.has(project.projectId)
             const last = project.lastMessage
-            const preview = last ? `${last.author === 'client' ? '' : 'Vous : '}${last.content || (last.hasAttachment ? 'Pièce jointe' : '')}` : 'Aucun message'
+            const preview = last ? `${last.author === 'client' ? '' : 'Vous : '}${last.content || (last.hasAttachment ? 'Pièce jointe' : '')}` : 'Aucun message'
             return (
               <li key={project.projectId}>
                 <button aria-current={isSelected ? 'true' : undefined} className={`flex w-full gap-3 border-b border-white/[0.04] px-4 py-3.5 text-left transition ${isSelected ? 'bg-[#F59E0B]/10' : 'hover:bg-white/[0.03]'}`} onClick={() => onSelect(project.projectId)} type="button">

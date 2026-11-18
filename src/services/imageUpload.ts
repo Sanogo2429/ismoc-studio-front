@@ -32,7 +32,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
  * réduit les très grandes images (max 2000 px) et retourne une data URL base64.
  */
 export async function prepareReferenceImage(file: File): Promise<ReferenceImage> {
-  if (!ACCEPTED_TYPES.includes(file.type)) throw new Error('Format non pris en charge : utilisez PNG, JPEG, WebP ou GIF.')
+  if (!ACCEPTED_TYPES.includes(file.type)) throw new Error('Format non pris en charge : utilisez PNG, JPEG, WebP ou GIF.')
   if (file.size > MAX_SOURCE_BYTES) throw new Error('L’image dépasse 8 Mo.')
 
   const original = await readAsDataUrl(file)

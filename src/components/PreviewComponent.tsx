@@ -30,7 +30,7 @@ function PreviewComponent({ currentHtml, device = 'desktop', title }: PreviewCom
         <p className="text-sm font-semibold text-darkSlate">Aucune maquette affichable pour le moment</p>
         <p className="max-w-sm text-xs leading-5 text-slate-500">
           {currentHtml.trim()
-            ? 'La dernière maquette reçue est incomplète. Demandez à IsMoc AI de la régénérer dans le chat : votre projet et son historique sont conservés.'
+            ? 'La dernière maquette reçue est incomplète. Demandez à IsMoc AI de la régénérer dans le chat : votre projet et son historique sont conservés.'
             : 'La maquette de ce projet est vide. Décrivez ce que vous souhaitez dans le chat et IsMoc AI la concevra.'}
         </p>
       </div>
@@ -41,7 +41,7 @@ function PreviewComponent({ currentHtml, device = 'desktop', title }: PreviewCom
     <iframe
       // Remonte l'iframe à chaque nouvelle version : état JavaScript du prototype réinitialisé proprement.
       key={`${device}-${currentHtml.length}`}
-      title={`Maquette interactive : ${title}`}
+      title={`Maquette interactive : ${title}`}
       srcDoc={currentHtml}
       sandbox="allow-scripts allow-forms allow-modals allow-popups"
       className={className}

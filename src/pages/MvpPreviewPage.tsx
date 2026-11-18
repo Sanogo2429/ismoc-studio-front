@@ -9,6 +9,7 @@ import { fetchAiQuota, readAiError, type AiQuota } from '../services/aiQuota'
 import { IMAGE_ACCEPT, prepareReferenceImage, type ReferenceImage } from '../services/imageUpload'
 import { formatEuros, isPaid } from '../services/projectTypes'
 import { useConnectionRestoredKey } from '../hooks/useConnectionRestoredKey'
+import { frenchTypography } from '../services/typography'
 
 interface ProjectChatMessage {
   role: string
@@ -60,7 +61,7 @@ interface ChatMessage {
   estimate?: EstimateResponse
 }
 
-const SUGGESTIONS = ['Rends le design plus moderne', 'Ajoute une page de contact', 'Combien coûterait ce projet ?']
+const SUGGESTIONS = ['Rends le design plus moderne', 'Ajoute une page de contact', 'Combien coûterait ce projet ?']
 
 function MvpPreviewPage() {
   const [searchParams] = useSearchParams()
@@ -264,7 +265,7 @@ function MvpPreviewPage() {
             <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4" aria-live="polite">
               {messages.map((message, index) => (
                 <div className={`max-w-[97%] rounded-xl px-3.5 py-3 text-xs leading-5 ${message.role === 'assistant' ? 'bg-slate-100 text-slate-700' : 'ml-auto w-fit bg-darkSlate text-white'}`} key={`${message.role}-${index}`}>
-                  {message.estimate ? <EstimateCard estimate={message.estimate} /> : <p className="whitespace-pre-line break-words">{message.content}</p>}
+                  {message.estimate ? <EstimateCard estimate={message.estimate} /> : <p className="whitespace-pre-line break-words">{frenchTypography(message.content)}</p>}
                 </div>
               ))}
               {isWorking && <div className="flex items-center gap-2 text-xs text-slate-500"><LoaderCircle className="animate-spin" size={14} /> IsMoc AI travaille sur votre projet…</div>}

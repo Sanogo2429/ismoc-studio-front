@@ -175,7 +175,7 @@ function CheckoutPage() {
           <form noValidate onSubmit={handlePay}>
             <p className="text-[12px] font-bold tracking-[0.22em] text-[#AF5109]">DERNIÈRE ÉTAPE</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Finalisez votre projet.</h1>
-            <p className="mt-3 max-w-lg text-sm leading-6 text-slate-500">Réglez le premier tiers aujourd’hui : nos développeurs démarrent immédiatement à partir de votre maquette validée.</p>
+            <p className="mt-3 max-w-lg text-sm leading-6 text-slate-500">Réglez le premier tiers aujourd’hui : nos développeurs démarrent immédiatement à partir de votre maquette validée.</p>
 
             <section className="mt-8" aria-labelledby="payment-heading">
               <h2 className="text-sm font-semibold" id="payment-heading">Moyen de paiement</h2>
@@ -245,7 +245,7 @@ function CheckoutPage() {
               {isPaying ? <><LoaderCircle className="animate-spin" size={17} /> Traitement sécurisé…</> : <>Payer {formatEuros(firstInstallment)} 🔒</>}
             </button>
             <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-slate-500"><Lock size={12} /> Paiement chiffré et sécurisé</p>
-            <p className="mt-1 text-center text-[12px] text-slate-400">Environnement de démonstration : aucun prélèvement réel n’est effectué.</p>
+            <p className="mt-1 text-center text-[12px] text-slate-400">Environnement de démonstration : aucun prélèvement réel n’est effectué.</p>
           </form>
 
           {/* ---------------- Colonne droite : récapitulatif ---------------- */}

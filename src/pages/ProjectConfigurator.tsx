@@ -215,15 +215,15 @@ function ProjectConfigurator() {
 
       <section className="mx-auto max-w-5xl px-5 py-12 sm:px-8">
         <p className="inline-flex items-center gap-2 text-[12px] font-bold tracking-[0.22em] text-amber-700"><Sparkles size={14} /> STUDIO IA UNIVERSEL</p>
-        <h1 className="mt-5 max-w-3xl text-[clamp(2rem,1.3rem+3vw,3rem)] font-semibold leading-tight tracking-tight text-darkSlate">Qu’aimeriez-vous construire ?</h1>
-        <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-500">Décrivez simplement votre idée : IsMoc AI conçoit directement votre maquette interactive et cliquable, que vous ferez évoluer par conversation. Aucun fichier de design n’est nécessaire.</p>
+        <h1 className="mt-5 max-w-3xl text-[clamp(2rem,1.3rem+3vw,3rem)] font-semibold leading-tight tracking-tight text-darkSlate">Qu’aimeriez-vous construire ?</h1>
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-500">Décrivez simplement votre idée : IsMoc AI conçoit directement votre maquette interactive et cliquable, que vous ferez évoluer par conversation. Aucun fichier de design n’est nécessaire.</p>
 
         {/* Les deux modes. La carte « Créer avec IsMoc AI » sélectionnée contient directement sa zone de texte. */}
         <div className="mt-8 grid gap-4 sm:grid-cols-2" role="radiogroup" aria-label="Mode de création">
           <ModeCard
             active={mode === 'ai'}
             badge="Recommandé"
-            description="Décrivez librement n’importe quelle idée d’application ou de site : IsMoc AI s’occupe du reste."
+            description="Décrivez librement n’importe quelle idée d’application ou de site : IsMoc AI s’occupe du reste."
             disabled={isLoading}
             icon={<Sparkles size={20} />}
             onSelect={() => selectMode('ai')}
@@ -246,7 +246,7 @@ function ProjectConfigurator() {
                   ) : (
                     <p className="mx-5 mb-4 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-[12px] font-medium text-slate-600 ring-1 ring-slate-200">
                       <Sparkles className="text-amber-600" size={13} />
-                      {quota.unlimited ? 'Crédits IA illimités' : `Crédits IA : ${quota.remainingGenerations}/${quota.generationsLimit} générations · ${quota.remainingRefinements}/${quota.refinementsLimit} retouches restantes`}
+                      {quota.unlimited ? 'Crédits IA illimités' : `Crédits IA : ${quota.remainingGenerations}/${quota.generationsLimit} générations · ${quota.remainingRefinements}/${quota.refinementsLimit} retouches restantes`}
                     </p>
                   )
                 )}
@@ -265,7 +265,7 @@ function ProjectConfigurator() {
                   {referenceImage && (
                     <div className="mx-5 mb-4 flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-2 pr-3 sm:mx-6">
                       <img alt="Image d’inspiration jointe" className="h-14 w-20 rounded-md object-cover" src={referenceImage.dataUrl} />
-                      <div className="min-w-0 flex-1"><p className="truncate text-xs font-medium text-darkSlate">{referenceImage.name}</p><p className="text-[12px] text-slate-400">Image d’inspiration : IsMoc AI s’en inspire pour concevoir votre maquette interactive.</p></div>
+                      <div className="min-w-0 flex-1"><p className="truncate text-xs font-medium text-darkSlate">{referenceImage.name}</p><p className="text-[12px] text-slate-400">Image d’inspiration : IsMoc AI s’en inspire pour concevoir votre maquette interactive.</p></div>
                       <button aria-label="Retirer l’image" className="rounded-md p-1 text-slate-400 hover:bg-slate-200 hover:text-darkSlate" onClick={() => setReferenceImage(null)} type="button"><X size={15} /></button>
                     </div>
                   )}
@@ -290,7 +290,7 @@ function ProjectConfigurator() {
           <ModeCard
             active={mode === 'manual'}
             badge="Guidé pas à pas"
-            description="Choisissez le format, le secteur, la palette et les pages : la maquette respecte exactement vos choix."
+            description="Choisissez le format, le secteur, la palette et les pages : la maquette respecte exactement vos choix."
             disabled={isLoading}
             fullWidth={mode === 'ai'}
             icon={<PenLine size={20} />}
@@ -334,7 +334,7 @@ function ProjectConfigurator() {
 
             <div className="min-h-72 px-5 py-6 sm:px-6">
               {step === 0 && (
-                <StepSection subtitle="Votre projet sera-t-il un site web ou une application mobile ?" title="Choisissez le format">
+                <StepSection subtitle="Votre projet sera-t-il un site web ou une application mobile ?" title="Choisissez le format">
                   <div className="grid gap-3 sm:grid-cols-2">
                     <OptionCard active={format === 'web'} icon={<Globe size={22} />} onSelect={() => changeFormat('web')} subtitle="Responsive, navigation horizontale, pensé pour ordinateur et mobile." title="Site / application web" />
                     <OptionCard active={format === 'mobile'} icon={<Smartphone size={22} />} onSelect={() => changeFormat('mobile')} subtitle="Prototype dans un cadre de téléphone avec barre d’onglets." title="Application mobile" />
@@ -415,7 +415,7 @@ function ProjectConfigurator() {
               )}
 
               {step === 4 && (
-                <StepSection subtitle="Ajoutez les précisions utiles : nom du projet, cible, fonctionnalités clés, ton…" title="Description du projet">
+                <StepSection subtitle="Ajoutez les précisions utiles : nom du projet, cible, fonctionnalités clés, ton…" title="Description du projet">
                   <textarea
                     autoFocus
                     aria-label="Description du projet"

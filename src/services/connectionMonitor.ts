@@ -50,7 +50,7 @@ export function reportAvailable(): void {
 
 /** Le service ne répond pas (réseau présent) : bandeau + vérifications automatiques. Détail en console uniquement. */
 export function reportUnavailable(detail: unknown): void {
-  console.warn('[IsMoc] Service injoignable (le réseau est présent) :', detail)
+  console.warn('[IsMoc] Service injoignable (le réseau est présent) :', detail)
   if (state === 'unavailable') return
   setState('unavailable')
   scheduleProbe()
@@ -86,9 +86,9 @@ async function probe() {
       reportAvailable()
       return
     }
-    console.warn(`[IsMoc] Vérification de disponibilité : réponse ${response.status}.`)
+    console.warn(`[IsMoc] Vérification de disponibilité : réponse ${response.status}.`)
   } catch (error: unknown) {
-    console.warn('[IsMoc] Vérification de disponibilité impossible :', error)
+    console.warn('[IsMoc] Vérification de disponibilité impossible :', error)
   }
   scheduleProbe()
 }

@@ -43,10 +43,10 @@ function ClientsTab({ refreshKey }: { refreshKey: number }) {
         <p className="text-sm text-slate-400"><strong className="text-white">{clients.length}</strong> inscrits · <strong className="text-white">{formatEuros(totalRevenue)}</strong> encaissés au total</p>
         <div className="flex gap-2">
           <select aria-label="Trier les clients" className="h-11 rounded-xl border border-white/10 bg-[#0E1424] px-3 text-[13px] text-slate-100 outline-none focus:border-[#F59E0B]/60" onChange={(event) => setSort(event.target.value as SortKey)} value={sort}>
-            <option value="revenue">Tri : total dépensé</option>
-            <option value="registered">Tri : inscription récente</option>
-            <option value="projects">Tri : nombre de projets</option>
-            <option value="name">Tri : nom</option>
+            <option value="revenue">Tri : total dépensé</option>
+            <option value="registered">Tri : inscription récente</option>
+            <option value="projects">Tri : nombre de projets</option>
+            <option value="name">Tri : nom</option>
           </select>
           <label className="relative block sm:w-72">
             <span className="sr-only">Rechercher un client</span>

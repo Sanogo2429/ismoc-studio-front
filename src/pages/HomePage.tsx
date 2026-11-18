@@ -300,7 +300,7 @@ function HomePage() {
 
         <section className="contact-section" id="contact">
           <div className="contact-inner">
-            <p className="eyebrow"><span className="eyebrow-dot" /> Une idée en tête ?</p>
+            <p className="eyebrow"><span className="eyebrow-dot" /> Une idée en tête ?</p>
             <h2>Faisons-en quelque chose<br /><span>de remarquable.</span></h2>
             <Link className="button button-dark" to={session.projectPath}>
               Démarrer mon projet <ArrowRight size={18} />

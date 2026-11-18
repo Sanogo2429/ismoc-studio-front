@@ -8,6 +8,7 @@ import { findSticker } from '../services/stickers'
 import EmojiStickerPicker from './chat/EmojiStickerPicker'
 import { MessageBubblesSkeleton } from './Skeleton'
 import VoiceNotePlayer from './chat/VoiceNotePlayer'
+import { frenchTypography } from '../services/typography'
 
 const NAVY = '#0B132B'
 const AMBER = '#F59E0B'
@@ -142,7 +143,7 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
   async function sendVoiceNote() {
     const recording = await recorder.finish()
     if (!recording) {
-      setChatError('Enregistrement vide : réessayez.')
+      setChatError('Enregistrement vide : réessayez.')
       return
     }
     setIsSending(true)
@@ -217,8 +218,8 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
         </div>
         <div className="flex gap-2.5">
           {/* Appels possibles seulement si l'interlocuteur est en ligne (sinon l'appel sonnerait dans le vide). */}
-          <IconSquareButton disabled={rtc.callStatus !== 'idle' || !peer.online} label={peer.online ? 'Appel audio' : 'Appel audio indisponible : hors ligne'} onClick={() => void rtc.startCall('audio')}><Phone size={19} /></IconSquareButton>
-          <IconSquareButton disabled={rtc.callStatus !== 'idle' || !peer.online} label={peer.online ? 'Appel vidéo' : 'Appel vidéo indisponible : hors ligne'} onClick={() => void rtc.startCall('video')}><Video size={19} /></IconSquareButton>
+          <IconSquareButton disabled={rtc.callStatus !== 'idle' || !peer.online} label={peer.online ? 'Appel audio' : 'Appel audio indisponible : hors ligne'} onClick={() => void rtc.startCall('audio')}><Phone size={19} /></IconSquareButton>
+          <IconSquareButton disabled={rtc.callStatus !== 'idle' || !peer.online} label={peer.online ? 'Appel vidéo' : 'Appel vidéo indisponible : hors ligne'} onClick={() => void rtc.startCall('video')}><Video size={19} /></IconSquareButton>
         </div>
       </div>
 
@@ -322,7 +323,7 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
         {message.messageType === 'voice' && message.attachmentUrl
           ? <VoiceNotePlayer durationSeconds={message.audioDurationSeconds ?? 0} mine={mine} url={message.attachmentUrl} />
           : message.attachmentUrl && <AttachmentPreview contentType={message.attachmentContentType} mine={mine} name={message.attachmentName} url={message.attachmentUrl} />}
-        {message.content && <p className="whitespace-pre-line break-words">{message.content}</p>}
+        {message.content && <p className="whitespace-pre-line break-words">{frenchTypography(message.content)}</p>}
         <p className={`mt-1 text-right text-[12px] ${mine ? 'text-white/75' : 'text-slate-600'}`}>{timeOf(message.sentAt)}</p>
       </div>
     </div>
@@ -340,7 +341,7 @@ function PendingBubble({ item }: { item: OutgoingMessage }) {
     <div className="flex justify-end">
       <div className="max-w-[75%] rounded-xl px-4 pb-2 pt-3 text-[12.5px] leading-5 text-white opacity-75 shadow-md shadow-slate-900/10" style={{ background: NAVY }}>
         {item.file && item.messageType !== 'voice' && <p className="mb-1 flex items-center gap-1.5 text-[12px] text-white/80"><FileText size={13} /> {item.file.name}</p>}
-        <p className="whitespace-pre-line break-words">{item.messageType === 'text' ? item.content : label}</p>
+        <p className="whitespace-pre-line break-words">{frenchTypography(item.messageType === 'text' ? item.content : label)}</p>
         <p className="mt-1 flex items-center justify-end gap-1 text-[12px] text-white/75">
           {item.state === 'sending'
             ? <><LoaderCircle aria-hidden className="animate-spin" size={11} /> Envoi…</>

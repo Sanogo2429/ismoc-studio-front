@@ -14,7 +14,7 @@ interface ApiErrorBody {
 export function apiErrorMessage(error: unknown, fallback: string): string {
   if (axios.isAxiosError<ApiErrorBody>(error)) {
     if (!error.response || error.response.status >= 500) {
-      console.error('[IsMoc] Échec d\'appel :', { url: error.config?.url, status: error.response?.status, code: error.code, message: error.message, data: error.response?.data })
+      console.error('[IsMoc] Échec d\'appel :', { url: error.config?.url, status: error.response?.status, code: error.code, message: error.message, data: error.response?.data })
     }
     const data = error.response?.data
     if (data && typeof data === 'object') {

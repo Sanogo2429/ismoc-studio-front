@@ -94,7 +94,7 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
 
         <div className="mt-auto shrink-0 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
           <MessageSquare size={20} style={{ color: AMBER }} />
-          <p className="mt-2.5 text-[14px] font-bold">Besoin d’aide ?</p>
+          <p className="mt-2.5 text-[14px] font-bold">Besoin d’aide ?</p>
           <p className="mt-1 text-[12px] leading-5 text-white/60">Notre équipe vous répond rapidement.</p>
           <button className="mt-2.5 inline-flex items-center gap-2 text-[12px] font-semibold" onClick={onHelp} style={{ color: AMBER }} type="button">Nous écrire <ArrowRight size={14} /></button>
         </div>

@@ -177,7 +177,7 @@ export function useProjectRtc(projectId: string) {
 
   async function acquireMedia(type: CallType): Promise<MediaStream> {
     if (!navigator.mediaDevices?.getUserMedia) {
-      console.error('[IsMoc] mediaDevices.getUserMedia indisponible (contexte non sécurisé : HTTPS requis).')
+      console.error('[IsMoc] mediaDevices.getUserMedia indisponible (contexte non sécurisé : HTTPS requis).')
       throw new Error('Votre navigateur ne permet pas les appels audio et vidéo sur cette page.')
     }
     const stream = await navigator.mediaDevices.getUserMedia({

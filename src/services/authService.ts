@@ -26,7 +26,7 @@ export interface AuthResponse {
 function assertAuthResponse(data: unknown, failureMessage: string): AuthResponse {
   const candidate = data as Partial<AuthResponse> | null
   if (!candidate || typeof candidate !== 'object' || typeof candidate.token !== 'string' || candidate.token.split('.').length !== 3) {
-    console.error('[IsMoc] Réponse d’authentification inattendue :', data)
+    console.error('[IsMoc] Réponse d’authentification inattendue :', data)
     throw new Error(failureMessage)
   }
   return candidate as AuthResponse

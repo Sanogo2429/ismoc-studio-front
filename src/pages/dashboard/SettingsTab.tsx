@@ -123,7 +123,7 @@ function ProfileForm({ onSaved, profile }: { onSaved: (profile: AccountProfile) 
 function GoogleAccountCard() {
   return (
     <Card icon={<Lock size={18} />} subtitle="Votre compte est relié à Google." title="Connexion avec Google">
-      <p className="text-sm leading-6 text-slate-600">Vous vous connectez avec votre compte Google : il n’y a pas de mot de passe IsMoc à modifier ici. La sécurité de votre connexion est gérée par Google.</p>
+      <p className="text-sm leading-6 text-slate-600">Vous vous connectez avec votre compte Google : il n’y a pas de mot de passe IsMoc à modifier ici. La sécurité de votre connexion est gérée par Google.</p>
       <p className="mt-3 text-[13px] leading-5 text-slate-500">Pour pouvoir aussi vous connecter avec votre e-mail, définissez un mot de passe via « Mot de passe oublié » sur la page de connexion.</p>
     </Card>
   )
