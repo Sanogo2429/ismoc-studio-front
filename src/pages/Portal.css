@@ -60,11 +60,8 @@
 .auth-submit:disabled { transform: none; cursor: wait; opacity: .72; }
 .auth-divider { position: relative; margin: 24px 0; border-top: 1px solid #e8edf2; text-align: center; }
 .auth-divider span { position: relative; top: -8px; padding: 0 13px; background: #fff; color: #627286; font-size: 12px; text-transform: uppercase; }
-.auth-provider-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.auth-provider, .auth-phone { min-height: 45px; display: flex; align-items: center; justify-content: center; gap: 9px; border: 1px solid #dfe5ed; border-radius: 9px; background: white; color: #263149; font-size: 12px; font-weight: 700; cursor: pointer; }
-.auth-provider:hover, .auth-phone:hover { border-color: #aab5c4; background: #fbfcfd; }
-.auth-provider b { font-size: 14px; }
-.auth-phone { width: 100%; margin-top: 10px; }
+.auth-provider { width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid #dfe5ed; border-radius: 9px; background: white; color: #263149; font-size: 14px; font-weight: 700; cursor: pointer; }
+.auth-provider:hover { border-color: #aab5c4; background: #fbfcfd; }
 .auth-terms { margin: 22px 0 0; color: #627186; font-size: 12px; line-height: 1.6; text-align: center; }
 .auth-trust { display: flex; justify-content: center; gap: 21px; margin-top: 26px; color: #627289; font-size: 12px; }
 .auth-trust span { display: inline-flex; align-items: center; gap: 5px; }

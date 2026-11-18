@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom'
 import AdminShell, { type AdminTab } from '../components/admin/AdminShell'
 import MockupModal from '../components/admin/MockupModal'
 import { useAgencyLobby } from '../hooks/useAgencyLobby'
+import { NARROW_QUERY, useMediaQuery } from '../hooks/useMediaQuery'
 import { fetchAdminOverview, type AdminOverview, type AdminProject, type ProgressResult } from '../services/adminApi'
 import { apiErrorMessage } from '../services/apiError'
 import { PROJECT_STEPS, messagePreview, type ClientMessage } from '../services/projectTypes'
@@ -38,7 +39,9 @@ function AdminPage() {
   const [mockupProject, setMockupProject] = useState<AdminProject | null>(null)
   const [userName] = useState(() => localStorage.getItem('userName')?.trim() || 'Équipe IsMoc')
 
-  const selectedProjectId = projectParam ?? overview?.projects[0]?.projectId ?? null
+  // Écran large : le dossier le plus récent s'ouvre d'office. Écran étroit : la liste d'abord (pas de présélection).
+  const isNarrow = useMediaQuery(NARROW_QUERY)
+  const selectedProjectId = projectParam ?? (isNarrow ? null : overview?.projects[0]?.projectId ?? null)
   const isViewingConversation = (projectId: string) => activeTab === 'messages' && selectedProjectId === projectId
 
   useEffect(() => {
@@ -125,7 +128,7 @@ function AdminPage() {
         <OrdersTab error={overviewError} onMockup={setMockupProject} onOpenChat={openChat} onProgressPublished={handleProgressPublished} overview={overview} />
       )}
       {activeTab === 'messages' && (
-        <AdminMessagesTab onMockup={setMockupProject} onSelect={openChat} projects={overview?.projects ?? null} selectedProjectId={selectedProjectId} unreadIds={unreadIds} />
+        <AdminMessagesTab onClose={() => setSearchParams({ tab: 'messages' })} onMockup={setMockupProject} onSelect={openChat} projects={overview?.projects ?? null} selectedProjectId={selectedProjectId} unreadIds={unreadIds} />
       )}
       {activeTab === 'clients' && <ClientsTab refreshKey={refreshKey} />}
 

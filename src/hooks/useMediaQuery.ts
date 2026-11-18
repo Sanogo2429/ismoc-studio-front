@@ -15,3 +15,6 @@ export function useMediaQuery(query: string): boolean {
 
 /** Téléphone : même seuil que le préfixe md: de Tailwind (768 px). */
 export const PHONE_QUERY = '(max-width: 767px)'
+
+/** Écran étroit (téléphone et tablette) : en dessous du préfixe lg: de Tailwind (1024 px). */
+export const NARROW_QUERY = '(max-width: 1023px)'
