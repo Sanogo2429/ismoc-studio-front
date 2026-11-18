@@ -31,7 +31,7 @@ function MockupModal({ onClose, project }: MockupModalProps) {
   }, [onClose])
 
   return (
-    <div aria-label={`Maquette ${project.title}`} aria-modal="true" className="fixed inset-0 z-50 flex flex-col bg-[#05080F]/95 p-3 backdrop-blur-sm sm:p-6" role="dialog">
+    <div aria-label={`Maquette ${project.title}`} aria-modal="true" className="fixed inset-0 z-50 flex flex-col bg-[#05080F]/95 px-3 pb-[calc(0.75rem+var(--safe-bottom))] pt-[calc(0.75rem+var(--safe-top))] backdrop-blur-sm sm:px-6 sm:pb-[calc(1.5rem+var(--safe-bottom))] sm:pt-[calc(1.5rem+var(--safe-top))]" role="dialog">
       <div className="mb-3 flex items-center justify-between gap-3 text-slate-100">
         <div className="min-w-0">
           <p className="text-[10px] font-bold tracking-[0.25em] text-[#F59E0B]">#{project.reference} · MAQUETTE VALIDÉE</p>

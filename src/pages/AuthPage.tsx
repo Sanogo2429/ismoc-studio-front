@@ -132,7 +132,8 @@ function AuthPage() {
   }
 
   return (
-    <main className="auth-layout pt-safe">
+    <main className="auth-layout">
+      {/* Zone sécurisée du haut gérée dans Portal.css (bandeau sur téléphone, logo et panneau sur grand écran). */}
       <section className="auth-story" aria-label="Présentation d'IsMoc Studio">
         <img
           className="auth-story-image"

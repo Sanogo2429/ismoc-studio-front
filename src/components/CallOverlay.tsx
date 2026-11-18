@@ -81,7 +81,7 @@ function CallOverlay({ peerName = 'Équipe IsMoc', rtc }: { peerName?: string; r
   const statusText = status === 'outgoing' ? 'Appel en cours… en attente de réponse' : status === 'connecting' ? 'Connexion sécurisée…' : elapsed
 
   return (
-    <div aria-label={callLabel(rtc.callType)} aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B132B]/90 p-4 backdrop-blur-md" role="dialog">
+    <div aria-label={callLabel(rtc.callType)} aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B132B]/90 px-4 pb-[calc(1rem+var(--safe-bottom))] pt-[calc(1rem+var(--safe-top))] backdrop-blur-md" role="dialog">
       <div className="relative flex h-full max-h-[760px] w-full max-w-5xl flex-col overflow-hidden rounded-3xl bg-[#060B1A] shadow-2xl ring-1 ring-white/10">
         <div className="relative flex flex-1 items-center justify-center">
           {showRemoteVideo

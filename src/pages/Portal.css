@@ -10,7 +10,7 @@
 .auth-story-image, .auth-story-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
 .auth-story-image { object-fit: cover; object-position: center; }
 .auth-story-shade { background: linear-gradient(180deg, rgba(10,18,34,.38), rgba(10,18,34,.48) 38%, #0c1427 100%); }
-.portal-brand { position: absolute; z-index: 1; top: 38px; left: 48px; display: inline-flex; align-items: center; gap: 11px; color: #fff; }
+.portal-brand { position: absolute; z-index: 1; top: calc(38px + var(--safe-top)); left: 48px; display: inline-flex; align-items: center; gap: 11px; color: #fff; }
 .portal-brand-mark { width: 44px; height: 44px; display: inline-flex; flex-wrap: nowrap; align-items: center; justify-content: center; white-space: nowrap; border-radius: 13px; background: #fff; color: #10182b; font: 800 16px/1 'Manrope', sans-serif; }
 .portal-brand-mark span { color: #ed8b00; }
 .portal-brand > span:last-child { display: flex; flex-direction: column; }
@@ -29,8 +29,8 @@
 .auth-founders small, .auth-location { color: #9ba8bb; font-size: 9px; }
 .auth-location { position: absolute; right: 30px; bottom: 25px; letter-spacing: 1.8px; }
 
-.auth-panel { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 76px 52px calc(46px + var(--safe-bottom)); }
-.auth-back { position: absolute; top: 37px; right: 45px; display: inline-flex; align-items: center; gap: 8px; color: #647287 !important; font-size: 11px; }
+.auth-panel { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: calc(76px + var(--safe-top)) 52px calc(46px + var(--safe-bottom)); }
+.auth-back { position: absolute; top: calc(37px + var(--safe-top)); right: 45px; display: inline-flex; align-items: center; gap: 8px; color: #647287 !important; font-size: 11px; }
 .auth-back:hover { color: #d47700 !important; }
 .auth-content { width: min(100%, 450px); }
 .auth-eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 22px; color: #B35700; font-size: 9px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
@@ -158,10 +158,13 @@
 }
 
 @media (max-width: 720px) {
-  .auth-layout { display: block; }
-  .auth-story { min-height: 300px; height: 36vh; height: 36svh; }
-  .auth-story-image { object-position: center 43%; }
-  .portal-brand { top: 20px; left: 22px; }
+  /* Téléphone : le formulaire passe en premier ; le visuel devient un bandeau (logo + « Retour au site »)
+     placé sous la barre de statut de l'iPhone (env(safe-area-inset-top)). */
+  .auth-layout { position: relative; display: block; }
+  .auth-story { min-height: 0; height: calc(72px + var(--safe-top)); }
+  .auth-story-image { object-position: center 40%; }
+  .auth-story-copy { display: none; }
+  .portal-brand { top: calc(var(--safe-top) + 14px); left: 18px; }
   .portal-brand-mark { width: 38px; height: 38px; }
   .auth-story-copy { left: 24px; right: 24px; bottom: 22px; }
   .auth-quote-mark { height: 27px; font-size: 50px; }
@@ -169,8 +172,9 @@
   .auth-story-copy > p { font-size: 11px; }
   .auth-founders { margin-top: 15px; }
   .auth-location { display: none; }
-  .auth-panel { min-height: 0; padding: 68px 24px calc(36px + var(--safe-bottom)); }
-  .auth-back { top: 22px; right: 23px; }
+  .auth-panel { position: static; min-height: 0; padding: 28px 24px calc(36px + var(--safe-bottom)); }
+  .auth-back { z-index: 2; top: calc(var(--safe-top) + 14px); right: 14px; color: #fff !important; }
+  .auth-back:hover { color: #ffd38a !important; }
   .auth-content { max-width: 470px; }
   .auth-subtitle { margin-bottom: 23px; }
   .dashboard-shell { display: block; }
@@ -201,7 +205,6 @@
   .dashboard-security button { display: none; }
   /* Zones tactiles d'au moins 44 × 44 px (même rendu visuel, surface de toucher agrandie). */
   .portal-brand, .auth-back { min-height: 44px; align-items: center; }
-  .auth-back { top: calc(22px - 13px); }
   .password-toggle { right: 3px; width: 44px; height: 44px; }
   .auth-form .forgot-link { min-height: 44px; margin-block: -19px 7px; }
 }
@@ -222,6 +225,10 @@
 }
 /* Mobile : hauteur plein écran stable (100dvh = zone réellement visible, sans la barre d'adresse rétractable). */
 @supports (height: 100dvh) {
-  .auth-layout, .dashboard-shell, .auth-story, .auth-panel { min-height: 100dvh; }
+  .auth-layout, .dashboard-shell { min-height: 100dvh; }
   .dashboard-sidebar { height: 100dvh; }
+  /* Grand écran uniquement : sur téléphone, le visuel est un bandeau (voir @media max-width: 720px). */
+  @media (min-width: 721px) {
+    .auth-story, .auth-panel { min-height: 100dvh; }
+  }
 }
