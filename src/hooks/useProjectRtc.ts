@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import axios from 'axios'
 import { HubConnection, HubConnectionState } from '@microsoft/signalr'
 import { api } from '../services/api'
 import { apiErrorMessage } from '../services/apiError'
@@ -31,6 +32,42 @@ export interface ProjectLiveUpdate {
 export type CallType = 'audio' | 'video'
 export type CallStatus = 'idle' | 'outgoing' | 'incoming' | 'connecting' | 'active'
 export type ProjectRtc = ReturnType<typeof useProjectRtc>
+
+/** Message en attente d'envoi (hors ligne ou réseau coupé) : affiché avec un indicateur, envoyé au retour du réseau. */
+export interface OutgoingMessage {
+  localId: string
+  content: string
+  /** Pièce jointe ou note vocale à téléverser avant l'envoi. */
+  file: File | null
+  /** URL de la pièce jointe déjà téléversée (évite un second envoi du fichier lors d'une nouvelle tentative). */
+  uploadedUrl: string | null
+  messageType: 'text' | 'sticker' | 'voice'
+  audioDurationSeconds: number | null
+  createdAt: string
+  state: 'waiting' | 'sending'
+}
+
+type NewMessage = Pick<OutgoingMessage, 'content' | 'file' | 'messageType' | 'audioDurationSeconds'>
+
+const OUTBOX_RETRY_MS = 15_000
+
+/** Identité et horodatage d'un message mis en attente (appelé au moment de l'envoi, jamais pendant le rendu). */
+function newOutgoingMeta(): Pick<OutgoingMessage, 'localId' | 'createdAt'> {
+  return { localId: `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, createdAt: new Date().toISOString() }
+}
+
+/**
+ * Échec dû au réseau (hors ligne, requête sans réponse, temps réel coupé pendant l'envoi) : le message est mis en
+ * attente. Un refus métier (HubException, réponse HTTP d'erreur) n'est jamais mis en attente : il est affiché.
+ */
+function isNetworkFailure(error: unknown): boolean {
+  if (!navigator.onLine) return true
+  const cause = error instanceof Error && error.cause !== undefined ? error.cause : error
+  if (axios.isAxiosError(cause)) return !cause.response
+  const raw = cause instanceof Error ? cause.message : ''
+  if (/HubException/.test(raw)) return false
+  return cause instanceof Error
+}
 
 const RING_TIMEOUT_MS = 45_000
 const ICE_SERVERS: RTCIceServer[] = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }]
@@ -83,6 +120,12 @@ export function useProjectRtc(projectId: string) {
   const [isCameraOff, setIsCameraOff] = useState(false)
   const [callStartedAt, setCallStartedAt] = useState<number | null>(null)
   const [callNotice, setCallNotice] = useState('')
+  // File d'attente des messages (hors ligne) : l'état pour l'affichage, la référence pour l'envoi séquentiel.
+  const [outbox, setOutbox] = useState<OutgoingMessage[]>([])
+  const [outboxError, setOutboxError] = useState('')
+  const outboxRef = useRef<OutgoingMessage[]>([])
+  const isFlushingRef = useRef(false)
+  const flushOutboxRef = useRef<() => Promise<void>>(async () => undefined)
 
   const connectionRef = useRef<HubConnection | null>(null)
   const peerRef = useRef<RTCPeerConnection | null>(null)
@@ -220,6 +263,8 @@ export function useProjectRtc(projectId: string) {
       onConnected: async () => {
         await joinRoom()
         await loadMessages()
+        // Temps réel rétabli : les messages en attente partent.
+        void flushOutboxRef.current()
       },
     })
     const connection = hub.connection
@@ -337,6 +382,89 @@ export function useProjectRtc(projectId: string) {
     }
   }
 
+  function updateOutbox(update: (items: OutgoingMessage[]) => OutgoingMessage[]) {
+    outboxRef.current = update(outboxRef.current)
+    setOutbox(outboxRef.current)
+  }
+
+  /** Téléverse le fichier éventuel (une seule fois) puis envoie le message. */
+  async function deliver(item: OutgoingMessage): Promise<void> {
+    let url = item.uploadedUrl
+    if (item.file && !url) {
+      url = (item.messageType === 'voice' ? await uploadVoiceNote(item.file) : await uploadAttachment(item.file)).url
+      const uploadedUrl = url
+      updateOutbox((items) => items.map((entry) => entry.localId === item.localId ? { ...entry, uploadedUrl } : entry))
+    }
+    await sendMessage(item.content, url, { messageType: item.messageType, audioDurationSeconds: item.audioDurationSeconds })
+  }
+
+  /** Envoie les messages en attente, dans l'ordre ; s'arrête au premier échec réseau (nouvelle tentative plus tard). */
+  async function flushOutbox(): Promise<void> {
+    if (isFlushingRef.current || !navigator.onLine || outboxRef.current.length === 0) return
+    isFlushingRef.current = true
+    try {
+      while (outboxRef.current.length > 0) {
+        const item = outboxRef.current[0]
+        updateOutbox((items) => items.map((entry) => entry.localId === item.localId ? { ...entry, state: 'sending' } : entry))
+        try {
+          await deliver(outboxRef.current.find((entry) => entry.localId === item.localId) ?? item)
+          updateOutbox((items) => items.filter((entry) => entry.localId !== item.localId))
+        } catch (error: unknown) {
+          if (isNetworkFailure(error)) {
+            updateOutbox((items) => items.map((entry) => entry.localId === item.localId ? { ...entry, state: 'waiting' } : entry))
+            break
+          }
+          // Refus métier : le message est retiré de la file et l'utilisateur est prévenu.
+          updateOutbox((items) => items.filter((entry) => entry.localId !== item.localId))
+          setOutboxError(error instanceof Error && error.message ? error.message : 'Un message en attente n’a pas pu être envoyé.')
+        }
+      }
+    } finally {
+      isFlushingRef.current = false
+    }
+  }
+  useEffect(() => { flushOutboxRef.current = flushOutbox })
+
+  // Retour du réseau : envoi immédiat ; tant que la file n'est pas vide, nouvelle tentative régulière.
+  useEffect(() => {
+    const onOnline = () => void flushOutboxRef.current()
+    window.addEventListener('online', onOnline)
+    return () => window.removeEventListener('online', onOnline)
+  }, [])
+  useEffect(() => {
+    if (outbox.length === 0) return
+    const timer = window.setInterval(() => void flushOutboxRef.current(), OUTBOX_RETRY_MS)
+    return () => window.clearInterval(timer)
+  }, [outbox.length])
+
+  /**
+   * Envoie un message (texte, sticker, note vocale, pièce jointe). Hors ligne ou en cas de coupure réseau, il est mis
+   * en attente et part automatiquement au retour du réseau. Retourne 'queued' dans ce cas.
+   */
+  async function queueMessage(message: NewMessage): Promise<'sent' | 'queued'> {
+    setOutboxError('')
+    const item: OutgoingMessage = {
+      ...message,
+      ...newOutgoingMeta(),
+      uploadedUrl: null,
+      state: 'waiting',
+    }
+    // Hors ligne, ou d'autres messages déjà en attente (ordre conservé) : mise en file.
+    if (!navigator.onLine || outboxRef.current.length > 0) {
+      updateOutbox((items) => [...items, item])
+      void flushOutbox()
+      return 'queued'
+    }
+    try {
+      await deliver(item)
+      return 'sent'
+    } catch (error: unknown) {
+      if (!isNetworkFailure(error)) throw error
+      updateOutbox((items) => [...items, { ...item, uploadedUrl: outboxRef.current.find((entry) => entry.localId === item.localId)?.uploadedUrl ?? null }])
+      return 'queued'
+    }
+  }
+
   /** Téléverse une note vocale (signature audio vérifiée côté serveur) et retourne son URL protégée. */
   async function uploadVoiceNote(audio: File): Promise<{ url: string }> {
     const form = new FormData()
@@ -443,6 +571,10 @@ export function useProjectRtc(projectId: string) {
     callNotice,
     dismissCallNotice: () => setCallNotice(''),
     sendMessage,
+    queueMessage,
+    outbox,
+    outboxError,
+    dismissOutboxError: () => setOutboxError(''),
     uploadAttachment,
     uploadVoiceNote,
     startCall,

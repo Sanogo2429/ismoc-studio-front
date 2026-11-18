@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
-import { ArrowLeft, Download, FileText, LoaderCircle, Mic, Paperclip, Phone, Send, Smile, Video, X } from 'lucide-react'
-import type { HubStatus, ProjectRtc } from '../hooks/useProjectRtc'
+import { ArrowLeft, Clock, Download, FileText, LoaderCircle, Mic, Paperclip, Phone, Send, Smile, Video, X } from 'lucide-react'
+import type { HubStatus, OutgoingMessage, ProjectRtc } from '../hooks/useProjectRtc'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { api } from '../services/api'
 import type { ClientMessage } from '../services/projectTypes'
@@ -125,8 +125,9 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
   async function sendSticker(stickerId: string) {
     setIsPickerOpen(false)
     setChatError('')
+    stickToBottomRef.current = true
     try {
-      await rtc.sendMessage(stickerId, null, { messageType: 'sticker' })
+      await rtc.queueMessage({ content: stickerId, file: null, messageType: 'sticker', audioDurationSeconds: null })
     } catch (error: unknown) {
       setChatError(error instanceof Error ? error.message : 'Le sticker n’a pas pu être envoyé.')
     }
@@ -145,9 +146,10 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
       return
     }
     setIsSending(true)
+    stickToBottomRef.current = true
     try {
-      const voiceNote = await rtc.uploadVoiceNote(recording.file)
-      await rtc.sendMessage('', voiceNote.url, { messageType: 'voice', audioDurationSeconds: recording.seconds })
+      // Hors ligne : la note vocale est mise en attente et part au retour du réseau.
+      await rtc.queueMessage({ content: '', file: recording.file, messageType: 'voice', audioDurationSeconds: recording.seconds })
     } catch (error: unknown) {
       setChatError(error instanceof Error ? error.message : 'La note vocale n’a pas pu être envoyée.')
     } finally {
@@ -176,8 +178,8 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
     // Son propre message doit toujours être visible, même si l'on relisait l'historique.
     stickToBottomRef.current = true
     try {
-      const attachment = pendingFile ? await rtc.uploadAttachment(pendingFile) : null
-      await rtc.sendMessage(content, attachment?.url)
+      // Hors ligne ou coupure réseau : le message est mis en attente (indicateur) et part au retour du réseau.
+      await rtc.queueMessage({ content, file: pendingFile, messageType: 'text', audioDurationSeconds: null })
       setDraft('')
       setPendingFile(null)
     } catch (error: unknown) {
@@ -234,10 +236,15 @@ export function ChatPanel({ className = 'h-[640px]', counterpart, immersive = fa
               </div>
             </div>
           ))}
+          {rtc.outbox.length > 0 && (
+            <div className={`space-y-5 ${groups.length > 0 ? 'mt-5' : ''}`}>
+              {rtc.outbox.map((item) => <PendingBubble item={item} key={item.localId} />)}
+            </div>
+          )}
         </div>
       </div>
 
-      {(chatError || recorder.error) && <p className="mx-4 mt-3 shrink-0 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700" role="alert">{chatError || recorder.error}</p>}
+      {(chatError || recorder.error || rtc.outboxError) && <p className="mx-4 mt-3 shrink-0 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700" role="alert">{chatError || recorder.error || rtc.outboxError}</p>}
       {pendingFile && (
         <div className="mx-4 mt-3 flex shrink-0 items-center gap-2 self-start rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-600">
           <FileText size={14} /><span className="max-w-[240px] truncate">{pendingFile.name}</span>
@@ -317,6 +324,28 @@ function MessageBubble({ message, viewer }: { message: ClientMessage; viewer: 'c
           : message.attachmentUrl && <AttachmentPreview contentType={message.attachmentContentType} mine={mine} name={message.attachmentName} url={message.attachmentUrl} />}
         {message.content && <p className="whitespace-pre-line break-words">{message.content}</p>}
         <p className={`mt-1 text-right text-[12px] ${mine ? 'text-white/75' : 'text-slate-600'}`}>{timeOf(message.sentAt)}</p>
+      </div>
+    </div>
+  )
+}
+
+/** Message en attente d'envoi (hors ligne) : bulle atténuée + indicateur discret. */
+function PendingBubble({ item }: { item: OutgoingMessage }) {
+  const label = item.messageType === 'voice'
+    ? 'Note vocale'
+    : item.messageType === 'sticker'
+      ? findSticker(item.content)?.label ?? 'Sticker'
+      : item.content || item.file?.name || 'Pièce jointe'
+  return (
+    <div className="flex justify-end">
+      <div className="max-w-[75%] rounded-xl px-4 pb-2 pt-3 text-[12.5px] leading-5 text-white opacity-75 shadow-md shadow-slate-900/10" style={{ background: NAVY }}>
+        {item.file && item.messageType !== 'voice' && <p className="mb-1 flex items-center gap-1.5 text-[12px] text-white/80"><FileText size={13} /> {item.file.name}</p>}
+        <p className="whitespace-pre-line break-words">{item.messageType === 'text' ? item.content : label}</p>
+        <p className="mt-1 flex items-center justify-end gap-1 text-[12px] text-white/75">
+          {item.state === 'sending'
+            ? <><LoaderCircle aria-hidden className="animate-spin" size={11} /> Envoi…</>
+            : <><Clock aria-hidden size={11} /> En attente</>}
+        </p>
       </div>
     </div>
   )

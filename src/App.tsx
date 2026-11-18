@@ -10,11 +10,14 @@ import AdminPage from './pages/AdminPage'
 import AdminRoute from './components/AdminRoute'
 import ProtectedRoute from './components/ProtectedRoute'
 import ScrollToTop from './components/ScrollToTop'
+import OfflineBanner from './components/OfflineBanner'
 
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      {/* Réseau perdu : bandeau discret « Vous êtes hors ligne » sur toutes les pages. */}
+      <OfflineBanner />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<AuthPage />} />
