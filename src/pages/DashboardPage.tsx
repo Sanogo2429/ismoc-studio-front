@@ -9,6 +9,7 @@ import { isAdmin } from '../services/session'
 import { readCache, readPreference, writeCache } from '../services/sessionCache'
 import { LAST_CONVERSATION_KEY, prefetchMessages } from '../hooks/useProjectRtc'
 import { PHONE_QUERY, useMediaQuery } from '../hooks/useMediaQuery'
+import { useConnectionRestoredKey } from '../hooks/useConnectionRestoredKey'
 import BillingTab from './dashboard/BillingTab'
 import HomeTab from './dashboard/HomeTab'
 import MessagesTab from './dashboard/MessagesTab'
@@ -30,6 +31,8 @@ function DashboardPage() {
   const selectedProjectId = searchParams.get('project')
   const [activeTabOnMount] = useState(activeTab)
   const isPhone = useMediaQuery(PHONE_QUERY)
+  // Retour du service après une indisponibilité : la liste des projets est rechargée.
+  const connectionRestored = useConnectionRestoredKey()
 
   // Dernière liste connue affichée immédiatement (cache de l'onglet), puis rafraîchie par l'API.
   const [projects, setProjects] = useState<ProjectSummary[] | null>(() => readCache<ProjectSummary[]>('projects') ?? null)
@@ -68,7 +71,7 @@ function DashboardPage() {
         if (!readCache('projects')) setProjectsError(apiErrorMessage(error, 'Impossible de charger vos projets.'))
       })
     return () => { isActive = false }
-  }, [activeTabOnMount])
+  }, [activeTabOnMount, connectionRestored])
 
   function openTab(tab: ClientNavId, extra: Record<string, string> = {}) {
     setSearchParams({ tab, ...extra })

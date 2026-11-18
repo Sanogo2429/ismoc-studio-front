@@ -22,6 +22,7 @@ export default defineConfig({
       '/api': { target: 'https://localhost:7060', secure: false },
       '/hubs': { target: 'https://localhost:7060', secure: false, ws: true },
       '/signin-google': { target: 'https://localhost:7060', secure: false },
+      '/health': { target: 'https://localhost:7060', secure: false },
     },
   },
   plugins: [

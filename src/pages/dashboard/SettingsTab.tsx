@@ -7,6 +7,7 @@ import { apiErrorMessage } from '../../services/apiError'
 import type { AuthResponse } from '../../services/authService'
 import { formatDate } from '../../services/projectTypes'
 import { isGoogleSession } from '../../services/session'
+import { useConnectionRestoredKey } from '../../hooks/useConnectionRestoredKey'
 import PageHeader from '../../components/PageHeader'
 
 interface AccountProfile {
@@ -35,14 +36,15 @@ function passwordError(value: string): string {
 function SettingsTab({ onProfileUpdated }: { onProfileUpdated: (fullName: string) => void }) {
   const [profile, setProfile] = useState<AccountProfile | null>(null)
   const [loadError, setLoadError] = useState('')
+  const connectionRestored = useConnectionRestoredKey()
 
   useEffect(() => {
     let isActive = true
     api.get<AccountProfile>('/api/Auth/me')
-      .then((response) => { if (isActive) setProfile(response.data) })
+      .then((response) => { if (isActive) { setProfile(response.data); setLoadError('') } })
       .catch((error: unknown) => { if (isActive) setLoadError(apiErrorMessage(error, 'Impossible de charger votre compte.')) })
     return () => { isActive = false }
-  }, [])
+  }, [connectionRestored])
 
   return (
     <>

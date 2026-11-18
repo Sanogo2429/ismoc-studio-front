@@ -8,6 +8,7 @@ import { apiErrorMessage } from '../services/apiError'
 import { fetchAiQuota, readAiError, type AiQuota } from '../services/aiQuota'
 import { IMAGE_ACCEPT, prepareReferenceImage, type ReferenceImage } from '../services/imageUpload'
 import { formatEuros, isPaid } from '../services/projectTypes'
+import { useConnectionRestoredKey } from '../hooks/useConnectionRestoredKey'
 
 interface ProjectChatMessage {
   role: string
@@ -63,6 +64,8 @@ const SUGGESTIONS = ['Rends le design plus moderne', 'Ajoute une page de contact
 
 function MvpPreviewPage() {
   const [searchParams] = useSearchParams()
+  // Retour du service après une indisponibilité : le projet est rechargé.
+  const connectionRestored = useConnectionRestoredKey()
   const projectId = searchParams.get('id') ?? ''
   const [memory, setMemory] = useState<ProjectMemory | null>(null)
   const [loadedProjectId, setLoadedProjectId] = useState('')
@@ -113,7 +116,7 @@ function MvpPreviewPage() {
       })
 
     return () => { isActive = false }
-  }, [projectId])
+  }, [projectId, connectionRestored])
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })

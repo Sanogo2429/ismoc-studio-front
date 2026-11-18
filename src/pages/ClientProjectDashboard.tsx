@@ -12,6 +12,7 @@ import { useProjectRtc, type ProjectRtc } from '../hooks/useProjectRtc'
 import { api } from '../services/api'
 import { apiErrorMessage } from '../services/apiError'
 import { downloadInvoice } from '../services/invoice'
+import { useConnectionRestoredKey } from '../hooks/useConnectionRestoredKey'
 import {
   PROJECT_STEPS,
   formatDate,
@@ -52,6 +53,8 @@ function focusChat() {
 
 function ClientProjectDashboard() {
   const { projectId = '' } = useParams()
+  // Retour du service après une indisponibilité : le projet est rechargé.
+  const connectionRestored = useConnectionRestoredKey()
   const navigate = useNavigate()
   const [loadedProject, setProject] = useState<ClientProject | null>(null)
   const [loadError, setLoadError] = useState('')
@@ -68,7 +71,7 @@ function ClientProjectDashboard() {
       .then((response) => { if (isActive) setProject({ ...response.data, milestones: response.data.milestones ?? [] }) })
       .catch((error: unknown) => { if (isActive) setLoadError(apiErrorMessage(error, 'Impossible de charger ce projet.')) })
     return () => { isActive = false }
-  }, [projectId])
+  }, [projectId, connectionRestored])
 
   // Messages reste sur cette page (le chat du projet est ici) ; les autres rubriques ouvrent /dashboard sur le bon onglet.
   function handleNavigation(id: ClientNavId) {

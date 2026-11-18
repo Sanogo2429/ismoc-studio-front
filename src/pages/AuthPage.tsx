@@ -21,7 +21,8 @@ interface ApiErrorBody {
 function authErrorMessage(error: unknown, fallback: string): string {
   if (axios.isAxiosError<ApiErrorBody>(error)) {
     if (!error.response) {
-      return 'Impossible de joindre le serveur IsMoc. Vérifiez votre connexion puis réessayez (le premier accès peut prendre jusqu’à une minute).'
+      console.error('[IsMoc] Échec d’appel (aucune réponse) :', error.message)
+      return 'Connexion momentanément indisponible. Réessayez dans un instant (le premier accès peut prendre jusqu’à une minute).'
     }
     const data = error.response.data
     if (data && typeof data === 'object') {

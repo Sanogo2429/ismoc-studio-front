@@ -1,4 +1,5 @@
-import axios from 'axios'
+import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
+import { configureConnectionMonitor, reportAvailable, reportUnavailable } from './connectionMonitor'
 import { clearSessionCache } from './sessionCache'
 
 /**
@@ -35,9 +36,43 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+configureConnectionMonitor(apiBaseUrl)
+
+/** Nouvelles tentatives automatiques des lectures (GET) quand le service ne répond pas : 1 s, 3 s, 6 s. */
+const READ_RETRY_DELAYS_MS = [1_000, 3_000, 6_000]
+
+type RetriableConfig = InternalAxiosRequestConfig & { ismocRetry?: number }
+
+/**
+ * Service injoignable alors que le réseau est présent : aucune réponse, ou page d'erreur de l'hébergeur
+ * (502 / 503 / 504 sans message de l'application — un 503 « IA indisponible » de l'API reste une réponse métier).
+ */
+function isServiceUnavailable(error: AxiosError): boolean {
+  if (!navigator.onLine) return false
+  if (!error.response) return error.code !== 'ERR_CANCELED'
+  const data = error.response.data as { message?: unknown; Message?: unknown } | null
+  const hasAppMessage = !!data && typeof data === 'object' && (data.message !== undefined || data.Message !== undefined)
+  return [502, 503, 504].includes(error.response.status) && !hasAppMessage
+}
+
 api.interceptors.response.use(
-  (response) => response,
-  (error: unknown) => {
+  (response) => {
+    reportAvailable()
+    return response
+  },
+  async (error: unknown) => {
+    if (axios.isAxiosError(error) && isServiceUnavailable(error)) {
+      // Détail technique : console uniquement (jamais affiché).
+      reportUnavailable({ url: error.config?.url, method: error.config?.method, status: error.response?.status, code: error.code, message: error.message })
+      const config = error.config as RetriableConfig | undefined
+      const attempt = config?.ismocRetry ?? 0
+      if (config && (config.method ?? 'get').toLowerCase() === 'get' && attempt < READ_RETRY_DELAYS_MS.length) {
+        config.ismocRetry = attempt + 1
+        await new Promise((resolve) => window.setTimeout(resolve, READ_RETRY_DELAYS_MS[attempt]))
+        return api.request(config)
+      }
+    }
+
     if (axios.isAxiosError(error) && error.response?.status === 401) {
       const requestUrl = error.config?.url ?? ''
       const isAuthRequest = /\/api\/auth\/(login|register|google-login|google-callback)/i.test(requestUrl)
