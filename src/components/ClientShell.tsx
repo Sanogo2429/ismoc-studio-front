@@ -96,11 +96,11 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
           <MessageSquare size={20} style={{ color: AMBER }} />
           <p className="mt-2.5 text-[14px] font-bold">Besoin d’aide ?</p>
           <p className="mt-1 text-[12px] leading-5 text-white/60">Notre équipe vous répond rapidement.</p>
-          <button className="mt-2.5 inline-flex items-center gap-2 text-[12px] font-semibold" onClick={onHelp} style={{ color: AMBER }} type="button">Nous écrire <ArrowRight size={14} /></button>
+          <button className="mt-1 inline-flex min-h-[40px] items-center gap-2 text-[12px] font-semibold" onClick={onHelp} style={{ color: AMBER }} type="button">Nous écrire <ArrowRight size={14} /></button>
         </div>
         <div className="mt-4 shrink-0 space-y-0.5 border-t border-white/10 pt-3">
-          <Link className="flex items-center gap-2.5 px-1 py-1 text-[13px] text-white/60 transition hover:text-white" to="/"><Globe size={15} /> Voir le site</Link>
-          <button className="flex items-center gap-2.5 px-1 py-1 text-[13px] text-white/50 transition hover:text-white" onClick={logout} type="button"><LogOut size={16} /> Déconnexion</button>
+          <Link className="flex min-h-[40px] items-center gap-2.5 px-1 text-[13px] text-white/60 transition hover:text-white" to="/"><Globe size={15} /> Voir le site</Link>
+          <button className="flex min-h-[40px] items-center gap-2.5 px-1 text-[13px] text-white/50 transition hover:text-white" onClick={logout} type="button"><LogOut size={16} /> Déconnexion</button>
         </div>
       </aside>
 

@@ -6,10 +6,11 @@ import { clearSessionCache } from '../../services/sessionCache'
 
 export type AdminTab = 'orders' | 'messages' | 'clients'
 
-const NAVIGATION: Array<{ id: AdminTab; label: string; icon: typeof Briefcase }> = [
-  { id: 'orders', label: 'Commandes & Projets', icon: Briefcase },
-  { id: 'messages', label: 'Messagerie & Appels', icon: MessagesSquare },
-  { id: 'clients', label: 'Clients', icon: Users },
+// short : libellé des onglets sur téléphone / tablette (les trois tiennent sur 320 px, sans défilement caché).
+const NAVIGATION: Array<{ id: AdminTab; label: string; short: string; icon: typeof Briefcase }> = [
+  { id: 'orders', label: 'Commandes & Projets', short: 'Commandes', icon: Briefcase },
+  { id: 'messages', label: 'Messagerie & Appels', short: 'Messages', icon: MessagesSquare },
+  { id: 'clients', label: 'Clients', short: 'Clients', icon: Users },
 ]
 
 const LOBBY_STATUS: Record<HubStatus, { color: string; label: string }> = {
@@ -79,13 +80,15 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
 
       <div className="lg:pl-[264px]">
         <header className="pt-safe sticky top-0 z-20 border-b border-white/[0.06] bg-[#0A0F1C]/85 backdrop-blur-xl">
-          <div className="flex min-h-[84px] items-center justify-between gap-4 px-5 sm:px-10">
+          <div className="flex min-h-[72px] items-center justify-between gap-4 px-5 py-3 sm:min-h-[84px] sm:px-10">
             <div className="min-w-0">
-              <h1 className="truncate text-xl font-bold tracking-tight text-white sm:text-2xl">{title}</h1>
-              <p className="truncate text-[12px] text-slate-500">{subtitle}</p>
+              {/* Téléphone : le titre passe à la ligne au lieu d'être tronqué ; le sous-titre (descriptif) est masqué
+                  pour garder un en-tête collant compact. */}
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-white sm:truncate sm:text-2xl">{title}</h1>
+              <p className="mt-0.5 hidden truncate text-[12px] text-slate-500 sm:block">{subtitle}</p>
             </div>
             <div className="flex shrink-0 items-center gap-3">
-              <button aria-label="Actualiser les données" className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 text-slate-300 transition hover:border-white/25 hover:text-white disabled:opacity-50" disabled={isRefreshing} onClick={onRefresh} title="Actualiser" type="button"><RefreshCw className={isRefreshing ? 'animate-spin' : ''} size={16} /></button>
+              <button aria-label="Actualiser les données" className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 text-slate-300 transition hover:border-white/25 hover:text-white disabled:opacity-50" disabled={isRefreshing} onClick={onRefresh} title="Actualiser" type="button"><RefreshCw className={isRefreshing ? 'animate-spin' : ''} size={16} /></button>
               <div className="hidden text-right leading-tight sm:block">
                 <p className="text-[13px] font-semibold text-white">{userName}</p>
                 <p className="text-[12px] font-semibold text-[#F59E0B]">Administrateur</p>
@@ -93,9 +96,9 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F59E0B]/15 text-[12px] font-bold text-[#FCD34D] ring-1 ring-[#F59E0B]/30">{initials}</span>
             </div>
           </div>
-          <nav className="flex gap-1 overflow-x-auto border-t border-white/[0.06] px-3 py-2 lg:hidden" aria-label="Navigation du cockpit (mobile)">
-            {NAVIGATION.map(({ id, label, icon: Icon }) => (
-              <button className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium ${active === id ? 'bg-[#F59E0B]/15 text-[#FCD34D]' : 'text-slate-400'}`} key={id} onClick={() => onNavigate(id)} type="button"><Icon size={14} />{label}{id === 'messages' && unreadCount > 0 && ` (${unreadCount})`}</button>
+          <nav className="grid grid-cols-3 gap-1 border-t border-white/[0.06] px-3 py-2 lg:hidden" aria-label="Navigation du cockpit (mobile)">
+            {NAVIGATION.map(({ id, short, icon: Icon }) => (
+              <button aria-current={active === id ? 'page' : undefined} className={`flex min-h-[44px] min-w-0 items-center justify-center gap-2 rounded-lg px-2 text-[13px] font-medium ${active === id ? 'bg-[#F59E0B]/15 text-[#FCD34D]' : 'text-slate-400'}`} key={id} onClick={() => onNavigate(id)} type="button"><Icon className="shrink-0 max-[359px]:hidden" size={15} /><span className="truncate">{short}</span>{id === 'messages' && unreadCount > 0 && <span className="shrink-0 rounded-full bg-[#F59E0B] px-1.5 text-[12px] font-bold text-[#0B132B]">{unreadCount}</span>}</button>
             ))}
           </nav>
         </header>

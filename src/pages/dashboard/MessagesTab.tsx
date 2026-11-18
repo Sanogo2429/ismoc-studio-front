@@ -125,7 +125,9 @@ function ProjectConversation({ immersive = false, onBack, project }: { immersive
       <>
         <ChatPanel
           className="min-h-0 flex-1"
-          counterpart={{ title: 'Équipe IsMoc', subtitle: project.projectName, online: rtc.isTeamOnline, avatars: ['IS', 'MO'] }}
+          // Téléphone : le titre porte ce qui distingue la conversation (nom du projet ; « Équipe IsMoc » pour la
+          // discussion générale) ; la ligne du dessous n'affiche que l'état En ligne / Hors ligne.
+          counterpart={{ title: general ? 'Équipe IsMoc' : project.projectName, subtitle: general ? 'Ismael & Moctar' : 'Équipe IsMoc', online: rtc.isTeamOnline, avatars: ['IS', 'MO'] }}
           immersive
           inputId={DASHBOARD_CHAT_INPUT_ID}
           onBack={onBack}

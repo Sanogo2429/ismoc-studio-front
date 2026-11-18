@@ -125,7 +125,7 @@ function AdminConversation({ onBack, onMockup, project }: { onBack?: () => void;
       </div>
       <ChatPanel
         className="min-h-[520px] flex-1"
-        counterpart={{ title: project.client.fullName, subtitle: `#${project.reference} · ${project.title}`, online: rtc.isClientOnline, avatars: [initials(project.client.fullName)] }}
+        counterpart={{ title: project.client.fullName, subtitle: `#${project.reference}`, online: rtc.isClientOnline, avatars: [initials(project.client.fullName)] }}
         inputId="admin-message"
         onBack={onBack}
         rtc={rtc}
