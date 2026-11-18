@@ -218,6 +218,7 @@ function ProjectConfigurator() {
         <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight tracking-tight text-darkSlate sm:text-5xl">Qu’aimeriez-vous construire ?</h1>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-500">Décrivez simplement votre idée : IsMoc AI conçoit directement votre maquette interactive et cliquable, que vous ferez évoluer par conversation. Aucun fichier de design n’est nécessaire.</p>
 
+        {/* Les deux modes. La carte « Créer avec IsMoc AI » sélectionnée contient directement sa zone de texte. */}
         <div className="mt-8 grid gap-4 sm:grid-cols-2" role="radiogroup" aria-label="Mode de création">
           <ModeCard
             active={mode === 'ai'}
@@ -227,76 +228,90 @@ function ProjectConfigurator() {
             icon={<Sparkles size={20} />}
             onSelect={() => selectMode('ai')}
             title="Créer avec IsMoc AI"
-          />
+          >
+            {mode === 'ai' && (
+              <>
+                {quota && (
+                  aiExhausted ? (
+                    <div className="mx-5 mb-4 flex flex-col gap-4 rounded-xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between" role="status">
+                      <div>
+                        <p className="text-sm font-semibold text-amber-900">Vos {quota.generationsLimit} générations IA gratuites ont été utilisées.</p>
+                        <p className="mt-1 text-xs leading-5 text-amber-800">Continuez gratuitement et sans limite avec le Mode Manuel, ou décrivez votre idée directement à l’équipe dans le chat.</p>
+                      </div>
+                      <div className="flex shrink-0 flex-wrap gap-2">
+                        <button className="inline-flex items-center gap-1.5 rounded-lg bg-darkSlate px-4 py-2.5 text-xs font-semibold text-white" onClick={() => selectMode('manual')} type="button"><PenLine size={14} /> Passer en Mode Manuel</button>
+                        <Link className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-4 py-2.5 text-xs font-semibold text-amber-900" to="/dashboard?tab=messages"><MessageCircle size={14} /> Écrire à l’équipe</Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="mx-5 mb-4 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-[11px] font-medium text-slate-600 ring-1 ring-slate-200">
+                      <Sparkles className="text-amber-600" size={13} />
+                      {quota.unlimited ? 'Crédits IA illimités' : `Crédits IA : ${quota.remainingGenerations}/${quota.generationsLimit} générations · ${quota.remainingRefinements}/${quota.refinementsLimit} retouches restantes`}
+                    </p>
+                  )
+                )}
+                <form className="border-t border-slate-100" onSubmit={handleAiSubmit}>
+                  <label className="sr-only" htmlFor="project-idea">Décrivez le projet que vous souhaitez créer</label>
+                  <textarea
+                    autoFocus
+                    className="min-h-48 w-full resize-y border-0 bg-transparent px-5 py-5 text-sm leading-6 text-darkSlate outline-none placeholder:text-slate-400 focus:ring-0 sm:px-6"
+                    disabled={isLoading}
+                    id="project-idea"
+                    maxLength={MAX_DESCRIPTION_LENGTH}
+                    onChange={(event) => setIdea(event.target.value)}
+                    placeholder="Ex. Un jeu d’échecs jouable avec les règles standard, un tableau de bord SaaS de suivi des ventes, une application de réservation de voitures…"
+                    value={idea}
+                  />
+                  {referenceImage && (
+                    <div className="mx-5 mb-4 flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-2 pr-3 sm:mx-6">
+                      <img alt="Image d’inspiration jointe" className="h-14 w-20 rounded-md object-cover" src={referenceImage.dataUrl} />
+                      <div className="min-w-0 flex-1"><p className="truncate text-xs font-medium text-darkSlate">{referenceImage.name}</p><p className="text-[10px] text-slate-400">Image d’inspiration : IsMoc AI s’en inspire pour concevoir votre maquette interactive.</p></div>
+                      <button aria-label="Retirer l’image" className="rounded-md p-1 text-slate-400 hover:bg-slate-200 hover:text-darkSlate" onClick={() => setReferenceImage(null)} type="button"><X size={15} /></button>
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                    <div className="flex items-center gap-3">
+                      <input accept={IMAGE_ACCEPT} className="hidden" onChange={(event) => void handleImage(event)} ref={imageInputRef} type="file" />
+                      <button className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-[11px] font-medium text-slate-600 transition hover:border-slate-400 disabled:opacity-50" disabled={isLoading} onClick={() => imageInputRef.current?.click()} type="button"><ImagePlus size={14} /> Joindre une image d’inspiration (optionnel)</button>
+                      <span className="hidden text-[10px] text-slate-400 sm:inline">{idea.length} / {MAX_DESCRIPTION_LENGTH}</span>
+                    </div>
+                    <SubmitButton disabled={(!idea.trim() && !referenceImage) || isLoading || aiExhausted} isLoading={isLoading} label="Créer le prototype" />
+                  </div>
+                  {isLoading && (
+                    <div className="border-t border-slate-100 px-5 py-5 sm:px-6">
+                      <GenerationProgress estimatedSeconds={GENERATION_ESTIMATE_SECONDS} />
+                    </div>
+                  )}
+                  {error && <ErrorBanner contact={isAiError} message={error} />}
+                </form>
+              </>
+            )}
+          </ModeCard>
           <ModeCard
             active={mode === 'manual'}
             badge="Guidé pas à pas"
             description="Choisissez le format, le secteur, la palette et les pages : la maquette respecte exactement vos choix."
             disabled={isLoading}
+            fullWidth={mode === 'ai'}
             icon={<PenLine size={20} />}
             onSelect={() => selectMode('manual')}
             title="Modéliser mon projet moi-même"
           />
         </div>
 
-        {mode === 'ai' && quota && (
-          aiExhausted ? (
-            <div className="mt-6 flex flex-col gap-4 rounded-xl border border-amber-200 bg-amber-50 p-5 sm:flex-row sm:items-center sm:justify-between" role="status">
-              <div>
-                <p className="text-sm font-semibold text-amber-900">Vos {quota.generationsLimit} générations IA gratuites ont été utilisées.</p>
-                <p className="mt-1 text-xs leading-5 text-amber-800">Continuez gratuitement et sans limite avec le Mode Manuel, ou décrivez votre idée directement à l’équipe dans le chat.</p>
-              </div>
-              <div className="flex shrink-0 flex-wrap gap-2">
-                <button className="inline-flex items-center gap-1.5 rounded-lg bg-darkSlate px-4 py-2.5 text-xs font-semibold text-white" onClick={() => selectMode('manual')} type="button"><PenLine size={14} /> Passer en Mode Manuel</button>
-                <Link className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-4 py-2.5 text-xs font-semibold text-amber-900" to="/dashboard?tab=messages"><MessageCircle size={14} /> Écrire à l’équipe</Link>
-              </div>
-            </div>
-          ) : (
-            <p className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-[11px] font-medium text-slate-600 ring-1 ring-slate-200">
-              <Sparkles className="text-amber-600" size={13} />
-              {quota.unlimited ? 'Crédits IA illimités' : `Crédits IA : ${quota.remainingGenerations}/${quota.generationsLimit} générations · ${quota.remainingRefinements}/${quota.refinementsLimit} retouches restantes`}
-            </p>
-          )
-        )}
-
-        {mode === 'ai' ? (
-          <form className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg shadow-slate-900/5" onSubmit={handleAiSubmit}>
-            <label className="sr-only" htmlFor="project-idea">Décrivez le projet que vous souhaitez créer</label>
-            <textarea
-              autoFocus
-              className="min-h-48 w-full resize-y border-0 bg-transparent px-5 py-5 text-sm leading-6 text-darkSlate outline-none placeholder:text-slate-400 focus:ring-0 sm:px-6"
-              disabled={isLoading}
-              id="project-idea"
-              maxLength={MAX_DESCRIPTION_LENGTH}
-              onChange={(event) => setIdea(event.target.value)}
-              placeholder="Ex. Un jeu d’échecs jouable avec les règles standard, un tableau de bord SaaS de suivi des ventes, une application de réservation de voitures…"
-              value={idea}
-            />
-            {referenceImage && (
-              <div className="mx-5 mb-4 flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-2 pr-3 sm:mx-6">
-                <img alt="Image d’inspiration jointe" className="h-14 w-20 rounded-md object-cover" src={referenceImage.dataUrl} />
-                <div className="min-w-0 flex-1"><p className="truncate text-xs font-medium text-darkSlate">{referenceImage.name}</p><p className="text-[10px] text-slate-400">Image d’inspiration : IsMoc AI s’en inspire pour concevoir votre maquette interactive.</p></div>
-                <button aria-label="Retirer l’image" className="rounded-md p-1 text-slate-400 hover:bg-slate-200 hover:text-darkSlate" onClick={() => setReferenceImage(null)} type="button"><X size={15} /></button>
-              </div>
-            )}
-            <div className="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-              <div className="flex items-center gap-3">
-                <input accept={IMAGE_ACCEPT} className="hidden" onChange={(event) => void handleImage(event)} ref={imageInputRef} type="file" />
-                <button className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-[11px] font-medium text-slate-600 transition hover:border-slate-400 disabled:opacity-50" disabled={isLoading} onClick={() => imageInputRef.current?.click()} type="button"><ImagePlus size={14} /> Joindre une image d’inspiration (optionnel)</button>
-                <span className="hidden text-[10px] text-slate-400 sm:inline">{idea.length} / {MAX_DESCRIPTION_LENGTH}</span>
-              </div>
-              <SubmitButton disabled={(!idea.trim() && !referenceImage) || isLoading || aiExhausted} isLoading={isLoading} label="Créer le prototype" />
-            </div>
-            {isLoading && (
-              <div className="border-t border-slate-100 px-5 py-5 sm:px-6">
-                <GenerationProgress estimatedSeconds={GENERATION_ESTIMATE_SECONDS} />
-              </div>
-            )}
-            {error && <ErrorBanner contact={isAiError} message={error} />}
-          </form>
-        ) : (
+        {mode === 'manual' && (
           <form className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg shadow-slate-900/5" onSubmit={handleManualSubmit}>
-            <ol className="flex gap-1 overflow-x-auto border-b border-slate-100 px-3 py-3 sm:px-5">
+            {/* Téléphone : « Étape X/N » + barre de progression (la rangée d'étapes est réservée aux écrans larges). */}
+            <div className="border-b border-slate-100 px-5 py-4 md:hidden">
+              <p className="flex items-baseline justify-between gap-3 text-[13px]">
+                <span className="font-semibold text-darkSlate">Étape {step + 1}/{MANUAL_STEPS.length}</span>
+                <span className="truncate text-slate-500">{MANUAL_STEPS[step].title}</span>
+              </p>
+              <div aria-label={`Étape ${step + 1} sur ${MANUAL_STEPS.length} : ${MANUAL_STEPS[step].title}`} aria-valuemax={MANUAL_STEPS.length} aria-valuemin={1} aria-valuenow={step + 1} className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-slate-100" role="progressbar">
+                <div className="h-full rounded-full bg-vibrantOrange transition-[width] duration-300 motion-reduce:transition-none" style={{ width: `${((step + 1) / MANUAL_STEPS.length) * 100}%` }} />
+              </div>
+            </div>
+            <ol className="hidden gap-1 overflow-x-auto border-b border-slate-100 px-3 py-3 sm:px-5 md:flex">
               {MANUAL_STEPS.map((item, index) => {
                 const Icon = item.icon
                 const reachable = index <= step || stepIsValid.slice(0, index).every(Boolean)
@@ -448,26 +463,37 @@ interface ModeCardProps {
   icon: ReactNode
   onSelect: () => void
   title: string
+  /** Contenu affiché DANS la carte, sous son en-tête (ex. la zone de texte du mode IA quand il est choisi). */
+  children?: ReactNode
+  /** Carte sur toute la largeur de la grille (automatique quand elle a un contenu). */
+  fullWidth?: boolean
 }
 
-function ModeCard({ active, badge, description, disabled, icon, onSelect, title }: ModeCardProps) {
+/**
+ * Carte de mode : l'en-tête est le bouton radio ; le contenu éventuel (formulaire) est rendu dans la même carte.
+ * Avec un contenu, la carte occupe toute la largeur pour laisser de la place à la zone de texte.
+ */
+function ModeCard({ active, badge, children, description, disabled, fullWidth = false, icon, onSelect, title }: ModeCardProps) {
   return (
-    <button
-      aria-checked={active}
-      className={`relative rounded-xl border bg-white p-5 text-left transition disabled:cursor-not-allowed ${active ? 'border-darkSlate shadow-lg shadow-slate-900/10 ring-2 ring-vibrantOrange/60' : 'border-slate-200 hover:border-slate-400'}`}
-      disabled={disabled}
-      onClick={onSelect}
-      role="radio"
-      type="button"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <span className={`flex h-10 w-10 items-center justify-center rounded-lg ${active ? 'bg-vibrantOrange text-darkSlate' : 'bg-slate-100 text-slate-600'}`}>{icon}</span>
-        <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${active ? 'bg-darkSlate text-white' : 'bg-slate-100 text-slate-600'}`}>{badge}</span>
-      </div>
-      <h2 className="mt-4 text-base font-semibold text-darkSlate">{title}</h2>
-      <p className="mt-1.5 text-xs leading-5 text-slate-500">{description}</p>
-      {active && <Check aria-hidden className="absolute bottom-4 right-4 text-emerald-500" size={18} />}
-    </button>
+    <div className={`relative overflow-hidden rounded-xl border bg-white transition ${children || fullWidth ? 'sm:col-span-2' : ''} ${active ? 'border-darkSlate shadow-lg shadow-slate-900/10 ring-2 ring-vibrantOrange/60' : 'border-slate-200 hover:border-slate-400'}`}>
+      <button
+        aria-checked={active}
+        className="relative block w-full p-5 text-left disabled:cursor-not-allowed"
+        disabled={disabled}
+        onClick={onSelect}
+        role="radio"
+        type="button"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <span className={`flex h-10 w-10 items-center justify-center rounded-lg ${active ? 'bg-vibrantOrange text-darkSlate' : 'bg-slate-100 text-slate-600'}`}>{icon}</span>
+          <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${active ? 'bg-darkSlate text-white' : 'bg-slate-100 text-slate-600'}`}>{badge}</span>
+        </div>
+        <h2 className="mt-4 text-base font-semibold text-darkSlate">{title}</h2>
+        <p className="mt-1.5 text-xs leading-5 text-slate-500">{description}</p>
+        {active && !children && <Check aria-hidden className="absolute bottom-4 right-4 text-emerald-500" size={18} />}
+      </button>
+      {children}
+    </div>
   )
 }
 
