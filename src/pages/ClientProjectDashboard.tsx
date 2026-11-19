@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import CallOverlay from '../components/CallOverlay'
 import ClientShell from '../components/ClientShell'
 import PageHeader from '../components/PageHeader'
+import NewProjectLink from '../components/NewProjectLink'
 import type { ClientNavId } from '../services/clientNavigation'
 import { ChatPanel, ConnectionIndicator } from '../components/ProjectChat'
 import { MOBILE_CHAT_HEIGHT } from '../services/clientNavigation'
@@ -17,6 +18,7 @@ import { getDisplayName } from '../services/session'
 import {
   PROJECT_STEPS,
   formatDate,
+  isGeneralThread,
   isPaid,
   projectCode,
   projectTypeLabel,
@@ -29,6 +31,8 @@ import {
 interface ClientProject {
   projectId: string
   projectName: string
+  /** « general » : Discussion générale · Avant-projet (pas de maquette ni de commande). */
+  threadType?: string
   format: 'web' | 'mobile'
   status: ProjectStatus
   initialIdea: string
@@ -89,6 +93,18 @@ function ClientProjectDashboard() {
         </div>
       ) : !project ? (
         <ProjectPageSkeleton />
+      ) : isGeneralThread(project) ? (
+        // La « Discussion générale » n'est pas un projet : pas de maquette ni de commande, on renvoie vers Messages.
+        <>
+        <PageHeader subtitle="Posez vos questions à l’équipe avant de lancer votre projet." title="Discussion générale" />
+        <div className="mt-10 max-w-md rounded-3xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
+          <p className="text-sm text-slate-500">Cette conversation se trouve dans Messages. Pour obtenir une maquette et un devis, créez votre projet.</p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link className="inline-flex min-h-[48px] items-center rounded-xl border border-slate-200 px-4 text-sm font-medium" to={`/dashboard?tab=messages&project=${encodeURIComponent(project.projectId)}`}>Ouvrir la discussion</Link>
+            <NewProjectLink />
+          </div>
+        </div>
+        </>
       ) : !isPaid(project.status) ? (
         <>
         <PageHeader subtitle={`Projet #${projectCode(project.projectId)} · en attente de commande`} title={project.projectName || 'Votre projet'} />

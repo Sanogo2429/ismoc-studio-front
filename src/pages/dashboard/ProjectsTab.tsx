@@ -1,7 +1,8 @@
-import { ArrowRight, Globe, Plus, Smartphone } from 'lucide-react'
+import { ArrowRight, Globe, Smartphone } from 'lucide-react'
 import { ProjectCardsSkeleton } from '../../components/Skeleton'
 import { Link, useNavigate } from 'react-router-dom'
 import PageHeader from '../../components/PageHeader'
+import NewProjectLink from '../../components/NewProjectLink'
 import { projectPath } from '../../services/clientNavigation'
 import {
   PROJECT_STEPS,
@@ -48,7 +49,8 @@ function ProjectsTab({ error, projects: allThreads }: ProjectsTabProps) {
   return (
     <>
       <PageHeader
-        actions={<Link className="inline-flex h-[50px] shrink-0 items-center gap-2 rounded-xl bg-[#F59E0B] px-6 text-[13px] font-bold text-[#0B132B] shadow-lg shadow-amber-500/25 transition hover:brightness-95" to="/configurator"><Plus size={18} /> Nouveau projet</Link>}
+        // Liste vide : le bouton est dans l'état vide (pas deux « Nouveau projet » à l'écran).
+        actions={projects?.length ? <NewProjectLink /> : undefined}
         subtitle="Vos maquettes, commandes et projets en développement."
         title="Mes projets"
       />
@@ -61,8 +63,8 @@ function ProjectsTab({ error, projects: allThreads }: ProjectsTabProps) {
         ) : projects.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
             <h2 className="text-lg font-bold">Aucun projet pour le moment</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Décrivez votre idée ou importez une maquette : IsMoc AI génère une première maquette interactive en quelques secondes.</p>
-            <Link className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#0B132B] px-5 py-3 text-sm font-semibold text-white" to="/configurator">Créer mon premier projet <ArrowRight size={16} /></Link>
+            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Décrivez votre idée ou joignez une image d’inspiration : IsMoc AI génère une première maquette interactive en quelques secondes.</p>
+            <NewProjectLink className="mt-6" />
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">

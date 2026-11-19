@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
-import { getDisplayName, hasValidSession } from '../services/session'
+import { getDisplayName, hasValidSession, loginPathFor } from '../services/session'
 import './HomePage.css'
 import { clearSessionCache } from '../services/sessionCache'
 
@@ -26,13 +26,14 @@ const navigation = [
   { label: 'Le studio', href: '#studio' },
 ]
 
+// sector : clé de src/config/sectors.ts → la carte ouvre le configurateur avec ce secteur et ses idées.
 const expertise = [
-  { number: '01', title: 'Restauration', detail: 'Menus, réservations & livraison', icon: Sparkles },
-  { number: '02', title: 'E-commerce', detail: 'Boutiques qui transforment', icon: CircleDashed },
-  { number: '03', title: 'Voyage', detail: 'Expériences & réservations', icon: WandSparkles },
-  { number: '04', title: 'Santé', detail: 'Parcours patients simplifiés', icon: Plus },
-  { number: '05', title: 'Services', detail: 'Vitrine & prise de rendez-vous', icon: Settings2 },
-  { number: '06', title: 'Sur mesure', detail: 'Votre idée n’entre dans aucune case', icon: ArrowUpRight, featured: true },
+  { number: '01', sector: 'restauration', title: 'Restauration', detail: 'Menus, réservations & livraison', icon: Sparkles },
+  { number: '02', sector: 'e-commerce', title: 'E-commerce', detail: 'Boutiques qui transforment', icon: CircleDashed },
+  { number: '03', sector: 'voyage', title: 'Voyage', detail: 'Expériences & réservations', icon: WandSparkles },
+  { number: '04', sector: 'sante', title: 'Santé', detail: 'Parcours patients simplifiés', icon: Plus },
+  { number: '05', sector: 'services', title: 'Services', detail: 'Vitrine & prise de rendez-vous', icon: Settings2 },
+  { number: '06', sector: 'sur-mesure', title: 'Sur mesure', detail: 'Votre idée n’entre dans aucune case', icon: ArrowUpRight, featured: true },
 ]
 
 const method = [
@@ -94,7 +95,7 @@ function readSession(): SessionInfo {
     isLoggedIn,
     name: getDisplayName('Mon compte'),
     spacePath: isLoggedIn ? CLIENT_SPACE_PATH : '/connexion',
-    projectPath: isLoggedIn ? CONFIGURATOR_PATH : '/connexion',
+    projectPath: isLoggedIn ? CONFIGURATOR_PATH : loginPathFor(CONFIGURATOR_PATH),
   }
 }
 
@@ -248,8 +249,10 @@ function HomePage() {
             <p className="section-description">Des expériences digitales pensées autour de vos clients, de vos ambitions et de la réalité de votre marché.</p>
           </div>
           <div className="expertise-grid">
-            {expertise.map(({ number, title, detail, icon: Icon, featured }) => (
-              <a className={`expertise-card${featured ? ' expertise-card-featured' : ''}`} href="#contact" key={number}>
+            {expertise.map(({ number, sector, title, detail, icon: Icon, featured }) => {
+              const target = `${CONFIGURATOR_PATH}?secteur=${sector}`
+              return (
+              <Link className={`expertise-card${featured ? ' expertise-card-featured' : ''}`} key={number} to={session.isLoggedIn ? target : loginPathFor(target)}>
                 <span className="card-number">{number}</span>
                 <Icon className="card-icon" size={21} strokeWidth={1.8} />
                 <span className="card-bottom">
@@ -257,8 +260,9 @@ function HomePage() {
                   <span>{detail}</span>
                 </span>
                 <ArrowRight className="card-arrow" size={17} />
-              </a>
-            ))}
+              </Link>
+              )
+            })}
           </div>
         </section>
 

@@ -17,7 +17,8 @@ import {
   Sparkles,
   X,
 } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { findSectorPreset, suggestedIdeas } from '../config/sectors'
 import GenerationProgress from '../components/GenerationProgress'
 import { api } from '../services/api'
 import { apiErrorMessage } from '../services/apiError'
@@ -78,6 +79,11 @@ const HEX_COLOR = /^#[0-9a-fA-F]{6}$/
 
 function ProjectConfigurator() {
   const navigate = useNavigate()
+  // ?secteur=… (cartes de l'accueil) : idées du secteur en Mode IA, secteur présélectionné en Mode Manuel.
+  const [searchParams] = useSearchParams()
+  const preset = findSectorPreset(searchParams.get('secteur'))
+  const ideas = suggestedIdeas(preset)
+  const ideaRef = useRef<HTMLTextAreaElement>(null)
   const [mode, setMode] = useState<CreationMode>('ai')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -101,7 +107,7 @@ function ProjectConfigurator() {
   // Mode Manuel
   const [step, setStep] = useState(0)
   const [format, setFormat] = useState<ProjectFormat>('web')
-  const [sector, setSector] = useState('')
+  const [sector, setSector] = useState(preset?.manualSector ?? '')
   const [customSector, setCustomSector] = useState('')
   const [primaryColor, setPrimaryColor] = useState(PALETTES[0].primary)
   const [secondaryColor, setSecondaryColor] = useState(PALETTES[0].secondary)
@@ -259,9 +265,21 @@ function ProjectConfigurator() {
                     id="project-idea"
                     maxLength={MAX_DESCRIPTION_LENGTH}
                     onChange={(event) => setIdea(event.target.value)}
-                    placeholder="Ex. Un jeu d’échecs jouable avec les règles standard, un tableau de bord SaaS de suivi des ventes, une application de réservation de voitures…"
+                    placeholder="Ex. Un site pour mon restaurant avec le menu du jour, la réservation de table et la commande à emporter…"
+                    ref={ideaRef}
                     value={idea}
                   />
+                  {/* Suggestions en un clic (secteur choisi sur l'accueil, sinon une idée par secteur) : remplissent la description, modifiable ensuite. */}
+                  {!idea.trim() && !isLoading && ideas.length > 0 && (
+                    <div className="px-5 pb-4 sm:px-6">
+                      <p className="text-[12px] font-medium text-slate-500">{preset?.ideas.length ? `Exemples · ${preset.title}` : 'Exemples pour démarrer'}</p>
+                      <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                        {ideas.map((text) => (
+                          <button className="min-h-[44px] rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-left text-[13px] leading-5 text-slate-600 transition hover:border-amber-400 hover:text-darkSlate sm:max-w-[48%]" key={text} onClick={() => { setIdea(text); ideaRef.current?.focus() }} type="button">{text}</button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {referenceImage && (
                     <div className="mx-5 mb-4 flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-2 pr-3 sm:mx-6">
                       <img alt="Image d’inspiration jointe" className="h-14 w-20 rounded-md object-cover" src={referenceImage.dataUrl} />

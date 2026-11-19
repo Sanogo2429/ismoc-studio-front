@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, LockKeyhole, Mail, Phone, Sp
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { forgotPassword, login, register, startGoogleLogin } from '../services/authService'
-import { postLoginPath } from '../services/session'
+import { postLoginPath, rememberNextPath } from '../services/session'
 import './Portal.css'
 
 /** État de navigation transmis à la page de connexion (après une inscription réussie). */
@@ -62,6 +62,9 @@ function AuthPage() {
   const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState(false)
   // Arrivée depuis une inscription réussie : message de confirmation + e-mail pré-rempli.
   const registeredEmail = isSignup ? undefined : (location.state as AuthLocationState | null)?.registeredEmail
+
+  // ?suite=/configurator… : destination après connexion (gardée pour le retour Google et le passage par l'inscription).
+  useEffect(() => { rememberNextPath(new URLSearchParams(location.search).get('suite')) }, [location.search])
 
   useEffect(() => {
     // Retour de Google : le jeton arrive dans le fragment (#token=…), jamais envoyé aux serveurs ni dans le

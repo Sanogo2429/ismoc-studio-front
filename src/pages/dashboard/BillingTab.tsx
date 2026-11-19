@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { downloadInvoice } from '../../services/invoice'
 import { formatDate, formatEuros, isGeneralThread, isPaid, maintenanceLabel, projectCode, type ProjectSummary } from '../../services/projectTypes'
 import PageHeader from '../../components/PageHeader'
+import NewProjectLink from '../../components/NewProjectLink'
 
 function paymentMethodLabel(project: ProjectSummary): string {
   const order = project.order
@@ -56,7 +57,7 @@ function BillingTab({ projects }: { projects: ProjectSummary[] | null }) {
           {/* Sans projet, « Voir mes projets » mènerait à une autre page vide : on propose d'en créer un. */}
           {projects.some((project) => !isGeneralThread(project))
             ? <Link className="mt-6 inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[#0B132B] px-5 py-3 text-sm font-semibold text-white" to="/dashboard?tab=projects">Voir mes projets <ArrowRight size={16} /></Link>
-            : <Link className="mt-6 inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[#0B132B] px-5 py-3 text-sm font-semibold text-white" to="/configurator">Créer mon premier projet <ArrowRight size={16} /></Link>}
+            : <NewProjectLink className="mt-6" />}
         </div>
       ) : (
         <div className="mt-8 space-y-6">
