@@ -145,8 +145,9 @@ function ProjectConversation({ immersive = false, onBack, project }: { immersive
         <div className="flex min-w-0 items-center gap-3">
           <ConnectionIndicator status={rtc.hubStatus} />
           <div className="min-w-0">
-            <p className="text-[12px] font-bold tracking-[0.25em] text-[#B8530B]">{general ? 'AVANT-PROJET' : `PROJET #${projectCode(project.projectId)}`}</p>
-            <p className="truncate text-sm font-bold">{project.projectName} <span className="font-normal text-slate-500">· {general ? 'posez vos questions avant de démarrer' : projectStep(project.status).label}</span></p>
+            {/* Référence seulement pour un vrai projet (la discussion générale disait deux fois « Avant-projet »). */}
+            {!general && <p className="text-[12px] font-semibold text-[#B8530B]">Projet #{projectCode(project.projectId)}</p>}
+            <p className="truncate text-sm font-bold">{general ? 'Discussion générale' : project.projectName} <span className="font-normal text-slate-500">· {general ? 'posez vos questions avant de démarrer' : projectStep(project.status).label}</span></p>
           </div>
         </div>
         <Link className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold text-[#0B132B] hover:underline" to={link.to}>

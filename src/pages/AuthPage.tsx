@@ -148,7 +148,7 @@ function AuthPage() {
   }
 
   return (
-    <main className="auth-layout">
+    <main className="auth-layout" id="contenu">
       {/* Zone sécurisée du haut gérée dans Portal.css (bandeau sur téléphone, logo et panneau sur grand écran). */}
       <section className="auth-story" aria-label="Présentation d'IsMoc Studio">
         {/* Visuel de marque (orbites + monogramme) : plus de photo d'inconnus présentée à côté de « Ismael & Moctar ». */}
@@ -176,7 +176,6 @@ function AuthPage() {
       <section className="auth-panel">
         <Link className="auth-back" to="/"><ArrowLeft size={15} /> Retour au site</Link>
         <div className="auth-content">
-          <p className="auth-eyebrow"><span /> Votre espace</p>
           <h2>{isForgotPassword ? 'Réinitialiser le mot de passe.' : isSignup ? 'Créons votre espace.' : 'Ravi de vous revoir.'}</h2>
           <p className="auth-subtitle">
             {isForgotPassword ? 'Indiquez votre adresse e-mail pour recevoir les instructions.' : isSignup ? 'Quelques secondes suffisent pour démarrer.' : 'Accédez à vos projets et échangez avec notre équipe.'}

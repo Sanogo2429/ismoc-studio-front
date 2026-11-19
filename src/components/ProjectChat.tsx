@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
-import { ArrowLeft, Clock, Download, FileText, LoaderCircle, Mic, Paperclip, Phone, Send, Smile, Video, X } from 'lucide-react'
+import { ArrowLeft, Clock, Download, FileText, LoaderCircle, Mic, Paperclip, Phone, Send, Smile, Video, Wifi, WifiOff, X } from 'lucide-react'
 import type { HubStatus, OutgoingMessage, ProjectRtc } from '../hooks/useProjectRtc'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import type { ClientMessage } from '../services/projectTypes'
@@ -450,9 +450,11 @@ export function ConnectionIndicator({ status }: { status: HubStatus }) {
     disconnected: { color: '#94A3B8', label: 'Temps réel indisponible' },
   }[status]
   return (
-    <span aria-label={config.label} className="relative flex h-10 w-10 items-center justify-center rounded-full border border-slate-200" role="status" title={config.label}>
-      <span className={`h-3.5 w-3.5 rounded-full border-2 border-slate-300 ${status === 'connecting' || status === 'reconnecting' ? 'animate-spin border-t-transparent' : ''}`} />
-      <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full" style={{ background: config.color }} />
+    // Icône explicite : Wi-Fi (connecté), rotation seulement pendant la connexion, Wi-Fi barré (indisponible).
+    // L'ancien cercle creux ressemblait à un chargement même une fois connecté.
+    <span aria-label={config.label} className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-500" role="status" title={config.label}>
+      {status === 'connected' ? <Wifi size={17} /> : status === 'disconnected' ? <WifiOff size={17} /> : <LoaderCircle className="animate-spin" size={17} />}
+      <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full ring-2 ring-white" style={{ background: config.color }} />
     </span>
   )
 }

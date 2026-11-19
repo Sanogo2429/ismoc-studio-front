@@ -111,10 +111,11 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
             <Link aria-label="IsMoc Studio, accueil de l’espace client" className="flex min-h-[44px] items-center lg:hidden" to="/dashboard">
               <BrandLogo />
             </Link>
-            <div className="hidden min-w-0 items-center gap-4 md:ml-auto md:mr-4 md:flex lg:ml-0 lg:mr-0">
+            {/* Tablette seulement : sur grand écran, « Voir le site » est déjà dans la barre latérale. */}
+            <div className="hidden min-w-0 items-center gap-4 md:ml-auto md:mr-4 md:flex lg:hidden">
               <Link className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 py-2 text-[12px] font-semibold text-slate-600 transition hover:border-slate-400 hover:text-[#0B132B]" to="/"><Globe size={14} /> Voir le site</Link>
             </div>
-            <div className="flex items-center gap-3 md:gap-4">
+            <div className="ml-auto flex items-center gap-3 md:ml-0 md:gap-4 lg:ml-auto">
               {showCockpit && <Link className="hidden items-center gap-2 rounded-xl bg-[#0B132B] px-4 py-2.5 text-[12px] font-semibold text-white transition hover:opacity-90 md:inline-flex" to="/admin"><Gauge size={15} style={{ color: AMBER }} /> Cockpit Agence</Link>}
               {statusSlot ?? <span className="relative flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500"><Bell size={17} /></span>}
               <div className="hidden text-right leading-tight md:block">
@@ -155,6 +156,7 @@ function ClientShell({ active, children, immersive = false, onHelp, onNavigate, 
         {/* Téléphone : marge basse pour que la barre inférieure ne masque pas la fin du contenu.
             immersive (conversation sur téléphone) : hauteur = zone visible, gérée par .client-main-immersive (index.css). */}
         <main
+          id="contenu"
           className={immersive
             ? 'client-main-immersive sm:px-12 md:pb-[calc(3.5rem+var(--safe-bottom))] md:pt-14'
             : 'px-5 pb-[calc(6rem+var(--safe-bottom))] pt-10 sm:px-12 sm:pt-14 md:pb-[calc(3.5rem+var(--safe-bottom))]'}

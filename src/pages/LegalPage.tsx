@@ -154,7 +154,7 @@ function LegalPage({ doc }: { doc: LegalDoc }) {
           <Link className="flex min-h-[44px] items-center gap-2 text-sm font-medium text-slate-600 hover:text-[#111a2e]" to="/"><ArrowLeft size={16} /> Retour au site</Link>
         </div>
       </header>
-      <main className="mx-auto max-w-3xl px-5 pb-20 pt-10">
+      <main className="mx-auto max-w-3xl px-5 pb-20 pt-10" id="contenu">
         <nav aria-label="Documents légaux" className="flex flex-wrap gap-2">
           {DOCS.map((item) => (
             <NavLink className={({ isActive }) => `inline-flex min-h-[44px] items-center rounded-full px-4 text-sm font-semibold transition ${isActive ? 'bg-[#111a2e] text-white' : 'border border-slate-200 text-slate-600 hover:border-slate-400'}`} key={item.id} to={item.path}>

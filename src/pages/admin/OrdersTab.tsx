@@ -40,7 +40,8 @@ function OrdersTab({ error, onMockup, onOpenChat, onProgressPublished, overview 
 
   return (
     <>
-      <dl className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+      {/* Téléphone : grille 2×2 compacte, la liste des commandes reste visible dès le premier écran. */}
+      <dl className="grid grid-cols-2 gap-3 sm:gap-4 2xl:grid-cols-4">
         <Kpi accent icon={<TrendingUp size={18} />} label="CA encaissé" value={formatEuros(stats.totalRevenueEur)} />
         <Kpi icon={<Wallet size={18} />} label="Reste à encaisser" sub="échéances 2/3 et 3/3" value={formatEuros(stats.pendingInstallmentsEur)} />
         <Kpi icon={<Hammer size={18} />} label="Projets en codage" sub={`${stats.deliveredProjectsCount} livré${stats.deliveredProjectsCount > 1 ? 's' : ''}`} value={String(stats.activeProjectsCount)} />
@@ -52,7 +53,7 @@ function OrdersTab({ error, onMockup, onOpenChat, onProgressPublished, overview 
           {FILTERS.map((item) => {
             const count = projects.filter(item.match).length
             return (
-              <button aria-selected={filter === item.id} className={`rounded-full px-4 py-2 text-[12.5px] font-semibold transition ${filter === item.id ? 'bg-[#F59E0B] text-[#0B132B]' : 'bg-white/[0.04] text-slate-300 ring-1 ring-inset ring-white/10 hover:bg-white/[0.08]'}`} key={item.id} onClick={() => setFilter(item.id)} role="tab" type="button">
+              <button aria-selected={filter === item.id} className={`min-h-[44px] rounded-full px-4 py-2 text-[12.5px] font-semibold transition sm:min-h-[36px] ${filter === item.id ? 'bg-[#F59E0B] text-[#0B132B]' : 'bg-white/[0.04] text-slate-300 ring-1 ring-inset ring-white/10 hover:bg-white/[0.08]'}`} key={item.id} onClick={() => setFilter(item.id)} role="tab" type="button">
                 {item.label} <span className={filter === item.id ? 'text-[#0B132B]/60' : 'text-slate-500'}>{count}</span>
               </button>
             )
@@ -83,6 +84,17 @@ function OrdersTab({ error, onMockup, onOpenChat, onProgressPublished, overview 
   )
 }
 
+type ActionId = 'pack' | 'progress' | 'mockup' | 'chat'
+
+/** Prochaine action utile selon l'étape : maquette (brouillon), relance (attente de paiement), code (payé), suivi (livré). */
+const PRIMARY_ACTION: Record<AdminProject['status'], ActionId> = {
+  draft: 'mockup',
+  ordered: 'chat',
+  in_development: 'pack',
+  delivered: 'chat',
+  maintenance: 'chat',
+}
+
 interface OrderCardProps {
   expanded: boolean
   onMockup: () => void
@@ -111,6 +123,23 @@ function OrderCard({ expanded, onMockup, onOpenChat, onPublished, onToggleProgre
     }
   }
 
+  const chatLabel = `${project.status === 'ordered' ? 'Relancer' : 'Ouvrir le chat'}${project.messagesCount ? ` (${project.messagesCount})` : ''}`
+  const all: Array<ActionProps & { id: ActionId }> = [
+    { id: 'pack', disabled: isDownloading, icon: isDownloading ? <LoaderCircle className="animate-spin" size={15} /> : <Package size={15} />, label: 'Pack Dev (.zip)', onClick: () => void handleDownload() },
+    { id: 'progress', active: expanded, icon: <Rocket size={15} />, label: 'Faire avancer', onClick: onToggleProgress },
+    { id: 'mockup', icon: <Eye size={15} />, label: 'Voir la maquette', onClick: onMockup },
+    { id: 'chat', icon: <MessagesSquare size={15} />, label: chatLabel, onClick: onOpenChat },
+  ]
+  const preferred = PRIMARY_ACTION[project.status]
+  const primaryId: ActionId = preferred === 'pack' && !project.hasDeliverable ? 'progress' : preferred
+  // Action principale en premier ; Pack Dev masqué tant qu'il n'existe pas (plus de bouton ambre désactivé).
+  const actions = all
+    .filter((action) => action.id !== 'pack' || project.hasDeliverable)
+    .sort((a, b) => Number(b.id === primaryId) - Number(a.id === primaryId))
+
+  // « Client supprimé » sans e-mail : pas de séparateur orphelin.
+  const clientLine = [project.client.fullName, project.client.email, project.client.phoneNumber].filter(Boolean).join(' · ')
+
   return (
     <article className="overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-white/[0.035] to-white/[0.015]">
       <div className="grid gap-6 p-5 sm:p-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto] xl:items-center">
@@ -122,7 +151,7 @@ function OrderCard({ expanded, onMockup, onOpenChat, onPublished, onToggleProgre
             <span className={`rounded-full px-2 py-0.5 text-[12px] font-semibold ring-1 ring-inset ${badge.className}`}>{badge.label}</span>
           </div>
           <h3 className="mt-2 truncate text-[15px] font-bold text-white" title={project.title}>{project.title}</h3>
-          <p className="mt-1 truncate text-[12px] text-slate-400">{project.client.fullName} · {project.client.email}{project.client.phoneNumber ? ` · ${project.client.phoneNumber}` : ''}</p>
+          <p className="mt-1 truncate text-[12px] text-slate-400">{clientLine}</p>
         </div>
 
         {/* Montants */}
@@ -149,12 +178,9 @@ function OrderCard({ expanded, onMockup, onOpenChat, onPublished, onToggleProgre
           <p className="mt-2 truncate text-slate-500">{lastMilestone ? `${lastMilestone.title} · ${formatDate(lastMilestone.date, { day: 'numeric', month: 'short' })}` : `Créé le ${formatDate(project.createdAt, { day: 'numeric', month: 'short' })}`}</p>
         </div>
 
-        {/* Actions */}
-        <div className="flex flex-wrap gap-2 xl:max-w-[340px] xl:justify-end">
-          <ActionButton disabled={!project.hasDeliverable || isDownloading} icon={isDownloading ? <LoaderCircle className="animate-spin" size={14} /> : <Package size={14} />} label="Télécharger Pack Dev (.zip)" onClick={() => void handleDownload()} primary title={project.hasDeliverable ? undefined : 'Disponible après la commande'} />
-          <ActionButton icon={<Eye size={14} />} label="Voir la maquette" onClick={onMockup} />
-          <ActionButton active={expanded} icon={<Rocket size={14} />} label="Faire avancer" onClick={onToggleProgress} />
-          <ActionButton icon={<MessagesSquare size={14} />} label={`Ouvrir le chat${project.messagesCount ? ` (${project.messagesCount})` : ''}`} onClick={onOpenChat} />
+        {/* Actions : une seule action principale (ambre) selon l'étape ; Pack Dev affiché seulement s'il existe. */}
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap xl:max-w-[340px] xl:justify-end">
+          {actions.map((action) => <ActionButton key={action.id} {...action} primary={action.id === primaryId} />)}
         </div>
       </div>
       {downloadError && <p className="border-t border-white/[0.06] px-6 py-2 text-xs text-red-300">{downloadError}</p>}
@@ -193,7 +219,7 @@ function ProgressPanel({ onPublished, project }: { onPublished: (result: Progres
   return (
     <form className="grid gap-4 border-t border-white/[0.06] bg-black/20 p-5 sm:p-6 lg:grid-cols-[220px_minmax(0,1fr)_auto] lg:items-end" onSubmit={handleSubmit}>
       <label className="block">
-        <span className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wider text-slate-500">Étape du projet</span>
+        <span className="mb-1.5 block text-[12.5px] font-semibold text-slate-400">Étape du projet</span>
         <select className="h-11 w-full rounded-xl border border-white/10 bg-[#0E1424] px-3 text-sm text-slate-100 outline-none focus:border-[#F59E0B]/60 disabled:opacity-50" disabled={!isPaidProject} onChange={(event) => setStep(Number(event.target.value))} value={step}>
           {PROJECT_STEPS.map((label, index) => {
             const value = index + 1
@@ -205,11 +231,11 @@ function ProgressPanel({ onPublished, project }: { onPublished: (result: Progres
       </label>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wider text-slate-500">Titre de l’avancée</span>
+          <span className="mb-1.5 block text-[12.5px] font-semibold text-slate-400">Titre de l’avancée</span>
           <input className="h-11 w-full rounded-xl border border-white/10 bg-[#0E1424] px-3 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus:border-[#F59E0B]/60" maxLength={120} onChange={(event) => setTitle(event.target.value)} placeholder={stepChanged ? 'Titre par défaut selon l’étape' : 'Ex. Parcours de commande finalisé'} value={title} />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wider text-slate-500">Description (visible par le client)</span>
+          <span className="mb-1.5 block text-[12.5px] font-semibold text-slate-400">Description (visible par le client)</span>
           <input className="h-11 w-full rounded-xl border border-white/10 bg-[#0E1424] px-3 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus:border-[#F59E0B]/60" maxLength={500} onChange={(event) => setDescription(event.target.value)} placeholder="Ex. Les écrans panier et paiement sont prêts." value={description} />
         </label>
       </div>
@@ -223,17 +249,20 @@ function ProgressPanel({ onPublished, project }: { onPublished: (result: Progres
 
 function Kpi({ accent = false, icon, label, sub, value }: { accent?: boolean; icon: ReactNode; label: string; sub?: string; value: string }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl border p-5 ${accent ? 'border-[#F59E0B]/30 bg-gradient-to-br from-[#F59E0B]/15 to-transparent' : 'border-white/[0.07] bg-white/[0.025]'}`}>
-      <dt className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wider text-slate-400"><span className={accent ? 'text-[#F59E0B]' : 'text-slate-500'}>{icon}</span>{label}</dt>
-      <dd className="mt-3 text-[28px] font-bold leading-none tracking-tight text-white">{value}</dd>
+    <div className={`relative min-w-0 overflow-hidden rounded-2xl border p-4 sm:p-5 ${accent ? 'border-[#F59E0B]/30 bg-gradient-to-br from-[#F59E0B]/15 to-transparent' : 'border-white/[0.07] bg-white/[0.025]'}`}>
+      <dt className="flex items-center gap-2 text-[12.5px] font-semibold text-slate-300 sm:text-[13px]"><span className={`shrink-0 ${accent ? 'text-[#F59E0B]' : 'text-slate-500'}`}>{icon}</span>{label}</dt>
+      <dd className="mt-2.5 truncate text-[22px] font-bold leading-none tracking-tight text-white sm:mt-3 sm:text-[28px]">{value}</dd>
       {sub && <p className="mt-2 text-[12px] text-slate-500">{sub}</p>}
     </div>
   )
 }
 
-function ActionButton({ active = false, disabled, icon, label, onClick, primary = false, title }: { active?: boolean; disabled?: boolean; icon: ReactNode; label: string; onClick: () => void; primary?: boolean; title?: string }) {
+interface ActionProps { active?: boolean; disabled?: boolean; icon: ReactNode; label: string; onClick: () => void; primary?: boolean; title?: string }
+
+function ActionButton({ active = false, disabled, icon, label, onClick, primary = false, title }: ActionProps) {
+  // 44 px de haut sur téléphone (cible tactile), 36 px sur ordinateur.
   return (
-    <button className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-[12px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${primary ? 'bg-[#F59E0B] text-[#0B132B] hover:brightness-95' : active ? 'bg-white/15 text-white ring-1 ring-inset ring-white/20' : 'bg-white/[0.05] text-slate-200 ring-1 ring-inset ring-white/10 hover:bg-white/[0.1]'}`} disabled={disabled} onClick={onClick} title={title} type="button">
+    <button className={`inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-[12.5px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 sm:min-h-[36px] ${primary ? 'bg-[#F59E0B] text-[#0B132B] hover:brightness-95' : active ? 'bg-white/15 text-white ring-1 ring-inset ring-white/20' : 'bg-white/[0.05] text-slate-200 ring-1 ring-inset ring-white/10 hover:bg-white/[0.1]'}`} disabled={disabled} onClick={onClick} title={title} type="button">
       {icon}{label}
     </button>
   )

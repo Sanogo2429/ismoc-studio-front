@@ -165,7 +165,7 @@ function HomePage() {
         </div>
       </header>
 
-      <main>
+      <main id="contenu">
         <section className="hero section-wrap" id="accueil">
           <div className="hero-copy">
             <p className="eyebrow"><span className="eyebrow-dot" /> Studio digital · basé en France</p>
@@ -244,7 +244,7 @@ function HomePage() {
 
         <section className="expertise-section section-wrap" id="expertises">
           <div className="section-heading expertise-heading">
-            <p className="section-index">01 — Expertises</p>
+            <p className="section-index">Expertises</p>
             <h2>Chaque secteur a ses codes.<br /><span>Nous créons les vôtres.</span></h2>
             <p className="section-description">Des expériences digitales pensées autour de vos clients, de vos ambitions et de la réalité de votre marché.</p>
           </div>
@@ -253,7 +253,6 @@ function HomePage() {
               const target = `${CONFIGURATOR_PATH}?secteur=${sector}`
               return (
               <Link className={`expertise-card${featured ? ' expertise-card-featured' : ''}`} key={number} to={session.isLoggedIn ? target : loginPathFor(target)}>
-                <span className="card-number">{number}</span>
                 <Icon className="card-icon" size={21} strokeWidth={1.8} />
                 <span className="card-bottom">
                   <strong>{title}</strong>
@@ -269,7 +268,7 @@ function HomePage() {
         <section className="method-section" id="methode">
           <div className="method-inner section-wrap">
             <div className="section-heading method-heading">
-              <p className="section-index">02 — Notre méthode</p>
+              <p className="section-index">Notre méthode</p>
               <h2>Le meilleur de la technologie.<br /><span>Et surtout, de l’humain.</span></h2>
             </div>
             <div className="method-grid">
@@ -287,7 +286,7 @@ function HomePage() {
 
         <section className="studio-section section-wrap" id="studio">
           <div className="section-heading studio-heading">
-            <p className="section-index">03 — Le studio</p>
+            <p className="section-index">Le studio</p>
             <h2>Deux expertises.<br /><span>Une même exigence.</span></h2>
           </div>
           <div className="studio-grid">

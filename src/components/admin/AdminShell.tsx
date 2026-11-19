@@ -54,8 +54,7 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
           <span className="leading-none"><strong className="block text-lg font-bold tracking-tight text-white">IsMoc</strong><small className="mt-1.5 block text-[12px] font-bold tracking-[0.3em] text-[#F59E0B]">COCKPIT AGENCE</small></span>
         </Link>
 
-        <p className="mt-12 px-3 text-[12px] font-semibold tracking-[0.25em] text-slate-500">PILOTAGE</p>
-        <nav className="mt-3 space-y-1" aria-label="Navigation du cockpit">
+        <nav className="mt-12 space-y-1" aria-label="Navigation du cockpit">
           {NAVIGATION.map(({ id, label, icon: Icon }) => {
             const isActive = active === id
             return (
@@ -73,8 +72,8 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
           <p className="mt-2 text-[12px] leading-5 text-slate-500">Tant que le cockpit est ouvert, l’équipe apparaît « En ligne » auprès des clients et reçoit leurs appels.</p>
         </div>
         <div className="mt-4 space-y-1 border-t border-white/[0.06] pt-4">
-          <Link className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12.5px] text-slate-400 transition hover:bg-white/[0.04] hover:text-slate-100" to="/dashboard"><ExternalLink size={15} /> Espace client</Link>
-          <button className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[12.5px] text-slate-400 transition hover:bg-white/[0.04] hover:text-slate-100" onClick={logout} type="button"><LogOut size={15} /> Déconnexion</button>
+          <Link className="flex min-h-[40px] items-center gap-2.5 rounded-lg px-3 text-[12.5px] text-slate-400 transition hover:bg-white/[0.04] hover:text-slate-100" to="/dashboard"><ExternalLink size={15} /> Espace client</Link>
+          <button className="flex min-h-[40px] w-full items-center gap-2.5 rounded-lg px-3 text-[12.5px] text-slate-400 transition hover:bg-white/[0.04] hover:text-slate-100" onClick={logout} type="button"><LogOut size={15} /> Déconnexion</button>
         </div>
       </aside>
 
@@ -103,7 +102,7 @@ function AdminShell({ active, children, isRefreshing, lobbyStatus, onNavigate, o
           </nav>
         </header>
 
-        <main className="px-5 pb-[calc(2rem+var(--safe-bottom))] pt-8 sm:px-10 sm:pb-[calc(2.5rem+var(--safe-bottom))] sm:pt-10">{children}</main>
+        <main id="contenu" className="px-5 pb-[calc(2rem+var(--safe-bottom))] pt-8 sm:px-10 sm:pb-[calc(2.5rem+var(--safe-bottom))] sm:pt-10">{children}</main>
       </div>
     </div>
   )

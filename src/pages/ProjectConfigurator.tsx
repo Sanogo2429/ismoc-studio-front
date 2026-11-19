@@ -208,7 +208,7 @@ function ProjectConfigurator() {
   const customModules = modules.filter((module) => !MODULES[format].includes(module))
 
   return (
-    <main className="pb-safe min-h-screen bg-[#f6f7f9] text-darkSlate">
+    <main id="contenu" className="pb-safe min-h-screen bg-[#f6f7f9] text-darkSlate">
       {/* En-tête collant : pt-safe (env(safe-area-inset-top)) le garde sous la barre de statut de l'iPhone. */}
       <header className="pt-safe sticky top-0 z-30 border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 sm:px-8 sm:py-4">
@@ -220,8 +220,7 @@ function ProjectConfigurator() {
       </header>
 
       <section className="mx-auto max-w-5xl px-5 py-12 sm:px-8">
-        <p className="inline-flex items-center gap-2 text-[12px] font-bold tracking-[0.22em] text-amber-700"><Sparkles size={14} /> STUDIO IA UNIVERSEL</p>
-        <h1 className="mt-5 max-w-3xl text-[clamp(2rem,1.3rem+3vw,3rem)] font-semibold leading-tight tracking-tight text-darkSlate">Qu’aimeriez-vous construire ?</h1>
+        <h1 className="max-w-3xl text-[clamp(2rem,1.3rem+3vw,3rem)] font-semibold leading-tight tracking-tight text-darkSlate">Qu’aimeriez-vous construire ?</h1>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-500">Décrivez simplement votre idée : IsMoc AI conçoit directement votre maquette interactive et cliquable, que vous ferez évoluer par conversation. Aucun fichier de design n’est nécessaire.</p>
 
         {/* Les deux modes. La carte « Créer avec IsMoc AI » sélectionnée contient directement sa zone de texte. */}
