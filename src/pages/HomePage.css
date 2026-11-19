@@ -68,6 +68,7 @@ button { color: inherit; }
 .avatar-stack { display: flex; align-items: center; padding-left: 2px; }
 .avatar-stack img, .avatar-stack span { width: 34px; height: 34px; border-radius: 50%; border: 2px solid white; object-fit: cover; margin-left: -5px; }
 .avatar-stack span { display: grid; place-items: center; background: var(--ink); color: #fff; font-size: 12px; font-weight: 700; }
+.avatar-stack .avatar-alt { background: #ffa600; color: var(--ink); }
 .hero-proof p { margin: 0; display: flex; flex-direction: column; gap: 1px; font-size: 12px; color: #647287; }
 .hero-proof strong { color: var(--ink); font-size: 13px; }
 
@@ -119,7 +120,7 @@ button { color: inherit; }
 .section-heading h2 span { color: #df7600; }
 .section-description { max-width: 275px; margin: 8px 0 0; color: #657289; font-size: 13px; line-height: 1.8; }
 .expertise-grid { margin-top: 54px; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
-.expertise-card { min-height: 188px; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 23px 21px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .22s, color .22s; }
+.expertise-card { min-height: 188px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px 23px 21px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .22s, color .22s; }
 .expertise-card:hover { background: #fbfcfd; }
 .card-number { color: #607289; font-size: 12px; font-weight: 700; }
 .card-icon { position: absolute; top: 30px; right: 25px; color: #e88900; }
@@ -145,6 +146,7 @@ button { color: inherit; }
 .method-icon { width: 58px; height: 58px; margin-top: 35px; border-radius: 50%; display: grid; place-items: center; color: #ffa600; background: #202b40; }
 .method-card h3 { margin: 28px 0 10px; font: 700 18px 'Manrope', sans-serif; }
 .method-card p { max-width: 300px; margin: 0; color: #9aaac0; font-size: 12px; line-height: 1.8; }
+.method-card .card-number { color: #8fa0b8; }
 
 .studio-section { padding-top: 105px; padding-bottom: 125px; }
 .studio-heading { grid-template-columns: 1fr 3fr; margin-bottom: 48px; }
@@ -153,7 +155,15 @@ button { color: inherit; }
 .founder-card::after { content: ''; position: absolute; inset: 40% 0 0; background: linear-gradient(transparent, rgba(10,20,36,.76)); }
 .founder-card img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; object-position: center 35%; transition: transform .5s; }
 .founder-card:hover img { transform: scale(1.035); }
-.founder-number { position: absolute; z-index: 1; left: 18px; bottom: 18px; color: rgba(255,255,255,.72); font-size: 12px; }
+/* Monogramme (pas encore de vraie photo) : grandes initiales Manrope sur les deux couleurs de la marque. */
+.founder-card-ink { background: #16213a; }
+.founder-card-amber { background: #f59e0b; }
+.founder-monogram { position: absolute; inset: 0 0 18%; display: grid; place-items: center; font: 800 clamp(96px, 12vw, 168px)/1 'Manrope', sans-serif; letter-spacing: -6px; }
+.founder-card-ink .founder-monogram { color: #ffa600; }
+.founder-card-amber .founder-monogram { color: #111a2e; }
+.founder-card:has(.founder-monogram)::after { display: none; }
+.founder-card-amber:has(.founder-monogram) .founder-caption { color: #111a2e; }
+.founder-card-amber:has(.founder-monogram) .founder-caption span { color: rgba(17,26,46,.78); }
 .founder-caption { position: absolute; z-index: 1; right: 20px; bottom: 17px; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; color: #fff; }
 .founder-caption strong { font: 700 18px 'Manrope', sans-serif; }
 .founder-caption span { color: rgba(255,255,255,.8); font-size: 12px; }
@@ -256,7 +266,7 @@ button { color: inherit; }
   .founder-caption { right: 11px; bottom: 13px; }
   .founder-caption strong { font-size: 15px; }
   .founder-caption span { max-width: 115px; font-size: 12px; text-align: right; }
-  .founder-number { left: 12px; bottom: 13px; }
+  .founder-monogram { font-size: 84px; letter-spacing: -4px; }
   .studio-quote { min-height: 220px; padding: 24px; }
   .studio-quote p { font-size: 19px; }
   .contact-section { padding: 75px 20px 82px; }

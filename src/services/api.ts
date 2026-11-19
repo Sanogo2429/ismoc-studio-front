@@ -83,7 +83,9 @@ api.interceptors.response.use(
         localStorage.removeItem('userName')
 
         if (window.location.pathname !== '/connexion') {
-          window.location.assign('/connexion?session=expired')
+          // Après reconnexion : retour sur la page en cours.
+          const here = window.location.pathname + window.location.search
+          window.location.assign(`/connexion?session=expired&suite=${encodeURIComponent(here)}`)
         }
       }
     }

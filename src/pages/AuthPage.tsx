@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, LockKeyhole, Mail, Phone, Sp
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { forgotPassword, login, register, startGoogleLogin } from '../services/authService'
-import { postLoginPath } from '../services/session'
+import { postLoginPath, rememberNextPath } from '../services/session'
 import './Portal.css'
 
 /** État de navigation transmis à la page de connexion (après une inscription réussie). */
@@ -62,6 +62,9 @@ function AuthPage() {
   const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState(false)
   // Arrivée depuis une inscription réussie : message de confirmation + e-mail pré-rempli.
   const registeredEmail = isSignup ? undefined : (location.state as AuthLocationState | null)?.registeredEmail
+
+  // ?suite=/configurator… : destination après connexion (gardée pour le retour Google et le passage par l'inscription).
+  useEffect(() => { rememberNextPath(new URLSearchParams(location.search).get('suite')) }, [location.search])
 
   useEffect(() => {
     // Retour de Google : le jeton arrive dans le fragment (#token=…), jamais envoyé aux serveurs ni dans le
@@ -145,15 +148,15 @@ function AuthPage() {
   }
 
   return (
-    <main className="auth-layout">
+    <main className="auth-layout" id="contenu">
       {/* Zone sécurisée du haut gérée dans Portal.css (bandeau sur téléphone, logo et panneau sur grand écran). */}
       <section className="auth-story" aria-label="Présentation d'IsMoc Studio">
-        <img
-          className="auth-story-image"
-          src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1500&q=85"
-          alt="Une équipe échange autour d'un projet numérique"
-        />
-        <div className="auth-story-shade" />
+        {/* Visuel de marque (orbites + monogramme) : plus de photo d'inconnus présentée à côté de « Ismael & Moctar ». */}
+        <div className="auth-story-art" aria-hidden="true">
+          <span className="auth-orbit auth-orbit-one" />
+          <span className="auth-orbit auth-orbit-two" />
+          <span className="auth-monogram">I<span>/</span>M</span>
+        </div>
         <Link className="portal-brand" to="/" aria-label="Retour à l'accueil IsMoc Studio">
           <span className="portal-brand-mark">I<span>/</span>M</span>
           <span><strong>IsMoc</strong><small>STUDIO</small></span>
@@ -173,7 +176,6 @@ function AuthPage() {
       <section className="auth-panel">
         <Link className="auth-back" to="/"><ArrowLeft size={15} /> Retour au site</Link>
         <div className="auth-content">
-          <p className="auth-eyebrow"><span /> Votre espace</p>
           <h2>{isForgotPassword ? 'Réinitialiser le mot de passe.' : isSignup ? 'Créons votre espace.' : 'Ravi de vous revoir.'}</h2>
           <p className="auth-subtitle">
             {isForgotPassword ? 'Indiquez votre adresse e-mail pour recevoir les instructions.' : isSignup ? 'Quelques secondes suffisent pour démarrer.' : 'Accédez à vos projets et échangez avec notre équipe.'}
@@ -223,7 +225,7 @@ function AuthPage() {
           <div className="auth-divider"><span>ou continuer avec</span></div>
           {/* Seuls les fournisseurs réellement disponibles sont proposés (Apple et téléphone : à venir). */}
           <button type="button" className="auth-provider" onClick={startGoogleLogin}><GoogleLogo /> Continuer avec Google</button>
-          <p className="auth-terms">En continuant, vous acceptez nos conditions et notre politique de confidentialité.</p>
+          <p className="auth-terms">En continuant, vous acceptez nos <Link to="/cgv">conditions générales de vente</Link> et notre <Link to="/confidentialite">politique de confidentialité</Link>.</p>
           <div className="auth-trust"><span><Check size={14} /> Espace sécurisé</span><span><Sparkles size={14} /> Accompagnement humain</span></div>
           </>}
         </div>

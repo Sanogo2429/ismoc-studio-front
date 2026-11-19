@@ -1,5 +1,6 @@
 import { ArrowRight, ChevronRight } from 'lucide-react'
 import PageHeader from '../../components/PageHeader'
+import NewProjectLink from '../../components/NewProjectLink'
 import { ConversationSkeleton } from '../../components/Skeleton'
 import { Link } from 'react-router-dom'
 import CallOverlay from '../../components/CallOverlay'
@@ -38,7 +39,7 @@ function MessagesTab({ onCloseConversation, onSelectProject, projects, selectedP
         <div className="mt-10 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
           <h2 className="text-lg font-bold">Pas encore de conversation</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">La messagerie et les appels audio/vidéo avec l’équipe IsMoc s’ouvrent dès votre premier projet.</p>
-          <Link className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#0B132B] px-5 py-3 text-sm font-semibold text-white" to="/configurator">Créer mon premier projet <ArrowRight size={16} /></Link>
+          <NewProjectLink className="mt-6" />
         </div>
       </>
     )
@@ -114,7 +115,7 @@ function ProjectConversation({ immersive = false, onBack, project }: { immersive
   const paid = isPaid(project.status)
   const general = isGeneralThread(project)
   const link = general
-    ? { to: '/configurator', label: 'Lancer mon projet' }
+    ? { to: '/configurator', label: 'Nouveau projet' }
     : paid
       ? { to: `/client/project/${encodeURIComponent(project.projectId)}`, label: 'Ouvrir le suivi du projet' }
       : { to: `/configurator/preview?id=${encodeURIComponent(project.projectId)}`, label: 'Voir la maquette' }
@@ -144,8 +145,9 @@ function ProjectConversation({ immersive = false, onBack, project }: { immersive
         <div className="flex min-w-0 items-center gap-3">
           <ConnectionIndicator status={rtc.hubStatus} />
           <div className="min-w-0">
-            <p className="text-[12px] font-bold tracking-[0.25em] text-[#B8530B]">{general ? 'AVANT-PROJET' : `PROJET #${projectCode(project.projectId)}`}</p>
-            <p className="truncate text-sm font-bold">{project.projectName} <span className="font-normal text-slate-500">· {general ? 'posez vos questions avant de démarrer' : projectStep(project.status).label}</span></p>
+            {/* Référence seulement pour un vrai projet (la discussion générale disait deux fois « Avant-projet »). */}
+            {!general && <p className="text-[12px] font-semibold text-[#B8530B]">Projet #{projectCode(project.projectId)}</p>}
+            <p className="truncate text-sm font-bold">{general ? 'Discussion générale' : project.projectName} <span className="font-normal text-slate-500">· {general ? 'posez vos questions avant de démarrer' : projectStep(project.status).label}</span></p>
           </div>
         </div>
         <Link className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold text-[#0B132B] hover:underline" to={link.to}>

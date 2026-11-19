@@ -75,5 +75,38 @@ export function isAdmin(): boolean {
  * « Mon espace » /dashboard pour un client. /admin reste protégé par AdminRoute et [Authorize(Roles = "Admin")].
  */
 export function postLoginPath(): string {
+  const next = takeNextPath()
+  if (next) return next
   return isAdmin() ? '/admin' : '/dashboard'
+}
+
+/**
+ * Destination demandée avant la connexion (ex. /configurator?secteur=sante), gardée dans sessionStorage pour
+ * survivre à l'aller-retour Google. Chemins internes uniquement : jamais d'URL externe (« //… », « /\… »).
+ */
+const NEXT_PATH_KEY = 'ismoc-next-path'
+
+function isSafeNextPath(path: string | null): path is string {
+  return !!path && path.startsWith('/') && !path.startsWith('//') && !path.includes('\\')
+    && !/^\/(connexion|inscription|login)\b/.test(path)
+}
+
+export function rememberNextPath(path: string | null): void {
+  if (!isSafeNextPath(path)) return
+  try { sessionStorage.setItem(NEXT_PATH_KEY, path) } catch { /* stockage indisponible : retour à la page par défaut */ }
+}
+
+function takeNextPath(): string | null {
+  try {
+    const path = sessionStorage.getItem(NEXT_PATH_KEY)
+    sessionStorage.removeItem(NEXT_PATH_KEY)
+    return isSafeNextPath(path) ? path : null
+  } catch {
+    return null
+  }
+}
+
+/** Lien de connexion qui ramène ensuite à `next`. */
+export function loginPathFor(next: string): string {
+  return `/connexion?suite=${encodeURIComponent(next)}`
 }
