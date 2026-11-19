@@ -148,12 +148,12 @@ function AuthPage() {
     <main className="auth-layout">
       {/* Zone sécurisée du haut gérée dans Portal.css (bandeau sur téléphone, logo et panneau sur grand écran). */}
       <section className="auth-story" aria-label="Présentation d'IsMoc Studio">
-        <img
-          className="auth-story-image"
-          src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1500&q=85"
-          alt="Une équipe échange autour d'un projet numérique"
-        />
-        <div className="auth-story-shade" />
+        {/* Visuel de marque (orbites + monogramme) : plus de photo d'inconnus présentée à côté de « Ismael & Moctar ». */}
+        <div className="auth-story-art" aria-hidden="true">
+          <span className="auth-orbit auth-orbit-one" />
+          <span className="auth-orbit auth-orbit-two" />
+          <span className="auth-monogram">I<span>/</span>M</span>
+        </div>
         <Link className="portal-brand" to="/" aria-label="Retour à l'accueil IsMoc Studio">
           <span className="portal-brand-mark">I<span>/</span>M</span>
           <span><strong>IsMoc</strong><small>STUDIO</small></span>
@@ -223,7 +223,7 @@ function AuthPage() {
           <div className="auth-divider"><span>ou continuer avec</span></div>
           {/* Seuls les fournisseurs réellement disponibles sont proposés (Apple et téléphone : à venir). */}
           <button type="button" className="auth-provider" onClick={startGoogleLogin}><GoogleLogo /> Continuer avec Google</button>
-          <p className="auth-terms">En continuant, vous acceptez nos conditions et notre politique de confidentialité.</p>
+          <p className="auth-terms">En continuant, vous acceptez nos <Link to="/cgv">conditions générales de vente</Link> et notre <Link to="/confidentialite">politique de confidentialité</Link>.</p>
           <div className="auth-trust"><span><Check size={14} /> Espace sécurisé</span><span><Sparkles size={14} /> Accompagnement humain</span></div>
           </>}
         </div>

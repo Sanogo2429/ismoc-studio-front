@@ -56,6 +56,12 @@ const method = [
   },
 ]
 
+/** Cofondateurs. `photo` : URL d'une VRAIE photo (ex. /team/ismael.webp dans public/) ; null = monogramme. */
+const FOUNDERS: Array<{ name: string; initials: string; role: string; photo: string | null; tone: 'ink' | 'amber' }> = [
+  { name: 'Ismael', initials: 'Is', role: 'Stratégie & conception', photo: null, tone: 'ink' },
+  { name: 'Moctar', initials: 'Mo', role: 'Développement & produit', photo: null, tone: 'amber' },
+]
+
 function Brand() {
   return (
     <a className="brand" href="#accueil" aria-label="IsMoc Studio, accueil">
@@ -180,13 +186,13 @@ function HomePage() {
                 {session.isLoggedIn ? 'Mon espace' : 'Se connecter'} <UserRound size={17} strokeWidth={1.8} />
               </Link>
             </div>
+            {/* Preuve vérifiable : les deux interlocuteurs réels (initiales), pas de photos de banque d'images ni de note invérifiable. */}
             <div className="hero-proof">
               <div className="avatar-stack" aria-hidden="true">
-                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80" alt="" width={34} height={34} decoding="async" />
-                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=80&q=80" alt="" width={34} height={34} decoding="async" />
-                <span>+24</span>
+                <span>Is</span>
+                <span className="avatar-alt">Mo</span>
               </div>
-              <p><strong>4.9/5</strong><span>par nos clients</span></p>
+              <p><strong>Ismael &amp; Moctar</strong><span>vos interlocuteurs, du brief à la livraison</span></p>
             </div>
           </div>
 
@@ -227,7 +233,8 @@ function HomePage() {
 
         <section className="stats-band" aria-label="IsMoc Studio en chiffres">
           <div className="stats-inner">
-            <p><strong>32</strong><span>projets lancés</span></p>
+            {/* Chiffres vérifiables uniquement : 3 générations IA gratuites par compte (quota de l'API). */}
+            <p><strong>3</strong><span>maquettes IA gratuites</span></p>
             <p><strong>06</strong><span>secteurs maîtrisés</span></p>
             <p><strong>14j</strong><span>pour une première version développée</span></p>
             <blockquote>“Une agence qui écoute avant de créer.”</blockquote>
@@ -280,16 +287,15 @@ function HomePage() {
             <h2>Deux expertises.<br /><span>Une même exigence.</span></h2>
           </div>
           <div className="studio-grid">
-            <article className="founder-card">
-              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=85" alt="Portrait d’Ismael, cofondateur d’IsMoc Studio" loading="lazy" />
-              <span className="founder-number">01</span>
-              <div className="founder-caption"><strong>Ismael</strong><span>Stratégie & conception</span></div>
-            </article>
-            <article className="founder-card">
-              <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=900&q=85" alt="Portrait de Moctar, cofondateur d’IsMoc Studio" loading="lazy" />
-              <span className="founder-number">02</span>
-              <div className="founder-caption"><strong>Moctar</strong><span>Développement & produit</span></div>
-            </article>
+            {/* Monogrammes en attendant de vraies photos (champ `photo` de FOUNDERS) : jamais de portraits de banque d'images. */}
+            {FOUNDERS.map(({ name, initials, role, photo, tone }) => (
+              <article className={`founder-card founder-card-${tone}`} key={name}>
+                {photo
+                  ? <img src={photo} alt={`Portrait de ${name}, cofondateur d’IsMoc Studio`} loading="lazy" />
+                  : <span className="founder-monogram" aria-hidden="true">{initials}</span>}
+                <div className="founder-caption"><strong>{name}</strong><span>{role}</span></div>
+              </article>
+            ))}
             <blockquote className="studio-quote">
               <Sparkles size={22} />
               <p>“Nous ne créons pas juste des interfaces. Nous construisons les outils qui font avancer vos idées.”</p>
@@ -314,9 +320,10 @@ function HomePage() {
           <Brand />
           <p>© 2026 IsMoc Studio. Tous droits réservés.</p>
           <nav aria-label="Liens de pied de page">
-            <a href="#studio">Le studio</a>
             <a href="#contact">Contact</a>
-            <a href="#accueil">Mentions légales</a>
+            <Link to="/mentions-legales">Mentions légales</Link>
+            <Link to="/cgv">CGV</Link>
+            <Link to="/confidentialite">Confidentialité</Link>
           </nav>
         </div>
       </footer>

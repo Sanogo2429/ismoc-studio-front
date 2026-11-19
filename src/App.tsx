@@ -1,6 +1,7 @@
 import HomePage from './pages/HomePage'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AuthPage from './pages/AuthPage'
+import LegalPage from './pages/LegalPage'
 import DashboardPage from './pages/DashboardPage'
 import ProjectConfigurator from './pages/ProjectConfigurator'
 import MvpPreviewPage from './pages/MvpPreviewPage'
@@ -23,6 +24,10 @@ function App() {
         <Route path="/login" element={<AuthPage />} />
         <Route path="/connexion" element={<AuthPage />} />
         <Route path="/inscription" element={<AuthPage />} />
+        {/* Pages légales publiques (contenu à compléter dans src/config/legal.ts). */}
+        <Route path="/mentions-legales" element={<LegalPage doc="mentions" />} />
+        <Route path="/cgv" element={<LegalPage doc="cgv" />} />
+        <Route path="/confidentialite" element={<LegalPage doc="confidentialite" />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           {/* Alias lisible de l'espace client (« Mon espace ») */}
